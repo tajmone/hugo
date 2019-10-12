@@ -1,2 +1,79 @@
+#################################################
+# Hugo Interactive Fiction:
+# https://www.generalcoffee.com/hugo/gethugo.html
+#################################################
+
+## ============
+## Binary files
+## ============
+
+## Object files
+###############
+*.elf
+*.ko
 *.o
+*.obj
+
+## Static libraries
+###################
+*.a
+*.la
+*.lib
+*.lo
+
+## Shared objects
+#################
+*.dll
+*.dylib
+*.so
+*.so.*
+
+## Executables
+##############
+*.app
+*.exe
+*.out
+
+## ===============
+## Misc Work Files
+## ===============
+
+# Temporary/backup or removed files and folders:
+___*
+___*.*
+
+# Links and URLs
+*.lnk
+*.url
+
 heglk/hugo.js*
+
+############################
+## COMMON IGNORE PATTERNS ##
+############################
+
+## Linux
+########
+*~
+.directory
+.fuse_hidden*
+.nfs*
+.Trash-*
+
+## macOS
+########
+*.DS_Store
+._*
+.AppleDouble
+.LSOverride
+Icon
+
+## Windows
+##########
+Thumbs.db
+ehthumbs.db
+ehthumbs_vista.db
+Desktop.ini
+.BIN/
+
+# EOF #
