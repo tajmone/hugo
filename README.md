@@ -20,6 +20,7 @@ This repository contains [Tristano Ajmone]’s custom fork of [Dannii Willis]’
     - [The Upstream Void \(2006–\)](#the-upstream-void-2006%E2%80%93)
     - [Third Party Git Revival \(2008, 2012\)](#third-party-git-revival-2008-2012)
     - [This Repository \(2019\)](#this-repository-2019)
+        - [Changes](#changes)
         - [Custom Branches](#custom-branches)
         - [Upstream Branches](#upstream-branches)
 - [About Hugo](#about-hugo)
@@ -74,6 +75,21 @@ But then, having forked the upstream repository, I decided I might just as well 
 Right now, my edits to the `master` branch are mainly focused on cleaning up the repository from unneeded left overs, tweaking its settings to my custom workflow and tools of choice, and trying to document what's here, how to build Hugo for different platforms, and how the codebase evolved since the last official Hugo releases.
 
 My main focus of interest is on building Hugo for Windows, possibly via MSYS2.
+
+### Changes
+
+I've enforced consistent coding styles on the various project files via [EditorConfig] settings.
+
+The added [`.editorconfig`][.ec] file should be picked automatically by most modern editors ([either natively or via plug-ins]), which means end users won't have to worry about handling details like tab settings, trimming trailing spaces and adding an empty line at the end of files.
+
+Furthermore, these settings can be employed to validate commits and pull requests via continuous integration services, using third party tools like [ECLint].
+
+Many of the C sources displayed inconsistent use of tabs and spaces for indentation — the original Hugo code has been handled by various users in these years, which lead to a proliferation of different indentation standards in the code base.
+After comparing the original Hugo distribution sources to the files in this project, I settled on arbitrarily enforcing indentation using spaces (tab width = 3 spaces), and manually amended all stray indentation and extra whitespace until the whole code base passed a test-run against [EClint].
+
+This is an opinionated choice, which might make someone unhappy, but enforcing a coding standard is better than having none.
+The same goes for other file extensions which are covered in the  [`.editorconfig`][.ec] settings file.
+Now, at least, the repository is guaranteed to meet and preserve consistent coding styles across commits.
 
 ### Custom Branches
 
@@ -207,6 +223,12 @@ Hugo repositories:
 
 [curiousdannii/hugo#4]: https://github.com/curiousdannii/hugo/issues/4 "View Issue #4 at curiousdannii/hugo"
 
+<!-- EditorConfig -->
+
+[EditorConfig]: https://editorconfig.org/ "Visit EditorConfig website"
+[ECLint]: https://www.npmjs.com/package/eclint "Visit ECLint page at NPM"
+[either natively or via plug-ins]: https://editorconfig.org/#download "More info on editors support for EditorConfig"
+
 <!-- people -->
 
 [Dannii Willis]: https://github.com/curiousdannii "View Dannii Willis's GitHub profile"
@@ -222,5 +244,6 @@ Hugo repositories:
 <!-- project files -->
 
 [LICENSE]: ./LICENSE "View full text of the BSD 2-Clause License"
+[.ec]: ./.editorconfig "View the EditorConfig settings file"
 
 <!-- EOF -->

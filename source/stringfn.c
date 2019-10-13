@@ -1,13 +1,13 @@
 /*
-	STRINGFN.C
+   STRINGFN.C
 
-	String manipulation functions
+   String manipulation functions
 
-	Copyright (c) 1995-2006 by Kent Tessman
-	
-	Only if ALLOW_NESTING is #defined may these calls be nested, and then
-	only two at a time (noting that it takes another 1025 bytes of global
-	storage to do so).
+   Copyright (c) 1995-2006 by Kent Tessman
+
+   Only if ALLOW_NESTING is #defined may these calls be nested, and then
+   only two at a time (noting that it takes another 1025 bytes of global
+   storage to do so).
 */
 
 
@@ -39,12 +39,12 @@ char *strupr(char *s);
 
 /* GETTEMPSTRING
 
-	Prevents having to make sure each string-returning function has its
-	own static char array to copy into.  In other words, for five
-	functions, we don't need 5 * 1K each of static char array.
+   Prevents having to make sure each string-returning function has its
+   own static char array to copy into.  In other words, for five
+   functions, we don't need 5 * 1K each of static char array.
 
-	NOTE:  Assumes that no more than NUM_TEMPSTRINGS nested
-	string-manipulations will be done at once.
+   NOTE:  Assumes that no more than NUM_TEMPSTRINGS nested
+   string-manipulations will be done at once.
 */
 
 #ifndef ALLOW_NESTING
@@ -56,12 +56,12 @@ static char tempstring_count = 0;
 
 static char *GetTempString(void)
 {
-	static char *r;
+   static char *r;
 
-	r = &tempstring[(int)tempstring_count][0];
-	if (++tempstring_count >= NUM_TEMPSTRINGS) tempstring_count = 0;
+   r = &tempstring[(int)tempstring_count][0];
+   if (++tempstring_count >= NUM_TEMPSTRINGS) tempstring_count = 0;
 
-	return r;
+   return r;
 }
 #endif
 
@@ -76,20 +76,20 @@ static char *GetTempString(void)
 
 char *Left(char a[], int l)
 {
-	static char *temp;
-	int i;
+   static char *temp;
+   int i;
 
 #ifdef ALLOW_NESTING
-	temp = GetTempString();
+   temp = GetTempString();
 #else
-	temp = &tempstring[0];
+   temp = &tempstring[0];
 #endif
-	if (l > (int)strlen(a))
-		l = strlen(a);
-	for (i = 0; i<l; i++)
-		temp[i] = a[i];
-	temp[i] = '\0';
-	return temp;
+   if (l > (int)strlen(a))
+      l = strlen(a);
+   for (i = 0; i<l; i++)
+      temp[i] = a[i];
+   temp[i] = '\0';
+   return temp;
 }
 
 
@@ -97,17 +97,17 @@ char *Left(char a[], int l)
 
 char *Ltrim(char a[])
 {
-	static char *temp;
+   static char *temp;
 
 #ifdef ALLOW_NESTING
-	temp = GetTempString();
+   temp = GetTempString();
 #else
-	temp = &tempstring[0];
+   temp = &tempstring[0];
 #endif
-	strcpy(temp, a);
-	while (temp[0]==' ' || temp[0]=='\t')
-		strcpy(temp, temp+1);
-	return temp;
+   strcpy(temp, a);
+   while (temp[0]==' ' || temp[0]=='\t')
+      strcpy(temp, temp+1);
+   return temp;
 }
 
 
@@ -115,21 +115,21 @@ char *Ltrim(char a[])
 
 char *Mid(char a[], int pos, int n)
 {
-	static char *temp;
-	int i;
+   static char *temp;
+   int i;
 
 #ifdef ALLOW_NESTING
-	temp = GetTempString();
+   temp = GetTempString();
 #else
-	temp = &tempstring[0];
+   temp = &tempstring[0];
 #endif
-	pos--;
-	if (pos+n > (int)strlen(a))
-		n = strlen(a)-pos;
-	for (i = 0; i<n; i++)
-		temp[i] = a[pos+i];
-	temp[i] = '\0';
-	return temp;
+   pos--;
+   if (pos+n > (int)strlen(a))
+      n = strlen(a)-pos;
+   for (i = 0; i<n; i++)
+      temp[i] = a[pos+i];
+   temp[i] = '\0';
+   return temp;
 }
 
 
@@ -137,20 +137,20 @@ char *Mid(char a[], int pos, int n)
 
 char *Right(char a[], int l)
 {
-	static char *temp;
-	int i;
+   static char *temp;
+   int i;
 
 #ifdef ALLOW_NESTING
-	temp = GetTempString();
+   temp = GetTempString();
 #else
-	temp = &tempstring[0];
+   temp = &tempstring[0];
 #endif
-	if (l > (int)strlen(a))
-		l = strlen(a);
-	for (i = 0; i<l; i++)
-		temp[i] = a[strlen(a)-l+i];
-	temp[i] = '\0';
-	return temp;
+   if (l > (int)strlen(a))
+      l = strlen(a);
+   for (i = 0; i<l; i++)
+      temp[i] = a[strlen(a)-l+i];
+   temp[i] = '\0';
+   return temp;
 }
 
 
@@ -158,18 +158,18 @@ char *Right(char a[], int l)
 
 char *Rtrim(char a[])
 {
-	static char *temp;
-	int len;
+   static char *temp;
+   int len;
 
 #ifdef ALLOW_NESTING
-	temp = GetTempString();
+   temp = GetTempString();
 #else
-	temp = &tempstring[0];
+   temp = &tempstring[0];
 #endif
-	strcpy(temp, a);
-	while (((len = strlen(temp))) && (temp[len-1]==' ' || temp[len-1]=='\t'))
-		strcpy(temp, Left(temp, len-1));
-	return temp;
+   strcpy(temp, a);
+   while (((len = strlen(temp))) && (temp[len-1]==' ' || temp[len-1]=='\t'))
+      strcpy(temp, Left(temp, len-1));
+   return temp;
 }
 
 
@@ -177,52 +177,52 @@ char *Rtrim(char a[])
 
 char *itoa(int a, char *buf, int base)
 {
-	/* This only works if base is 10 (which it will be) */
-	sprintf(buf, "%d" ,a);
-	return buf;
+   /* This only works if base is 10 (which it will be) */
+   sprintf(buf, "%d" ,a);
+   return buf;
 }
 
 char *strlwr(char *s)
 {
-	int i;
+   int i;
 
-	i = 0;
-	while (*(s+i)!='\0')
-	{
-		*(s+i) = tolower(*(s+i));
-		i++;
-	}
-	return s;
+   i = 0;
+   while (*(s+i)!='\0')
+   {
+      *(s+i) = tolower(*(s+i));
+      i++;
+   }
+   return s;
 }
 
 char *strnset(char *s, int c, size_t l)
 {
-	int i;
+   int i;
 
-	for (i=0; i<(int)l; i++) *(s+i) = (char)c;
-	return s;
+   for (i=0; i<(int)l; i++) *(s+i) = (char)c;
+   return s;
 }
 
 char *strupr(char *s)
 {
-	int i;
+   int i;
 
-	i = 0;
-	while (*(s+i)!='\0')
-	{
-		*(s+i) = toupper(*(s+i));
-		i++;
-	}
-	return s;
+   i = 0;
+   while (*(s+i)!='\0')
+   {
+      *(s+i) = toupper(*(s+i));
+      i++;
+   }
+   return s;
 }
 
 #endif
 
-/* Sean Barrett wrote this routine to fix some strcpy problems 
+/* Sean Barrett wrote this routine to fix some strcpy problems
 we saw when strcpy was used on overlapping strings. */
-char *hugo_strcpy(char *s, const char *t) 
-{ 
-	char *r = s; 
-	while ((*s++ = *t++) != 0) ; 
-	return r; 
+char *hugo_strcpy(char *s, const char *t)
+{
+   char *r = s;
+   while ((*s++ = *t++) != 0) ;
+   return r;
 }

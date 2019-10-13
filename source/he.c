@@ -1,16 +1,16 @@
 /*
-	-------------------------------------------
-	HUGO ENGINE by Kent Tessman
-	Copyright (c) 1995-2006
+   -------------------------------------------
+   HUGO ENGINE by Kent Tessman
+   Copyright (c) 1995-2006
 
-	The General Coffee Company Film Productions
-	-------------------------------------------
+   The General Coffee Company Film Productions
+   -------------------------------------------
 
-	This source code is provided to allow porting of the Hugo Engine
-	to different operating systems.  It may be distributed as is,
-	providing that there has been no modification or alteration of
-	the material contained therein; distribution of modified source code
-	is prohibited by the copyright holder.
+   This source code is provided to allow porting of the Hugo Engine
+   to different operating systems.  It may be distributed as is,
+   providing that there has been no modification or alteration of
+   the material contained therein; distribution of modified source code
+   is prohibited by the copyright holder.
 */
 
 #include "heheader.h"
@@ -64,8 +64,8 @@ void MakeProgramPath(char *path);
 
 /* MAIN
 
-	If FRONT_END is defined, the external main() function can pass the
-   	calling parameters argc and argv to he_main.
+   If FRONT_END is defined, the external main() function can pass the
+      calling parameters argc and argv to he_main.
 */
 
 #if !defined (FRONT_END)
@@ -74,84 +74,84 @@ int main(int argc, char *argv[])
 int he_main(int argc, char *argv[])
 #endif
 {
-	time_t seed;
+   time_t seed;
 
-	my_argv = argv;
+   my_argv = argv;
 
-	if (!strcmp(program_path, "") && argv) MakeProgramPath(argv[0]);
+   if (!strcmp(program_path, "") && argv) MakeProgramPath(argv[0]);
 
-	/* Seed the random number generator */
+   /* Seed the random number generator */
 #if !defined (RANDOM)
-	srand((unsigned int)time((time_t *)&seed));
+   srand((unsigned int)time((time_t *)&seed));
 #else
-	SRANDOM((unsigned int)time((time_t *)&seed));
+   SRANDOM((unsigned int)time((time_t *)&seed));
 #endif
 
-#if !defined (GLK)	/* no command line under Glk */
-	ParseCommandLine(argc, argv);
+#if !defined (GLK)   /* no command line under Glk */
+   ParseCommandLine(argc, argv);
 #endif
 
-	hugo_init_screen();
+   hugo_init_screen();
 
 #if defined (DEBUGGER)
-	debug_getinvocationpath(argv[0]);
-	SwitchtoGame();
+   debug_getinvocationpath(argv[0]);
+   SwitchtoGame();
 #endif
-	SetupDisplay();
+   SetupDisplay();
 
-	strcpy(pbuffer, "");
+   strcpy(pbuffer, "");
 
-	gameseg = 0;
+   gameseg = 0;
 
-	LoadGame();
+   LoadGame();
 
 #if defined (DEBUGGER)
-	LoadDebuggableFile();
-	StartDebugger();
+   LoadDebuggableFile();
+   StartDebugger();
 #endif
 
-	RunGame();
+   RunGame();
 
-	hugo_cleanup_screen();
+   hugo_cleanup_screen();
 
-	hugo_blockfree(mem);
-	mem = NULL;
-	hugo_closefiles();
+   hugo_blockfree(mem);
+   mem = NULL;
+   hugo_closefiles();
 
-	return 0;
+   return 0;
 }
 
 
 void Banner(void)
 {
-	printf("HUGO %s v%d.%d%s by Kent Tessman (c) 1995-2006\n",
+   printf("HUGO %s v%d.%d%s by Kent Tessman (c) 1995-2006\n",
 #if defined (DEBUGGER)
-	"DEBUGGER",
+   "DEBUGGER",
 #else
-	"ENGINE",
+   "ENGINE",
 #endif
-	HEVERSION, HEREVISION, HEINTERIM);
+   HEVERSION, HEREVISION, HEINTERIM);
 
-	printf("The General Coffee Company Film Productions\n");
+   printf("The General Coffee Company Film Productions\n");
 #if defined (PORT_NAME)
-	printf("%s port by %s\n", PORT_NAME, PORTER_NAME);
+   printf("%s port by %s\n", PORT_NAME, PORTER_NAME);
 #endif
 #if defined(GCC_UNIX) && defined(DO_COLOR)
-	printf("SYNTAX:  %s [switches] filename[%s]\n", my_argv?my_argv[0]:PROGRAM_NAME,
+   printf("SYNTAX:  %s [switches] filename[%s]\n", my_argv?my_argv[0]:PROGRAM_NAME,
 #else
-	printf("SYNTAX:  %s filename[%s]\n", my_argv?my_argv[0]:PROGRAM_NAME,
+   printf("SYNTAX:  %s filename[%s]\n", my_argv?my_argv[0]:PROGRAM_NAME,
 #endif
 #if defined (DEBUGGER)
-	".HDX");
+   ".HDX");
 #else
-	".HEX");
+   ".HEX");
 #if defined(GCC_UNIX) && defined(DO_COLOR)
-	printf("SWITCHES:\n");
-	printf("  Hugo colour values [0-15]:\n");
-	printf("\t-f n  foreground colour\n");
-	printf("\t-b n  background colour\n");
-	printf("\t-F n  status foreground colour\n");
-	printf("\t-B n  status background colour\n");
+   printf("SWITCHES:\n");
+   printf("  Hugo colour values [0-15]:\n");
+   printf("\t-f n  foreground colour\n");
+   printf("\t-b n  background colour\n");
+   printf("\t-F n  status foreground colour\n");
+   printf("\t-B n  status background colour\n");
 #endif
 #endif
 }
@@ -159,9 +159,9 @@ void Banner(void)
 void MakeProgramPath(char *path)
 {
 #ifndef GLK
-	char drive[MAXDRIVE], dir[MAXDIR], fname[MAXFILENAME], ext[MAXEXT];
+   char drive[MAXDRIVE], dir[MAXDIR], fname[MAXFILENAME], ext[MAXEXT];
 
-	hugo_splitpath(path, drive, dir, fname, ext);
-	hugo_makepath(program_path, drive, dir, "", "");
+   hugo_splitpath(path, drive, dir, fname, ext);
+   hugo_makepath(program_path, drive, dir, "", "");
 #endif
 }

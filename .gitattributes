@@ -4,8 +4,13 @@
 #################################################
 * text=auto
 
-*.c   text
-*.h   text
+## =========
+## C Sources
+## =========
+*.c            text
+*.c.graphics   text
+*.c.graphics   linguist-language=C
+*.h            text
 
 ## =============
 ## Shell scripts
@@ -24,8 +29,12 @@
 *.config       text
 *.ini          text
 *.prefs        text
-.editorconfig  text
-Makefile*      text eol=lf
+[Mm]akefile*   text eol=lf
+## -------------
+## EditorConfig:
+## -------------
+.editorconfig  text eol=lf
+.editorconfig  linguist-detectable=false
 ## -------------
 ## Git settings:
 ## -------------

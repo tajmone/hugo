@@ -1,20 +1,20 @@
 /*
-	HEEXPR.C
+   HEEXPR.C
 
-	Expression/value management functions:
+   Expression/value management functions:
 
-		EvalExpr
-			Precedence
-		GetValue
-			GetVal
-		Increment
-		IsIncrement
-		SetupExpr
-		TrimExpr
+      EvalExpr
+         Precedence
+      GetValue
+         GetVal
+      Increment
+      IsIncrement
+      SetupExpr
+      TrimExpr
 
-	for the Hugo Engine
+   for the Hugo Engine
 
-	Copyright (c) 1995-2006 by Kent Tessman
+   Copyright (c) 1995-2006 by Kent Tessman
 */
 
 
@@ -34,10 +34,10 @@ int exprt = true;
 
 #define MAX_EVAL_ELEMENTS 256
 
-int eval[MAX_EVAL_ELEMENTS];		/* expression components           */
+int eval[MAX_EVAL_ELEMENTS];      /* expression components           */
 int evalcount;                          /* # of expr. components           */
-int var[MAXLOCALS+MAXGLOBALS];		/* variables                       */
-int incdec;				/* value is being incremented/dec. */
+int var[MAXLOCALS+MAXGLOBALS];      /* variables                       */
+int incdec;            /* value is being incremented/dec. */
 char getaddress = 0;                    /* true when finding &routine      */
 char inexpr = 0;                        /* true when in expression         */
 char inobj = 0;                         /* true when in object compound    */
@@ -47,1283 +47,1283 @@ int last_precedence;
 
 /* EVALEXPR
 
-	The new-and-improved expression evaluator.  Evaluates the current
-	expression (or sub-expression therein) beginning at eval[p].
+   The new-and-improved expression evaluator.  Evaluates the current
+   expression (or sub-expression therein) beginning at eval[p].
 */
 
 int EvalExpr(int p)
 {
-	int n1, n2;
-	int oper;
-	short result = 0;		/* must be 16 bits */
+   int n1, n2;
+   int oper;
+   short result = 0;      /* must be 16 bits */
 
-	/* for precedence stacking/unstacking */
-	int next_prec, this_prec, temp_lp;
+   /* for precedence stacking/unstacking */
+   int next_prec, this_prec, temp_lp;
 
-	if (!evalcount) return 0;       /* no expression */
+   if (!evalcount) return 0;       /* no expression */
 
-	do
-	{
-		if (eval[p]==1)
-		{
-			if (eval[p+1]==OPEN_BRACKET_T ||
-				eval[p+1]==OPEN_SQUARE_T)
-			{
-				eval[p] = 0;
-				eval[p+1] = EvalExpr(p+2);
-				TrimExpr(p+2);
-			}
-			else if (eval[p+1]==MINUS_T)
-			{
-				TrimExpr(p);
-				eval[p+1] = -eval[p+1];
-			}
-		}
+   do
+   {
+      if (eval[p]==1)
+      {
+         if (eval[p+1]==OPEN_BRACKET_T ||
+            eval[p+1]==OPEN_SQUARE_T)
+         {
+            eval[p] = 0;
+            eval[p+1] = EvalExpr(p+2);
+            TrimExpr(p+2);
+         }
+         else if (eval[p+1]==MINUS_T)
+         {
+            TrimExpr(p);
+            eval[p+1] = -eval[p+1];
+         }
+      }
 
-		if (evalcount<=p+2)
-		{
-			result = eval[p+1];
-			TrimExpr(p);
-			eval[p] = 0;
-			eval[p+1] = result;
-			goto ReturnResult;
-		}
+      if (evalcount<=p+2)
+      {
+         result = eval[p+1];
+         TrimExpr(p);
+         eval[p] = 0;
+         eval[p+1] = result;
+         goto ReturnResult;
+      }
 
-		n1 = eval[p+1];
-		oper = eval[p+3];
+      n1 = eval[p+1];
+      oper = eval[p+3];
 
-		/* At this point, <n1> holds the first value, and <oper> holds
-		   the token number of the operator.
-		*/
-		if (eval[p+4]==1 && (eval[p+5]==OPEN_BRACKET_T
-			|| eval[p+5]==OPEN_SQUARE_T))
-		{
-			eval[p+4] = 0;
-			eval[p+5] = EvalExpr(p+6);
-			TrimExpr(p+6);
-		}
+      /* At this point, <n1> holds the first value, and <oper> holds
+         the token number of the operator.
+      */
+      if (eval[p+4]==1 && (eval[p+5]==OPEN_BRACKET_T
+         || eval[p+5]==OPEN_SQUARE_T))
+      {
+         eval[p+4] = 0;
+         eval[p+5] = EvalExpr(p+6);
+         TrimExpr(p+6);
+      }
 
-		n2 = eval[p+5];
+      n2 = eval[p+5];
 
-		if (evalcount > p+7)
-		{
-			if (eval[p+3]==CLOSE_BRACKET_T && eval[p+2]==1)
-			{
-				TrimExpr(p+2);
-				return eval[p+1];
-			}
+      if (evalcount > p+7)
+      {
+         if (eval[p+3]==CLOSE_BRACKET_T && eval[p+2]==1)
+         {
+            TrimExpr(p+2);
+            return eval[p+1];
+         }
 
-			/* eval[p+7] holds the next operator, i.e., the "*"
-			   in:  "x + y * z"
+         /* eval[p+7] holds the next operator, i.e., the "*"
+            in:  "x + y * z"
 
-			   This way, we can check if the upcoming operator
-			   takes precedence over the current one.
-			*/
-			if ((next_prec = Precedence(eval[p+7]))
-				< (this_prec = Precedence(oper)))
-			{
-				if (next_prec >= last_precedence)
-				{
+            This way, we can check if the upcoming operator
+            takes precedence over the current one.
+         */
+         if ((next_prec = Precedence(eval[p+7]))
+            < (this_prec = Precedence(oper)))
+         {
+            if (next_prec >= last_precedence)
+            {
 #if defined (DEBUG_PRECEDENCE)
 sprintf(line, "Not preferring %s to %s because of previous level %d", token[eval[p+7]], token[oper], last_precedence);
 Printout(line);
 #endif
-					goto ReturnResult;
-				}
+               goto ReturnResult;
+            }
 
 #if defined (DEBUG_PRECEDENCE)
 sprintf(line, "Preferring %s to %s", token[eval[p+7]], token[oper]);
 Printout(line);
 #endif
 
-				temp_lp = last_precedence;
-				last_precedence = this_prec;
-				n2 = EvalExpr(p+4);
-				last_precedence = temp_lp;
-			}
-		}
-		else if (Precedence(oper)>=last_precedence)
-		{
-			goto ReturnResult;
-		}
+            temp_lp = last_precedence;
+            last_precedence = this_prec;
+            n2 = EvalExpr(p+4);
+            last_precedence = temp_lp;
+         }
+      }
+      else if (Precedence(oper)>=last_precedence)
+      {
+         goto ReturnResult;
+      }
 
 #if defined (DEBUG_PRECEDENCE)
 sprintf(line, "Solving %d %s %d", n1, token[oper], n2);
 Printout(line);
 #endif
 
-		switch (oper)
-		{
-			case DECIMAL_T:
-			{
-				result = GetProp(n1, n2, 1, 0);
-				break;
-			}
+      switch (oper)
+      {
+         case DECIMAL_T:
+         {
+            result = GetProp(n1, n2, 1, 0);
+            break;
+         }
 
-			case EQUALS_T:
-			{
-				result = (n1==n2);
-				break;
-			}
-			case MINUS_T:
-			{
-				result = n1 - n2;
-				break;
-			}
-			case PLUS_T:
-			{
-				result = n1 + n2;
-				break;
-			}
-			case ASTERISK_T:
-			{
-				result = n1 * n2;
-				break;
-			}
-			case FORWARD_SLASH_T:
-			{
-				if (n2==0)
+         case EQUALS_T:
+         {
+            result = (n1==n2);
+            break;
+         }
+         case MINUS_T:
+         {
+            result = n1 - n2;
+            break;
+         }
+         case PLUS_T:
+         {
+            result = n1 + n2;
+            break;
+         }
+         case ASTERISK_T:
+         {
+            result = n1 * n2;
+            break;
+         }
+         case FORWARD_SLASH_T:
+         {
+            if (n2==0)
 #if defined (DEBUGGER)
-				{
-					RuntimeWarning("Division by zero:  invalid result");
-					result = 0;
-				}
+            {
+               RuntimeWarning("Division by zero:  invalid result");
+               result = 0;
+            }
 #else
-					FatalError(DIVIDE_E);
+               FatalError(DIVIDE_E);
 #endif
-				result = n1 / n2;
-				break;
-			}
-			case PIPE_T:
-			{
-				result = n1 | n2;
-				break;
-			}
-			case GREATER_EQUAL_T:
-			{
-				result = (n1>=n2);
-				break;
-			}
-			case LESS_EQUAL_T:
-			{
-				result = (n1<=n2);
-				break;
-			}
-			case NOT_EQUAL_T:
-			{
-				result = (n1!=n2);
-				break;
-			}
-			case AMPERSAND_T:
-			{
-				result = n1 & n2;
-				break;
-			}
-			case GREATER_T:
-			{
-				result = (n1 > n2);
-				break;
-			}
-			case LESS_T:
-			{
-				result = (n1 < n2);
-				break;
-			}
-			case AND_T:
-			{
-				result = (n1 && n2);
-				break;
-			}
-			case OR_T:
-			{
-				result = (n1 || n2);
-				break;
-			}
+            result = n1 / n2;
+            break;
+         }
+         case PIPE_T:
+         {
+            result = n1 | n2;
+            break;
+         }
+         case GREATER_EQUAL_T:
+         {
+            result = (n1>=n2);
+            break;
+         }
+         case LESS_EQUAL_T:
+         {
+            result = (n1<=n2);
+            break;
+         }
+         case NOT_EQUAL_T:
+         {
+            result = (n1!=n2);
+            break;
+         }
+         case AMPERSAND_T:
+         {
+            result = n1 & n2;
+            break;
+         }
+         case GREATER_T:
+         {
+            result = (n1 > n2);
+            break;
+         }
+         case LESS_T:
+         {
+            result = (n1 < n2);
+            break;
+         }
+         case AND_T:
+         {
+            result = (n1 && n2);
+            break;
+         }
+         case OR_T:
+         {
+            result = (n1 || n2);
+            break;
+         }
 
-			default:
-			{
-				result = n1;
-			}
-		}
+         default:
+         {
+            result = n1;
+         }
+      }
 
 #if defined (DEBUGGER)
-		if ((debug_eval) && debug_eval_error) return 0;
+      if ((debug_eval) && debug_eval_error) return 0;
 #endif
 
-		TrimExpr(p+4);          /* second value */
-		TrimExpr(p+2);          /* operator */
+      TrimExpr(p+4);          /* second value */
+      TrimExpr(p+2);          /* operator */
 
-		eval[p] = 0;
-		eval[p+1] = result;
+      eval[p] = 0;
+      eval[p+1] = result;
 
 
-	/* Keep looping while there are expression elements, or until there
-	   is a ")", "]", or end of line
-	*/
-	} while ((evalcount>p+2) && !(eval[p+2]==1 &&
-		(eval[p+3]==CLOSE_BRACKET_T || eval[p+3]==CLOSE_SQUARE_T ||
-		eval[p+3]==255)));
+   /* Keep looping while there are expression elements, or until there
+      is a ")", "]", or end of line
+   */
+   } while ((evalcount>p+2) && !(eval[p+2]==1 &&
+      (eval[p+3]==CLOSE_BRACKET_T || eval[p+3]==CLOSE_SQUARE_T ||
+      eval[p+3]==255)));
 
-	result = eval[p+1];
+   result = eval[p+1];
 
-	TrimExpr(p);                    /* first value */
+   TrimExpr(p);                    /* first value */
 
 ReturnResult:
 
 #if defined (DEBUG_EXPR_EVAL)
-	if (p==0 && exprt)
-	{
-		sprintf(line, " = %d", result);
-		AP(line);
-	}
+   if (p==0 && exprt)
+   {
+      sprintf(line, " = %d", result);
+      AP(line);
+   }
 #endif
-	return result;
+   return result;
 }
 
 
 /* GETVAL
 
-	Called by GetValue(); does the actual dirty work of returning
-	a value from a simple data type.
+   Called by GetValue(); does the actual dirty work of returning
+   a value from a simple data type.
 */
 
 int GetVal()
 {
-	char a = 0;
-	char tempinexpr, tempgetaddress, tempinobj;
-	int i, j;
-	int tempret;
+   char a = 0;
+   char tempinexpr, tempgetaddress, tempinobj;
+   int i, j;
+   int tempret;
 
-	unsigned short routineaddr, arrayaddr;	/* must be 16 bits */
-	short val = 0;
+   unsigned short routineaddr, arrayaddr;   /* must be 16 bits */
+   short val = 0;
 
-	char inctype = 0;
-	int preincdec;                  /* pre-increment/decrement */
+   char inctype = 0;
+   int preincdec;                  /* pre-increment/decrement */
 
-	defseg = gameseg;
+   defseg = gameseg;
 
-	tempret = ret;
-	tempinexpr = inexpr;
-	inexpr = 0;
+   tempret = ret;
+   tempinexpr = inexpr;
+   inexpr = 0;
 
-	preincdec = incdec;
-	incdec = 0;
+   preincdec = incdec;
+   incdec = 0;
 
-	switch (MEM(codeptr))
-	{
-		case AMPERSAND_T:       /* an address */
-			{codeptr++;
-			getaddress = true;
-			val = GetValue();
-			getaddress = false;
-			break;}
+   switch (MEM(codeptr))
+   {
+      case AMPERSAND_T:       /* an address */
+         {codeptr++;
+         getaddress = true;
+         val = GetValue();
+         getaddress = false;
+         break;}
 
-		case ROUTINE_T:
-		case CALL_T:
-		{
-			if (MEM(codeptr)==ROUTINE_T)
-			{
-				if (tail_recursion==0 && MEM(codeptr-1)==RETURN_T)
-				{
-					/* We may be able to tail-recurse this return
-					   statement if it's simply 'return Routine(...)'
-					*/
-					tail_recursion = TAIL_RECURSION_ROUTINE;
-				}
+      case ROUTINE_T:
+      case CALL_T:
+      {
+         if (MEM(codeptr)==ROUTINE_T)
+         {
+            if (tail_recursion==0 && MEM(codeptr-1)==RETURN_T)
+            {
+               /* We may be able to tail-recurse this return
+                  statement if it's simply 'return Routine(...)'
+               */
+               tail_recursion = TAIL_RECURSION_ROUTINE;
+            }
 
-				routineaddr = PeekWord(++codeptr);
-				codeptr += 2;
+            routineaddr = PeekWord(++codeptr);
+            codeptr += 2;
 
-				if (getaddress)
-					{val = routineaddr;
-					getaddress = false;
-					break;}
-			}
-			else
-			{
-				codeptr++;
-				routineaddr = GetValue();
-			}
+            if (getaddress)
+               {val = routineaddr;
+               getaddress = false;
+               break;}
+         }
+         else
+         {
+            codeptr++;
+            routineaddr = GetValue();
+         }
 
 #if defined (DEBUGGER)
-			if (debug_eval)
-			{
-				debug_eval_error = true;
-				val = 0;
-				break;
-			}
+         if (debug_eval)
+         {
+            debug_eval_error = true;
+            val = 0;
+            break;
+         }
 #endif
                         val = CallRoutine(routineaddr);
 
-			break;
-		}
+         break;
+      }
 
-		case OPEN_BRACKET_T:
-		{
-			codeptr++;
-			inexpr = 1;
-			tempgetaddress = getaddress;
-			getaddress = false;
-			SetupExpr();
-			inexpr = 0;
-			val = EvalExpr(0);
-			getaddress = tempgetaddress;
-			break;
-		}
+      case OPEN_BRACKET_T:
+      {
+         codeptr++;
+         inexpr = 1;
+         tempgetaddress = getaddress;
+         getaddress = false;
+         SetupExpr();
+         inexpr = 0;
+         val = EvalExpr(0);
+         getaddress = tempgetaddress;
+         break;
+      }
 
-		case MINUS_T:
-		{
-			codeptr++;
-			j = inexpr;	/* don't reuse tempinexpr */
-			inexpr = 1;
-			val = -GetValue();
-			inexpr = (char)j;
-			break;
-		}
+      case MINUS_T:
+      {
+         codeptr++;
+         j = inexpr;   /* don't reuse tempinexpr */
+         inexpr = 1;
+         val = -GetValue();
+         inexpr = (char)j;
+         break;
+      }
 
-		case VALUE_T:                   /* integer 0 - 65535 */
-		case OBJECTNUM_T:
-		case DICTENTRY_T:
-		{
-			val = PeekWord(++codeptr);
-			codeptr += 2;
-			break;
-		}
+      case VALUE_T:                   /* integer 0 - 65535 */
+      case OBJECTNUM_T:
+      case DICTENTRY_T:
+      {
+         val = PeekWord(++codeptr);
+         codeptr += 2;
+         break;
+      }
 
-		case ATTR_T:
-		case PROP_T:
-		{
-			val = MEM(++codeptr);
-			codeptr++;
-			break;
-		}
+      case ATTR_T:
+      case PROP_T:
+      {
+         val = MEM(++codeptr);
+         codeptr++;
+         break;
+      }
 
-		case VAR_T:                     /* variable */
-		{
-			val = var[(i=MEM(++codeptr))];
+      case VAR_T:                     /* variable */
+      {
+         val = var[(i=MEM(++codeptr))];
 
-			if (game_version >= 22)
-			{
-				/* Pre-v2.4 included linelength and pagelength as
-				   global variables after objectcount
-				*/
-				if (i <= ((game_version>=24)?objectcount:objectcount+2))
-				{
-					if (i==wordcount) val = words;
-					else if (i==objectcount) val = objects;
+         if (game_version >= 22)
+         {
+            /* Pre-v2.4 included linelength and pagelength as
+               global variables after objectcount
+            */
+            if (i <= ((game_version>=24)?objectcount:objectcount+2))
+            {
+               if (i==wordcount) val = words;
+               else if (i==objectcount) val = objects;
 
-					/* i.e., pre-v2.4 only */
-					else if (i==objectcount+1)
-					{
+               /* i.e., pre-v2.4 only */
+               else if (i==objectcount+1)
+               {
 #if defined (ACTUAL_LINELENGTH)
-						val = ACTUAL_LINELENGTH();
+                  val = ACTUAL_LINELENGTH();
 #else
-						val = SCREENWIDTH/charwidth;
+                  val = SCREENWIDTH/charwidth;
 #endif
-					}
-					else if (i==objectcount+2)
-						val = SCREENHEIGHT/lineheight;
-				}
-			}
-			codeptr++;
+               }
+               else if (i==objectcount+2)
+                  val = SCREENHEIGHT/lineheight;
+            }
+         }
+         codeptr++;
 
-			if (!inobj) inctype = IsIncrement(codeptr);
+         if (!inobj) inctype = IsIncrement(codeptr);
 
-			/* don't operate on, e.g., ++variable.property as
-			   (++variable).property
-			*/
-			if ((incdec || preincdec) && MEM(codeptr)!=DECIMAL_T)
-			{
-				if (i < MAXGLOBALS) SaveUndo(VAR_T, i, val, 0, 0);
+         /* don't operate on, e.g., ++variable.property as
+            (++variable).property
+         */
+         if ((incdec || preincdec) && MEM(codeptr)!=DECIMAL_T)
+         {
+            if (i < MAXGLOBALS) SaveUndo(VAR_T, i, val, 0, 0);
 
-				if (inctype) val = Increment(val, inctype);
+            if (inctype) val = Increment(val, inctype);
 
-				/* still a post-increment hanging around */
-				var[i] = (val+=preincdec) + incdec;
+            /* still a post-increment hanging around */
+            var[i] = (val+=preincdec) + incdec;
 
-				incdec = preincdec = 0;
-			}
+            incdec = preincdec = 0;
+         }
 
-			break;
-		}
+         break;
+      }
 
-		case TRUE_T:
-			val = 1;
-			codeptr++;
-			break;
+      case TRUE_T:
+         val = 1;
+         codeptr++;
+         break;
 
-		case FALSE_T:
-			val = 0;
-			codeptr++;
-			break;
+      case FALSE_T:
+         val = 0;
+         codeptr++;
+         break;
 
-		case TILDE_T:
-			codeptr++;
-			val = ~GetValue();
-			break;
+      case TILDE_T:
+         codeptr++;
+         val = ~GetValue();
+         break;
 
-		case NOT_T:
-			codeptr++;
-			val = !GetValue();
-			break;
+      case NOT_T:
+         codeptr++;
+         val = !GetValue();
+         break;
 
-		case ARRAYDATA_T:
-		case ARRAY_T:
-		{
-			unsigned int element;
+      case ARRAYDATA_T:
+      case ARRAY_T:
+      {
+         unsigned int element;
 
-			if (MEM(codeptr)==ARRAY_T)
-			{
-				codeptr++;
-				arrayaddr = GetValue();
-			}
-			else
-			{
-				arrayaddr = PeekWord(++codeptr);
-				codeptr += 2;
-			}
+         if (MEM(codeptr)==ARRAY_T)
+         {
+            codeptr++;
+            arrayaddr = GetValue();
+         }
+         else
+         {
+            arrayaddr = PeekWord(++codeptr);
+            codeptr += 2;
+         }
 
-			if (MEM(codeptr)!=OPEN_SQUARE_T)
-				{val = arrayaddr;
-				break;}
+         if (MEM(codeptr)!=OPEN_SQUARE_T)
+            {val = arrayaddr;
+            break;}
 
-			if (game_version>=22)
-			{
-				/* convert to word value */
-				arrayaddr*=2;
+         if (game_version>=22)
+         {
+            /* convert to word value */
+            arrayaddr*=2;
 
-				if (game_version>=23)
-					/* space for array length */
-					a = 2;
-			}
+            if (game_version>=23)
+               /* space for array length */
+               a = 2;
+         }
 
-			/* check if this is array[] (i.e., array length) */
-			if (MEM(++codeptr)==CLOSE_SQUARE_T)
-			{
-				defseg = arraytable;
-				val = PeekWord(arrayaddr);
-				codeptr++;
-				break;
-			}
+         /* check if this is array[] (i.e., array length) */
+         if (MEM(++codeptr)==CLOSE_SQUARE_T)
+         {
+            defseg = arraytable;
+            val = PeekWord(arrayaddr);
+            codeptr++;
+            break;
+         }
 
-			tempinobj = inobj;
-			inobj = 0;
-			j = GetValue();
-			inobj = tempinobj;
+         tempinobj = inobj;
+         inobj = 0;
+         j = GetValue();
+         inobj = tempinobj;
 
-			/* The array element we're after: */
-			element = arrayaddr+a + j*2;
-			
-			defseg = arraytable;
+         /* The array element we're after: */
+         element = arrayaddr+a + j*2;
+
+         defseg = arraytable;
 #if defined (DEBUGGER)
-			CheckinRange(element, debug_workspace, "array data");
+         CheckinRange(element, debug_workspace, "array data");
 #endif
-			/* Check to make sure we've got a sane element number */
-			if ((element>0) && (element < (unsigned int)(dicttable-arraytable)*16))
-				val = PeekWord(element);
-			else
-				val = 0;
-			codeptr++;
+         /* Check to make sure we've got a sane element number */
+         if ((element>0) && (element < (unsigned int)(dicttable-arraytable)*16))
+            val = PeekWord(element);
+         else
+            val = 0;
+         codeptr++;
 
-			if (!inobj) inctype = IsIncrement(codeptr);
+         if (!inobj) inctype = IsIncrement(codeptr);
 
-			/* Don't operate on the array on:
+         /* Don't operate on the array on:
 
-				 ++a[n].property
-			*/
-			if ((incdec || preincdec) && MEM(codeptr)!=DECIMAL_T)
-			{
-				/* Same sanity check for element number */
-				if ((element>0) && (element < (unsigned)(dicttable-arraytable)*16))
-				{
-					if (inctype) val = Increment(val, inctype);
+            ++a[n].property
+         */
+         if ((incdec || preincdec) && MEM(codeptr)!=DECIMAL_T)
+         {
+            /* Same sanity check for element number */
+            if ((element>0) && (element < (unsigned)(dicttable-arraytable)*16))
+            {
+               if (inctype) val = Increment(val, inctype);
 
-					/* still a post-increment hanging around */
-					SaveUndo(ARRAYDATA_T, arrayaddr+a, j, val, 0);
+               /* still a post-increment hanging around */
+               SaveUndo(ARRAYDATA_T, arrayaddr+a, j, val, 0);
 
-					PokeWord(element, (val+=preincdec) + incdec);
+               PokeWord(element, (val+=preincdec) + incdec);
 
-					incdec = preincdec = 0;
-				}
-			}
+               incdec = preincdec = 0;
+            }
+         }
 
-			break;
-		}
+         break;
+      }
 
-		case RANDOM_T:
-		{
-			codeptr += 2;           /* skip the "(" */
-			val = GetValue();
-			if (val!=0) 
+      case RANDOM_T:
+      {
+         codeptr += 2;           /* skip the "(" */
+         val = GetValue();
+         if (val!=0)
 #if !defined (RANDOM)
-				val = (rand() % val)+1;
+            val = (rand() % val)+1;
 #else
-				val = (RANDOM() % val)+1;
+            val = (RANDOM() % val)+1;
 #endif
-			if (MEM(codeptr)==2) codeptr++;
-			break;
-		}
+         if (MEM(codeptr)==2) codeptr++;
+         break;
+      }
 
-		case WORD_T:
-		{
-			codeptr += 2;           /* skip the "[" */
+      case WORD_T:
+      {
+         codeptr += 2;           /* skip the "[" */
 
-			if (MEM(codeptr)==CLOSE_SQUARE_T)	/* words[] */
-			{
-				val = words;
-				break;
-			}
-			
-			val = wd[GetValue()];
-			if (MEM(codeptr)==CLOSE_SQUARE_T) codeptr++;
-			break;
-		}
+         if (MEM(codeptr)==CLOSE_SQUARE_T)   /* words[] */
+         {
+            val = words;
+            break;
+         }
 
-		case CHILDREN_T:
-		{
-			codeptr += 2;        /* skip the "(" */
-			val = GetValue();
-			if (MEM(codeptr)==CLOSE_BRACKET_T) codeptr++;
-			val = Children(val);
-			break;
-		}
+         val = wd[GetValue()];
+         if (MEM(codeptr)==CLOSE_SQUARE_T) codeptr++;
+         break;
+      }
 
-		case PARENT_T:
-		case SIBLING_T:
-		case CHILD_T:
-		case YOUNGEST_T:
-		case ELDEST_T:
-		case YOUNGER_T:
-		case ELDER_T:
-		{
-			i = MEM(codeptr);
-			codeptr += 2;         /* skip the "(" */
-			val = GetValue();
-			if (MEM(codeptr)==CLOSE_BRACKET_T) codeptr++;
+      case CHILDREN_T:
+      {
+         codeptr += 2;        /* skip the "(" */
+         val = GetValue();
+         if (MEM(codeptr)==CLOSE_BRACKET_T) codeptr++;
+         val = Children(val);
+         break;
+      }
 
-			switch (i)
-			{
-				case PARENT_T:
-					val = Parent(val);
-					break;
+      case PARENT_T:
+      case SIBLING_T:
+      case CHILD_T:
+      case YOUNGEST_T:
+      case ELDEST_T:
+      case YOUNGER_T:
+      case ELDER_T:
+      {
+         i = MEM(codeptr);
+         codeptr += 2;         /* skip the "(" */
+         val = GetValue();
+         if (MEM(codeptr)==CLOSE_BRACKET_T) codeptr++;
 
-				case SIBLING_T:
-				case YOUNGER_T:
-					val = Sibling(val);
-					break;
+         switch (i)
+         {
+            case PARENT_T:
+               val = Parent(val);
+               break;
 
-				case CHILD_T:
-				case ELDEST_T:
-					val = Child(val);
-					break;
+            case SIBLING_T:
+            case YOUNGER_T:
+               val = Sibling(val);
+               break;
 
-				case YOUNGEST_T:
-					val = Youngest(val);
-					break;
+            case CHILD_T:
+            case ELDEST_T:
+               val = Child(val);
+               break;
 
-				case ELDER_T:
-					val = Elder(val);
-					break;
-			}
-			break;
-		}
+            case YOUNGEST_T:
+               val = Youngest(val);
+               break;
 
-		case SAVE_T:
-			val = RunSave();
-			codeptr++;
-			break;
+            case ELDER_T:
+               val = Elder(val);
+               break;
+         }
+         break;
+      }
 
-		case RESTORE_T:
-			val = RunRestore();
-			codeptr++;
-			break;
+      case SAVE_T:
+         val = RunSave();
+         codeptr++;
+         break;
 
-		case SCRIPTON_T:
-		case SCRIPTOFF_T:
-			val = RunScriptSet();
-			codeptr++;
-			break;
+      case RESTORE_T:
+         val = RunRestore();
+         codeptr++;
+         break;
 
-		case RESTART_T:
-			val = RunRestart();
-			codeptr++;
-			break;
+      case SCRIPTON_T:
+      case SCRIPTOFF_T:
+         val = RunScriptSet();
+         codeptr++;
+         break;
 
-		case STRING_T:
-			val = RunString();
-			break;
+      case RESTART_T:
+         val = RunRestart();
+         codeptr++;
+         break;
 
-		case UNDO_T:
-			val = Undo();
-			codeptr++;
-			break;
+      case STRING_T:
+         val = RunString();
+         break;
 
-		case DICT_T:
-			val = Dict();
-			if (MEM(codeptr)==CLOSE_BRACKET_T) codeptr++;
-			break;
+      case UNDO_T:
+         val = Undo();
+         codeptr++;
+         break;
 
-		case RECORDON_T:
-		case RECORDOFF_T:
-		case PLAYBACK_T:
-			val = RecordCommands();
-			codeptr++;
-			break;
+      case DICT_T:
+         val = Dict();
+         if (MEM(codeptr)==CLOSE_BRACKET_T) codeptr++;
+         break;
 
-		case READVAL_T:
-		{
-			val = 0;
-			if (ioblock)
-			{
-				int low, high;
+      case RECORDON_T:
+      case RECORDOFF_T:
+      case PLAYBACK_T:
+         val = RecordCommands();
+         codeptr++;
+         break;
 
-				if ((ioblock==1)
-					|| (low = fgetc(io))==EOF
-					|| (high = fgetc(io))==EOF)
-				/* fscanf() caused trouble for non-ASCII values
-					(fscanf(io, "%c%c", &a, &b)==EOF) */
-				{
-					ioerror = true;
-					retflag = true;
-				}
-				else val = low + high*256;
-			}
-			codeptr++;
-			break;
-		}
+      case READVAL_T:
+      {
+         val = 0;
+         if (ioblock)
+         {
+            int low, high;
 
-		case PARSE_T:
-		{
-			val = (short)PARSE_STRING_VAL;
-			codeptr++;
-			break;
-		}
+            if ((ioblock==1)
+               || (low = fgetc(io))==EOF
+               || (high = fgetc(io))==EOF)
+            /* fscanf() caused trouble for non-ASCII values
+               (fscanf(io, "%c%c", &a, &b)==EOF) */
+            {
+               ioerror = true;
+               retflag = true;
+            }
+            else val = low + high*256;
+         }
+         codeptr++;
+         break;
+      }
 
-		case SERIAL_T:
-		{
-			val = (short)SERIAL_STRING_VAL;
-			codeptr++;
-			break;
-		}
-		
-		case SYSTEM_T:
-		{
-			val = RunSystem();
-			codeptr++;
-			break;
-		}
-		
-		default:
-		{
+      case PARSE_T:
+      {
+         val = (short)PARSE_STRING_VAL;
+         codeptr++;
+         break;
+      }
+
+      case SERIAL_T:
+      {
+         val = (short)SERIAL_STRING_VAL;
+         codeptr++;
+         break;
+      }
+
+      case SYSTEM_T:
+      {
+         val = RunSystem();
+         codeptr++;
+         break;
+      }
+
+      default:
+      {
 #if defined (DEBUGGER)
-			if (debug_eval)
-				debug_eval_error = true;
-			else
+         if (debug_eval)
+            debug_eval_error = true;
+         else
 #endif
 
-			FatalError(EXPECT_VAL_E);
+         FatalError(EXPECT_VAL_E);
 
 #if defined (DEBUGGER)
-			runtime_error = true;
-			codeptr++;
-			return 0;
+         runtime_error = true;
+         codeptr++;
+         return 0;
 #endif
-		}
-	}
-	defseg = gameseg;
-	ret = tempret;
-	inexpr = tempinexpr;
+      }
+   }
+   defseg = gameseg;
+   ret = tempret;
+   inexpr = tempinexpr;
 
-	incdec = preincdec;
+   incdec = preincdec;
 
-	return val;
+   return val;
 }
 
 
 /* GETVALUE
 
-	Does any reckoning for more sophisticated constructions.
+   Does any reckoning for more sophisticated constructions.
 */
 
 int GetValue()
 {
-	char noself = 0;
-	int p, n;
-	char inctype; int preincdec;
-	int nattr = 0, attr;
-	unsigned int pa, val;
-	long tempptr;
-	short g;			/* must be 16 bits */
-	int potential_tail_recursion = 0;
+   char noself = 0;
+   int p, n;
+   char inctype; int preincdec;
+   int nattr = 0, attr;
+   unsigned int pa, val;
+   long tempptr;
+   short g;         /* must be 16 bits */
+   int potential_tail_recursion = 0;
 
-	/* Check to see if this may be a valid tail-recursion */
-	if (tail_recursion==0 && MEM(codeptr-1)==RETURN_T)
-	{
-		/* We may be able to tail-recurse this return statement if
-		   it's simply 'return object.property[.property...]'
-		*/
-		potential_tail_recursion = TAIL_RECURSION_PROPERTY;
-	}
+   /* Check to see if this may be a valid tail-recursion */
+   if (tail_recursion==0 && MEM(codeptr-1)==RETURN_T)
+   {
+      /* We may be able to tail-recurse this return statement if
+         it's simply 'return object.property[.property...]'
+      */
+      potential_tail_recursion = TAIL_RECURSION_PROPERTY;
+   }
 
-	IsIncrement(codeptr);           /* check for ++, -- */
+   IsIncrement(codeptr);           /* check for ++, -- */
 
-	tempptr = codeptr;
-	g = GetVal();
+   tempptr = codeptr;
+   g = GetVal();
 
-	preincdec = incdec;
-	incdec = 0;
+   preincdec = incdec;
+   incdec = 0;
 
-	if (inobj==0)
-	{
-	  switch (MEM(codeptr))
-	  {
-		case DECIMAL_T:                         /* object.property */
-		{
+   if (inobj==0)
+   {
+      switch (MEM(codeptr))
+      {
+         case DECIMAL_T:                         /* object.property */
+         {
 DetermineProperty:
-			if (MEM(++codeptr)==DECIMAL_T)  /* object..property */
-			{
-				noself = true;
-				codeptr++;
-			}
+            if (MEM(++codeptr)==DECIMAL_T)  /* object..property */
+            {
+               noself = true;
+               codeptr++;
+            }
 
-			if (MEM(codeptr)==POUND_T)      /* object.#property */
-			{
-				codeptr++;
-				inobj = true;
-				p = GetValue();
-				inobj = false;
-				pa = PropAddr(g, p, 0);
-				if (pa)
-				{
-					defseg = proptable;
-					g = Peek(pa + 1);
-					if (g==PROP_ROUTINE) g = 1;
-					defseg = gameseg;
-				}
-				else
-					g = 0;
-			}
-			else
-			{
-				inobj = true;
-				p = GetValue();
-				inobj = false;
+            if (MEM(codeptr)==POUND_T)      /* object.#property */
+            {
+               codeptr++;
+               inobj = true;
+               p = GetValue();
+               inobj = false;
+               pa = PropAddr(g, p, 0);
+               if (pa)
+               {
+                  defseg = proptable;
+                  g = Peek(pa + 1);
+                  if (g==PROP_ROUTINE) g = 1;
+                  defseg = gameseg;
+               }
+               else
+                  g = 0;
+            }
+            else
+            {
+               inobj = true;
+               p = GetValue();
+               inobj = false;
 
-				if (MEM(codeptr) != POUND_T)
-					n = 1;
+               if (MEM(codeptr) != POUND_T)
+                  n = 1;
 
-				else		/* object.property #x */
-				{
-					codeptr++;
+               else      /* object.property #x */
+               {
+                  codeptr++;
 
-					/* Not GetValue(), since that might
-					   botch "obj.property #n is attr"
-					*/
-					n = GetVal();
-				}
+                  /* Not GetValue(), since that might
+                     botch "obj.property #n is attr"
+                  */
+                  n = GetVal();
+               }
 
-				/* We checked this at the start of the function, but
-				   GetValue() for the property would've cleared it
-				*/
-				tail_recursion = potential_tail_recursion;
+               /* We checked this at the start of the function, but
+                  GetValue() for the property would've cleared it
+               */
+               tail_recursion = potential_tail_recursion;
 
-				val = GetProp(g, p, n, noself);
+               val = GetProp(g, p, n, noself);
 
-				inctype = IsIncrement(codeptr);
+               inctype = IsIncrement(codeptr);
 
-				/* Increment/decrement an object.property, although
-				   only if this is the last property in, e.g.,
-				   object.property.property...
-				*/
-				if ((incdec || preincdec) && MEM(codeptr)!=DECIMAL_T)
-				{
-					SaveUndo(PROP_T, g, p, n, val);
+               /* Increment/decrement an object.property, although
+                  only if this is the last property in, e.g.,
+                  object.property.property...
+               */
+               if ((incdec || preincdec) && MEM(codeptr)!=DECIMAL_T)
+               {
+                  SaveUndo(PROP_T, g, p, n, val);
 
-					if (inctype) val = Increment(val, inctype);
+                  if (inctype) val = Increment(val, inctype);
 
-					/* Still a post-increment hanging around */
-					pa = PropAddr(g, p, 0);
-					defseg = proptable;
+                  /* Still a post-increment hanging around */
+                  pa = PropAddr(g, p, 0);
+                  defseg = proptable;
 
-					/* Only change it if not a routine */
-					if (Peek(pa+1)!=PROP_ROUTINE)
-						PokeWord(pa+n*2, (val+=preincdec)+incdec);
+                  /* Only change it if not a routine */
+                  if (Peek(pa+1)!=PROP_ROUTINE)
+                     PokeWord(pa+n*2, (val+=preincdec)+incdec);
 
-					defseg = gameseg;
+                  defseg = gameseg;
 
-					incdec = preincdec = 0;
-				}
-				g = val;
-			}
-			if (MEM(codeptr)==IS_T) goto CheckAttribute;
+                  incdec = preincdec = 0;
+               }
+               g = val;
+            }
+            if (MEM(codeptr)==IS_T) goto CheckAttribute;
 
-			break;
-		}
+            break;
+         }
 
-		case IS_T:
-		{
+         case IS_T:
+         {
 CheckAttribute:
-			if (!inobj)
-			{
-				codeptr++;
-				if (MEM(codeptr)==NOT_T)
-				{
-					nattr = 1;
-					codeptr++;
-				}
-				attr = GetValue();
+            if (!inobj)
+            {
+               codeptr++;
+               if (MEM(codeptr)==NOT_T)
+               {
+                  nattr = 1;
+                  codeptr++;
+               }
+               attr = GetValue();
 #if defined (DEBUGGER)
-				CheckinRange((unsigned)attr, (unsigned)attributes, "attribute");
+               CheckinRange((unsigned)attr, (unsigned)attributes, "attribute");
 #endif
-				g = TestAttribute(g, attr, nattr);
+               g = TestAttribute(g, attr, nattr);
 
-				break;
-			}
-		}
-	  }
+               break;
+            }
+         }
+      }
 
-	  switch (MEM(codeptr))
-	  {
-		/* This comes here (again) in order to process
-		   object.property1.property2...
-		*/
-		case DECIMAL_T:  goto DetermineProperty;
+      switch (MEM(codeptr))
+      {
+         /* This comes here (again) in order to process
+            object.property1.property2...
+         */
+         case DECIMAL_T:  goto DetermineProperty;
 
-		case NOT_T:
-			if (!inobj)
-				{nattr = 1;
-				codeptr++;}
-		case IN_T:
-		{
-			if (!inobj)
-			{
-				codeptr++;
-				p = GetValue();          /* testing parent */
-				g = (p==Parent(g));
-				if (nattr)
-					g = !g;
-			}
-		}
-	  }
-	}                                       /* end of "if (inobj==0)" */
+         case NOT_T:
+            if (!inobj)
+               {nattr = 1;
+               codeptr++;}
+         case IN_T:
+         {
+            if (!inobj)
+            {
+               codeptr++;
+               p = GetValue();          /* testing parent */
+               g = (p==Parent(g));
+               if (nattr)
+                  g = !g;
+            }
+         }
+      }
+   }                                       /* end of "if (inobj==0)" */
 
-	n = MEM(codeptr);
+   n = MEM(codeptr);
 
-	/* See if we have an implicit expression that needs to be
-	   taken as a single value, i.e., "n + 1" where we've just
-	   read n
-	*/
-	if (((n>=MINUS_T && n<=PIPE_T) || n==AMPERSAND_T) &&
-		((!inexpr)) && !inobj)
+   /* See if we have an implicit expression that needs to be
+      taken as a single value, i.e., "n + 1" where we've just
+      read n
+   */
+   if (((n>=MINUS_T && n<=PIPE_T) || n==AMPERSAND_T) &&
+      ((!inexpr)) && !inobj)
 /*
 #if !defined (DEBUGGER)
-		((!inexpr)) && !inobj)
+      ((!inexpr)) && !inobj)
 #else
-		((!inexpr)) && !inobj && !debug_eval)
+      ((!inexpr)) && !inobj && !debug_eval)
 #endif
 */
-	{
-		inexpr = 2;
-		codeptr = tempptr;
-		SetupExpr();
-		g = EvalExpr(0);
-		inexpr = 0;
-	}
+   {
+      inexpr = 2;
+      codeptr = tempptr;
+      SetupExpr();
+      g = EvalExpr(0);
+      inexpr = 0;
+   }
 
-	/* Not a tail-recursive 'return object.property' */
-	if (tail_recursion_addr==0)
-		tail_recursion = 0;
+   /* Not a tail-recursive 'return object.property' */
+   if (tail_recursion_addr==0)
+      tail_recursion = 0;
 
-	return g;
+   return g;
 }
 
 
 /* INCREMENT
 
-	Actually performs the increment given below by IsIncrement.
+   Actually performs the increment given below by IsIncrement.
 */
 
 int Increment(int a, char inctype)
 {
-	short v;			/* must be 16 bits */
+   short v;         /* must be 16 bits */
 
-	v = a;
+   v = a;
 
-	switch (inctype)
-	{
-		case MINUS_T:           {v -= incdec; break;}
-		case PLUS_T:            {v += incdec; break;}
-		case ASTERISK_T:        {v *= incdec; break;}
-		case AMPERSAND_T:       {v &= incdec; break;}
-		case PIPE_T:            {v |= incdec; break;}
-		case FORWARD_SLASH_T:
-		{
+   switch (inctype)
+   {
+      case MINUS_T:           {v -= incdec; break;}
+      case PLUS_T:            {v += incdec; break;}
+      case ASTERISK_T:        {v *= incdec; break;}
+      case AMPERSAND_T:       {v &= incdec; break;}
+      case PIPE_T:            {v |= incdec; break;}
+      case FORWARD_SLASH_T:
+      {
 #if defined (DEBUGGER)
-			if (incdec==0)
-			{
-				RuntimeWarning("Division by zero:  invalid result");
-				v = 0;
-			}
-			else
+         if (incdec==0)
+         {
+            RuntimeWarning("Division by zero:  invalid result");
+            v = 0;
+         }
+         else
 #endif
-				v /= incdec;
-			break;
-		}
-	}
+            v /= incdec;
+         break;
+      }
+   }
 
-	if (inctype!=1) incdec = 0;
+   if (inctype!=1) incdec = 0;
 
-	return v;
+   return v;
 }
 
 
 /* ISINCREMENT
 
-	If an increment/decrement is next up (i.e. ++, --, or +=, *=, etc.),
-	then sets incdec equal to the increment/decrement and repositions
-	codeptr.  Returns the token number of the operation, if any.
+   If an increment/decrement is next up (i.e. ++, --, or +=, *=, etc.),
+   then sets incdec equal to the increment/decrement and repositions
+   codeptr.  Returns the token number of the operation, if any.
 */
 
 char IsIncrement(long addr)
 {
-	unsigned char a, t = 0;
+   unsigned char a, t = 0;
 
-	incdec = 0;
+   incdec = 0;
 
-	switch (a = MEM(addr))
-	{
-		case MINUS_T:
-		case PLUS_T:
-		case ASTERISK_T:
-		case FORWARD_SLASH_T:
-		case AMPERSAND_T:
-		case PIPE_T:
-		{
-			/* ++, -- */
-			if ((a==MINUS_T || a==PLUS_T) && MEM(addr+1)==a)
-			{
-				codeptr = addr + 2;
-				if (a==PLUS_T) incdec = 1;
-				else incdec = -1;
-				t = 1;
-				break;
-			}
+   switch (a = MEM(addr))
+   {
+      case MINUS_T:
+      case PLUS_T:
+      case ASTERISK_T:
+      case FORWARD_SLASH_T:
+      case AMPERSAND_T:
+      case PIPE_T:
+      {
+         /* ++, -- */
+         if ((a==MINUS_T || a==PLUS_T) && MEM(addr+1)==a)
+         {
+            codeptr = addr + 2;
+            if (a==PLUS_T) incdec = 1;
+            else incdec = -1;
+            t = 1;
+            break;
+         }
 
-			/* +=, -=, etc. */
-			else if (MEM(addr+1)==EQUALS_T)
-			{
-				codeptr = addr + 2;
-				incdec = GetValue();
-				t = a;
-			}
-		}
-	}
+         /* +=, -=, etc. */
+         else if (MEM(addr+1)==EQUALS_T)
+         {
+            codeptr = addr + 2;
+            incdec = GetValue();
+            t = a;
+         }
+      }
+   }
 
 #if defined (DEBUGGER)
-	if (t && debug_eval)
-	{
-		debug_eval_error = true;
-		sprintf(debug_line, "'%s%s' illegal in watch/assignment", token[a], token[MEM(addr+1)]);
-		DebugMessageBox("Expression Error", debug_line);
-		t = 0;
-	}
+   if (t && debug_eval)
+   {
+      debug_eval_error = true;
+      sprintf(debug_line, "'%s%s' illegal in watch/assignment", token[a], token[MEM(addr+1)]);
+      DebugMessageBox("Expression Error", debug_line);
+      t = 0;
+   }
 #endif
-	return t;
+   return t;
 }
 
 
 /* PRECEDENCE
 
-	Returns the precedence ranking of the operator represented by
-	token[t].  The lower the return value, the higher the rank in
-	terms of processing order.
+   Returns the precedence ranking of the operator represented by
+   token[t].  The lower the return value, the higher the rank in
+   terms of processing order.
 */
 
 int Precedence(int t)
 {
-	switch (t)
-	{
-		case DECIMAL_T:
-			return 1;
+   switch (t)
+   {
+      case DECIMAL_T:
+         return 1;
 
-		case ASTERISK_T:
-		case FORWARD_SLASH_T:
-			return 2;
+      case ASTERISK_T:
+      case FORWARD_SLASH_T:
+         return 2;
 
-		case MINUS_T:
-		case PLUS_T:
-			return 3;
+      case MINUS_T:
+      case PLUS_T:
+         return 3;
 
-		case PIPE_T:
-		case TILDE_T:
-		case AMPERSAND_T:
-			return 4;
+      case PIPE_T:
+      case TILDE_T:
+      case AMPERSAND_T:
+         return 4;
 
-		case EQUALS_T:
-		case GREATER_EQUAL_T:
-		case LESS_EQUAL_T:
-		case NOT_EQUAL_T:
-		case GREATER_T:
-		case LESS_T:
-			return 5;
+      case EQUALS_T:
+      case GREATER_EQUAL_T:
+      case LESS_EQUAL_T:
+      case NOT_EQUAL_T:
+      case GREATER_T:
+      case LESS_T:
+         return 5;
 
-		default:
-			return 6;
-	}
+      default:
+         return 6;
+   }
 }
 
 
 /* PRINTEXPR
 
-	Prints the current expression during expression tracing.
+   Prints the current expression during expression tracing.
 */
 
 #if defined (DEBUG_EXPR_EVAL)
 void PrintExpr(void)
 {
-	char e[261];
-	int i, bracket = 0;
+   char e[261];
+   int i, bracket = 0;
 
-	if (!evalcount) return;
+   if (!evalcount) return;
 
-	strcpy(e, "( ");
-	for (i=0; i<=evalcount; i+=2)
-	{
-		switch (eval[i])
-		{
-			case 0:
-			{
-				sprintf(line, "%d ", eval[i + 1]);
-				strcat(e, line);
-				break;
-			}
-			case 1:
-			{
-				if (eval[i+1]==OPEN_BRACKET_T) bracket++;
-				if (eval[i+1]==CLOSE_BRACKET_T)
-					{bracket--;
-					if (bracket<0) goto ExitPrintExpr;}
+   strcpy(e, "( ");
+   for (i=0; i<=evalcount; i+=2)
+   {
+      switch (eval[i])
+      {
+         case 0:
+         {
+            sprintf(line, "%d ", eval[i + 1]);
+            strcat(e, line);
+            break;
+         }
+         case 1:
+         {
+            if (eval[i+1]==OPEN_BRACKET_T) bracket++;
+            if (eval[i+1]==CLOSE_BRACKET_T)
+               {bracket--;
+               if (bracket<0) goto ExitPrintExpr;}
 
-				if (token[eval[i+1]][0]=='~')
-					strcat(e, "\\");
-				if (eval[i+1] != 255)
-					{sprintf(line, "%s ", token[eval[i+1]]);
-					strcat(e, line);}
-				break;
-			}
-		}
-	}
+            if (token[eval[i+1]][0]=='~')
+               strcat(e, "\\");
+            if (eval[i+1] != 255)
+               {sprintf(line, "%s ", token[eval[i+1]]);
+               strcat(e, line);}
+            break;
+         }
+      }
+   }
 
 ExitPrintExpr:
-	strcat(e, ")\\;");
+   strcat(e, ")\\;");
 
-	AP(e);
+   AP(e);
 }
 #endif
 
 
 /* SETUPEXPR
 
-	Reads the current expression from the current code position
-	into eval[], using the following key:
+   Reads the current expression from the current code position
+   into eval[], using the following key:
 
-		if eval[n] is 0, eval[n+1] is a value
-		if eval[n] is 1, eval[n+1] is a token
+      if eval[n] is 0, eval[n+1] is a value
+      if eval[n] is 1, eval[n+1] is a token
 
-	<inexpr> is used in various routines to keep track of
-	whether or not we're currently reading an expression.  If
-	<inexpr> is 1, we're in an expression; if 2, we may have
-	to step back one code position if encountering a closing
-	parentheses.
+   <inexpr> is used in various routines to keep track of
+   whether or not we're currently reading an expression.  If
+   <inexpr> is 1, we're in an expression; if 2, we may have
+   to step back one code position if encountering a closing
+   parentheses.
 */
 
 void SetupExpr(void)
 {
-	char justgotvalue = 1;
-	int j, t, bracket = 0;
-	int tempret;
-	int tempeval[MAX_EVAL_ELEMENTS];
-	int tempevalcount;
+   char justgotvalue = 1;
+   int j, t, bracket = 0;
+   int tempret;
+   int tempeval[MAX_EVAL_ELEMENTS];
+   int tempevalcount;
 
-	last_precedence = 10;
+   last_precedence = 10;
 
-	tempret = ret;
-	tempevalcount = 0;
+   tempret = ret;
+   tempevalcount = 0;
 
-	inobj = false;
-	if (!inexpr) inexpr = 1;
+   inobj = false;
+   if (!inexpr) inexpr = 1;
 
-	do
-	{
-		justgotvalue++;
+   do
+   {
+      justgotvalue++;
 
-		switch (t = MEM(codeptr))
-		{
-			/* Various indications that we've hit the
-			   end of the expression:
-			*/
-			case EOL_T:
-				arrexpr = false;
-			case COMMA_T:
-				multiprop = false;
-			case SEMICOLON_T:
-			case CLOSE_SQUARE_T:
-			case JUMP_T:
-			{
-				if (t==EOL_T || t==COMMA_T || t==JUMP_T)
-					codeptr++;
+      switch (t = MEM(codeptr))
+      {
+         /* Various indications that we've hit the
+            end of the expression:
+         */
+         case EOL_T:
+            arrexpr = false;
+         case COMMA_T:
+            multiprop = false;
+         case SEMICOLON_T:
+         case CLOSE_SQUARE_T:
+         case JUMP_T:
+         {
+            if (t==EOL_T || t==COMMA_T || t==JUMP_T)
+               codeptr++;
 LeaveSetupExpr:
-				for (j=0; j<tempevalcount; j++)
-					eval[j] = tempeval[j];
-				evalcount = tempevalcount;
+            for (j=0; j<tempevalcount; j++)
+               eval[j] = tempeval[j];
+            evalcount = tempevalcount;
 
-				eval[evalcount] = 1;
-				eval[evalcount + 1] = 255;
+            eval[evalcount] = 1;
+            eval[evalcount + 1] = 255;
 
 #if defined (DEBUG_EXPR_EVAL)
-				if (exprt) PrintExpr();
+            if (exprt) PrintExpr();
 #endif
 
-				ret = tempret;
-				return;
-			}
+            ret = tempret;
+            return;
+         }
 
 
-			/* Otherwise we have a value: */
+         /* Otherwise we have a value: */
 
-			case OPEN_BRACKET_T:
+         case OPEN_BRACKET_T:
 
-			case MINUS_T:
-			case PLUS_T:
-			case TILDE_T:
-			case AMPERSAND_T:
-			case NOT_T:
+         case MINUS_T:
+         case PLUS_T:
+         case TILDE_T:
+         case AMPERSAND_T:
+         case NOT_T:
 
-			case PARENT_T:
-			case SIBLING_T:
-			case CHILD_T:
-			case YOUNGEST_T:
-			case ELDEST_T:
-			case YOUNGER_T:
-			case ELDER_T:
-			case CHILDREN_T:
-			case RANDOM_T:
-			case SYSTEM_T:
+         case PARENT_T:
+         case SIBLING_T:
+         case CHILD_T:
+         case YOUNGEST_T:
+         case ELDEST_T:
+         case YOUNGER_T:
+         case ELDER_T:
+         case CHILDREN_T:
+         case RANDOM_T:
+         case SYSTEM_T:
 
-			case PROP_T:
-			case ATTR_T:
-			case VAR_T:
-			case DICTENTRY_T:
-			case ROUTINE_T:
-			case OBJECTNUM_T:
-			case VALUE_T:
+         case PROP_T:
+         case ATTR_T:
+         case VAR_T:
+         case DICTENTRY_T:
+         case ROUTINE_T:
+         case OBJECTNUM_T:
+         case VALUE_T:
 
-			case ARRAYDATA_T:
-			case ARRAY_T:
-			case WORD_T:
+         case ARRAYDATA_T:
+         case ARRAY_T:
+         case WORD_T:
 
-			case CALL_T:
+         case CALL_T:
 
-			case SAVE_T:
-			case RESTORE_T:
-			case SCRIPTON_T:
-			case SCRIPTOFF_T:
-			case RESTART_T:
-			case UNDO_T:
-			case READVAL_T:
+         case SAVE_T:
+         case RESTORE_T:
+         case SCRIPTON_T:
+         case SCRIPTOFF_T:
+         case RESTART_T:
+         case UNDO_T:
+         case READVAL_T:
 
-			case STRING_T:
-			case DICT_T:
+         case STRING_T:
+         case DICT_T:
 
-			case PARSE_T:
-			case SERIAL_T:
-			{
-				if ((t==AMPERSAND_T || t==MINUS_T ||
-					t==PLUS_T) && justgotvalue==1)
-					goto SomeSymbolorToken;
+         case PARSE_T:
+         case SERIAL_T:
+         {
+            if ((t==AMPERSAND_T || t==MINUS_T ||
+               t==PLUS_T) && justgotvalue==1)
+               goto SomeSymbolorToken;
 
-				tempeval[tempevalcount] = 0;
-				tempeval[tempevalcount + 1] = GetValue();
+            tempeval[tempevalcount] = 0;
+            tempeval[tempevalcount + 1] = GetValue();
 
 #if defined (DEBUGGER)
-				if ((debug_eval) && debug_eval_error)
-					return;
+            if ((debug_eval) && debug_eval_error)
+               return;
 #endif
 
-				tempevalcount += 2;
-				if (tempevalcount > MAX_EVAL_ELEMENTS-2)
-					FatalError(OVERFLOW_E);
+            tempevalcount += 2;
+            if (tempevalcount > MAX_EVAL_ELEMENTS-2)
+               FatalError(OVERFLOW_E);
 
-				justgotvalue = 0;
+            justgotvalue = 0;
 
-				break;
-			}
+            break;
+         }
 
-			/* Logical constants */
-			case TRUE_T:
-			case FALSE_T:
-			{
-				tempeval[tempevalcount] = 0;
-				if (Peek(codeptr)==TRUE_T)
-					tempeval[tempevalcount + 1] = 1;
-				else
-					tempeval[tempevalcount + 1] = 0;
+         /* Logical constants */
+         case TRUE_T:
+         case FALSE_T:
+         {
+            tempeval[tempevalcount] = 0;
+            if (Peek(codeptr)==TRUE_T)
+               tempeval[tempevalcount + 1] = 1;
+            else
+               tempeval[tempevalcount + 1] = 0;
 
-				codeptr++;
+            codeptr++;
 
-				tempevalcount += 2;
-				if (tempevalcount > MAX_EVAL_ELEMENTS-2)
-					FatalError(OVERFLOW_E);
+            tempevalcount += 2;
+            if (tempevalcount > MAX_EVAL_ELEMENTS-2)
+               FatalError(OVERFLOW_E);
 
-				break;
-			}
+            break;
+         }
 
-			/* Some symbol or token */
-			default:
-			{
+         /* Some symbol or token */
+         default:
+         {
 SomeSymbolorToken:
-				tempeval[tempevalcount] = 1;
-				tempeval[tempevalcount + 1] = MEM(codeptr++);
+            tempeval[tempevalcount] = 1;
+            tempeval[tempevalcount + 1] = MEM(codeptr++);
 
-				tempevalcount += 2;
-				if (tempevalcount > MAX_EVAL_ELEMENTS-2)
-					FatalError(OVERFLOW_E);
+            tempevalcount += 2;
+            if (tempevalcount > MAX_EVAL_ELEMENTS-2)
+               FatalError(OVERFLOW_E);
 
-				switch (MEM(codeptr-1))
-				{
-					case OPEN_BRACKET_T:
-						{bracket++;
-						break;}
-					case CLOSE_BRACKET_T:
-						{bracket--;
-						justgotvalue = 0;
-						if (inexpr==2)
-							codeptr--;}
-				}
-				if (bracket < 0) goto LeaveSetupExpr;
+            switch (MEM(codeptr-1))
+            {
+               case OPEN_BRACKET_T:
+                  {bracket++;
+                  break;}
+               case CLOSE_BRACKET_T:
+                  {bracket--;
+                  justgotvalue = 0;
+                  if (inexpr==2)
+                     codeptr--;}
+            }
+            if (bracket < 0) goto LeaveSetupExpr;
 
-				break;
-			}
-		}
-	}
-	while (true);                      /* endless loop */
+            break;
+         }
+      }
+   }
+   while (true);                      /* endless loop */
 }
 
 
 /* TRIMEXPR
 
-	Cuts off straggling components of eval[] after an expression or
-	sub-expression has been successfully evaluated.
+   Cuts off straggling components of eval[] after an expression or
+   sub-expression has been successfully evaluated.
 */
 
 void TrimExpr(int ptr)
 {
-	int i;
+   int i;
 
-	for (i=ptr; i<=evalcount; i+=2)
-	{
-		eval[i] = eval[i+2];
-		eval[i+1] = eval[i+3];
-	}
-	evalcount -= 2;
+   for (i=ptr; i<=evalcount; i+=2)
+   {
+      eval[i] = eval[i+2];
+      eval[i+1] = eval[i+3];
+   }
+   evalcount -= 2;
 }

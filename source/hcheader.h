@@ -1,10 +1,10 @@
 /*
-	HCHEADER.H
+   HCHEADER.H
 
-	contains definitions and prototypes
-	for the Hugo Compiler
+   contains definitions and prototypes
+   for the Hugo Compiler
 
-	Copyright (c) 1995-2006 by Kent Tessman
+   Copyright (c) 1995-2006 by Kent Tessman
 */
 
 
@@ -46,22 +46,22 @@ extern char *hugo_strcpy(char *s, const char *t);
 
 /* Define the compiler being used as one of:
 
-	ACORN
-	AMIGA
-	DJGPP
-	GCC_UNIX (for gcc under Unix, Linux, BeOS)
-	QUICKC
-	RISCOS
-	WIN32 (Microsoft Visual C++)
+   ACORN
+   AMIGA
+   DJGPP
+   GCC_UNIX (for gcc under Unix, Linux, BeOS)
+   QUICKC
+   RISCOS
+   WIN32 (Microsoft Visual C++)
 
    (although this is typically done in the makefile)
 */
 
 /*---------------------------------------------------------------------------
-	Definitions for the Acorn Archimedes & RPC
-	using Acorn C Compiler (v4)
+   Definitions for the Acorn Archimedes & RPC
+   using Acorn C Compiler (v4)
 
-	by Colin Turnbull
+   by Colin Turnbull
 ---------------------------------------------------------------------------*/
 
 #if defined (ACORN)
@@ -94,9 +94,9 @@ FILE *arc_fopen(const char *, const char *);
 
 
 /*---------------------------------------------------------------------------
-	Definitions for the Amiga port
+   Definitions for the Amiga port
 
-	by David Kinder
+   by David Kinder
 ---------------------------------------------------------------------------*/
 
 #if defined (AMIGA)
@@ -123,9 +123,9 @@ int brk();
 
 
 /*---------------------------------------------------------------------------
-	Definitions for the djgpp build
+   Definitions for the djgpp build
 
-	by Kent Tessman
+   by Kent Tessman
 ---------------------------------------------------------------------------*/
 
 #if defined (DJGPP)
@@ -153,9 +153,9 @@ int brk();
 
 
 /*---------------------------------------------------------------------------
-	Definitions for the GCC Unix/Linux port (and BeOS)
+   Definitions for the GCC Unix/Linux port (and BeOS)
 
-	Originally by Bill Lash
+   Originally by Bill Lash
 ---------------------------------------------------------------------------*/
 
 #if defined (GCC_UNIX) || defined (GCC_BEOS)
@@ -192,41 +192,41 @@ void rmtmp(void);
 
 
 /*---------------------------------------------------------------------------
-	Definitions for the RISC OS port
+   Definitions for the RISC OS port
 
-	by Julian Arnold
+   by Julian Arnold
 ---------------------------------------------------------------------------*/
 
 #if defined (RISCOS)
 
-#define PORT_NAME	"RISC OS"
-#define PORTER_NAME	"Julian Arnold"
+#define PORT_NAME   "RISC OS"
+#define PORTER_NAME   "Julian Arnold"
 
-#define MAXPATH		256
-#define MAXFILENAME	256
-#define MAXDRIVE	256
-#define MAXDIR		256
-#define MAXEXT		256
+#define MAXPATH      256
+#define MAXFILENAME   256
+#define MAXDRIVE   256
+#define MAXDIR      256
+#define MAXEXT      256
 
 #if !defined (USE_TEMPFILES)
-#define TEXTTEMPNAME	"tmphc01"
-#define ALLTEMPNAME	"tmphc00"
+#define TEXTTEMPNAME   "tmphc01"
+#define ALLTEMPNAME   "tmphc00"
 #endif
 
 #undef STDPRN_SUPPORTED
 
-#define toascii(c)	((c)&0x7f)
-#define STRICMP(s, t)	strcmp(strupr((s)), strupr((t)))
+#define toascii(c)   ((c)&0x7f)
+#define STRICMP(s, t)   strcmp(strupr((s)), strupr((t)))
 extern FILE *hugo_fopen (char *filename, char *mode);
-#define HUGO_FOPEN	hugo_fopen
+#define HUGO_FOPEN   hugo_fopen
 
 #endif  /* defined (RISCOS) */
 
 
 /*---------------------------------------------------------------------------
-	MS-DOS specific definitions for Microsoft QuickC,
+   MS-DOS specific definitions for Microsoft QuickC,
 
-	by Kent Tessman
+   by Kent Tessman
 ---------------------------------------------------------------------------*/
 
 #if defined (QUICKC)
@@ -263,9 +263,9 @@ extern FILE *hugo_fopen (char *filename, char *mode);
 
 
 /*---------------------------------------------------------------------------
-	Definitions for the Microsoft Visual C++ build
+   Definitions for the Microsoft Visual C++ build
 
-	by Kent Tessman
+   by Kent Tessman
 
 ---------------------------------------------------------------------------*/
 
@@ -284,7 +284,7 @@ extern FILE *hugo_fopen (char *filename, char *mode);
 #define ALLTEMPNAME  "~tmphc00.tmp"
 #endif
 
-#endif	/* Microsoft Visual C++ */
+#endif   /* Microsoft Visual C++ */
 
 
 /*-------------------------------------------------------------------------*/
@@ -323,7 +323,7 @@ extern FILE *hugo_fopen (char *filename, char *mode);
    if the hash values match.  See FindHash() for elaboration.
 */
 #define HashMatch(hash, hash_compare, string, string_compare) \
-	((hash==hash_compare) && !strcmp(string, string_compare))
+   ((hash==hash_compare) && !strcmp(string, string_compare))
 
 /* The header takes up 64 bytes at the start of the file. */
 #define HEADER_LENGTH 64L
@@ -412,33 +412,33 @@ extern int ENGINE_PROPERTIES;
 
 enum ERROR_TYPE                 /* fatal errors */
 {
-	MEMORY_E = 1,           /* out of memory                */
-	OPEN_E,                 /* error opening file           */
-	READ_E,                 /* error reading from file      */
-	WRITE_E,                /* error writing to file        */
-	OVERFLOW_E,             /* overflow (usually buffer[])  */
-	EOF_COMMENT_E,          /* unexpected end-of-file in    */
-	EOF_TEXT_E,             /*   comment, text, or          */
-	EOF_ENDIF_E,            /*   #if, #elseif, #else        */
-	CLOSE_BRACE_E,          /* missing closing brace        */
-	COMP_LINK_LIMIT_E       /* compiler limit exceeded      */
+   MEMORY_E = 1,           /* out of memory                */
+   OPEN_E,                 /* error opening file           */
+   READ_E,                 /* error reading from file      */
+   WRITE_E,                /* error writing to file        */
+   OVERFLOW_E,             /* overflow (usually buffer[])  */
+   EOF_COMMENT_E,          /* unexpected end-of-file in    */
+   EOF_TEXT_E,             /*   comment, text, or          */
+   EOF_ENDIF_E,            /*   #if, #elseif, #else        */
+   CLOSE_BRACE_E,          /* missing closing brace        */
+   COMP_LINK_LIMIT_E       /* compiler limit exceeded      */
 };
 
 /* The structure of a synonym, removal, or compound */
 struct synstruct
 {
-	char syntype;                   /* i.e., synonym, removal, compound */
-	unsigned int syn1;              /* first dictionary word */
-	unsigned int syn2;              /* second word (if needed), or 0 */
+   char syntype;                   /* i.e., synonym, removal, compound */
+   unsigned int syn1;              /* first dictionary word */
+   unsigned int syn2;              /* second word (if needed), or 0 */
 };
 
 /* The structure of an address, used in final resolving */
 struct addrstruct
 {
-	long addrptr;                   /* i.e. codeptr */
-	char addrtype;                  /* label, routine, etc. */
-	unsigned int addrval;           /* the number of the label, etc.
-					   (or address for .HLB refiguring) */
+   long addrptr;                   /* i.e. codeptr */
+   char addrtype;                  /* label, routine, etc. */
+   unsigned int addrval;           /* the number of the label, etc.
+                  (or address for .HLB refiguring) */
 };
 
 
@@ -619,8 +619,8 @@ extern char *word[];
 extern char line[];
 extern char full_buffer;
 extern char listing, objecttree, fullobj, printer, statistics, printdebug,
-	override, aborterror, memmap, hlb, builddebug, expandederr,
-	spellcheck, writeanyway;
+   override, aborterror, memmap, hlb, builddebug, expandederr,
+   spellcheck, writeanyway;
 extern char compile_v25;
 extern int percent, totallines, tlines;
 extern int er;
@@ -628,8 +628,8 @@ extern int warn;
 extern char **sets;
 extern char **directory; extern int directoryctr;
 extern char alloc_objects, alloc_properties, alloc_labels, alloc_routines,
-	alloc_events, alloc_aliases, alloc_constants, alloc_arrays,
-	alloc_sets, alloc_dict, alloc_syn, alloc_directories;
+   alloc_events, alloc_aliases, alloc_constants, alloc_arrays,
+   alloc_sets, alloc_dict, alloc_syn, alloc_directories;
 extern unsigned int dicttable;
 extern unsigned int lexstart[], lexlast[];
 extern char **lexentry;
@@ -648,7 +648,7 @@ extern unsigned int codestart;
 extern char endofgrammar;
 extern int passnumber;
 extern int objinitial, routineinitial, eventinitial, labelinitial,
-	propinitial;
+   propinitial;
 extern int objects, routines, events, labels;
 extern unsigned int initaddr;
 extern unsigned int mainaddr;

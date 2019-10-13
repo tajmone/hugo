@@ -1,5 +1,5 @@
 /*
-	Glk Hugo prefix file
+   Glk Hugo prefix file
 */
 
 #define GLK

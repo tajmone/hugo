@@ -46,7 +46,7 @@ CFG_OPTIONS=-DDO_COLOR
 
 # Define your optimization flags.  Most compilers understand -O and -O2,
 # Debugging
-#CFLAGS=-Wall -g 
+#CFLAGS=-Wall -g
 # Standard optimizations
 # Pentium with gcc 2.7.0 or better
 #CFLAGS=-O2 -Wall -fomit-frame-pointer -malign-functions=2 -malign-loops=2 -malign-jumps=2
@@ -67,11 +67,11 @@ CC=gcc -I/usr/local/include -Isource $(CFG_OPTIONS) $(CFLAGS)
 # If using ncurses you need -lncurses, otherwise use -lcurses.  You may also
 # need -ltermcap or -ltermlib.  If you need to specify a particular path to
 # the curses library, do so here.
-#HE_LIBS=-L/usr/lib -lcurses 
+#HE_LIBS=-L/usr/lib -lcurses
 #HE_LIBS=-lcurses -ltermcap
 #HE_LIBS=-lcurses -ltermlib
-#HE_LIBS=-lcurses 
-HE_LIBS=-lncurses 
+#HE_LIBS=-lcurses
+HE_LIBS=-lncurses
 
 # Shouldn't need to change anything below here.
 HC_H=$(SOURCE)/hcheader.h $(SOURCE)/htokens.h

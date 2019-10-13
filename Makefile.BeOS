@@ -60,7 +60,7 @@ endif
 
 # Define your optimization flags.  Most compilers understand -O and -O2.
 # Debugging:
-#CFLAGS=-Wall -g 
+#CFLAGS=-Wall -g
 # Standard optimizations:
 # Pentium with gcc 2.7.0 or better:
 #CFLAGS=-O2 -Wall -fomit-frame-pointer -malign-functions=2 -malign-loops=2 -malign-jumps=2

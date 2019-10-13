@@ -1,35 +1,35 @@
 /*
-	HEPARSE.C
+   HEPARSE.C
 
-	Input parsing functions:
+   Input parsing functions:
 
-		Available
-		CallLibraryParse
-		FindWord
-		KillWord
-		Match routines
-			AnyObjWord
-			AddAllObjects
-			AddObj
-			AddPossibleObject
-			AdvanceGrammar
-			DomainObj
-			InList
-			ObjWord
-				ObjWordType
-			SubtractObj
-			SubtractPossibleObject
-			TryObj
-			ValidObj
-		Parse
-		ParseError
-		RemoveWord
-		ResetFindObject
-		SeparateWords
+      Available
+      CallLibraryParse
+      FindWord
+      KillWord
+      Match routines
+         AnyObjWord
+         AddAllObjects
+         AddObj
+         AddPossibleObject
+         AdvanceGrammar
+         DomainObj
+         InList
+         ObjWord
+            ObjWordType
+         SubtractObj
+         SubtractPossibleObject
+         TryObj
+         ValidObj
+      Parse
+      ParseError
+      RemoveWord
+      ResetFindObject
+      SeparateWords
 
-	for the Hugo Engine
+   for the Hugo Engine
 
-	Copyright (c) 1995-2006 by Kent Tessman
+   Copyright (c) 1995-2006 by Kent Tessman
 */
 
 
@@ -50,7 +50,7 @@ void SubtractObj(int obj);
 void SubtractPossibleObject(int obj);
 void TryObj(int obj);
 
-int GetVal(void);			/* from heexpr.c */
+int GetVal(void);         /* from heexpr.c */
 
 #define MAXOBJLIST 32
 
@@ -63,21 +63,21 @@ char line[1025];                        /* line buffer                     */
 int words = 0;                          /* parsed word count               */
 char *word[MAXWORDS+1];                 /* breakdown into words            */
 unsigned int wd[MAXWORDS+1];            /*     "      "   dict. entries    */
-unsigned int parsed_number;             /* needed for numbers in input	   */
+unsigned int parsed_number;             /* needed for numbers in input      */
 
 signed char remaining = 0;              /* multiple commands in input      */
 char parseerr[MAXBUFFER+1];             /* for passing to RunPrint, etc.   */
 char parsestr[MAXBUFFER+1];             /* for passing quoted string       */
 char xverb;                             /* flag; 0 = regular verb          */
-char starts_with_verb;			/* input line; 0 = no verb word    */
-unsigned int grammaraddr;             	/* address in grammar              */
+char starts_with_verb;         /* input line; 0 = no verb word    */
+unsigned int grammaraddr;                /* address in grammar              */
 char *obj_parselist = NULL;             /* objects with noun/adjective     */
-int domain, odomain;                  	/* of object(s)                    */
+int domain, odomain;                     /* of object(s)                    */
 int objlist[MAXOBJLIST];                /* for objects of verb             */
 char objcount;                          /* of objlist                      */
 char parse_allflag = false;             /* for "all" in MatchObject()      */
 struct pobject_structure
-	pobjlist[MAXPOBJECTS];          /* for possible objects            */
+   pobjlist[MAXPOBJECTS];          /* for possible objects            */
 int pobjcount;                          /* of pobjlist                     */
 int pobj;                               /* last remaining suspect          */
 int obj_match_state;                    /* see MatchCommand() for details  */
@@ -102,7 +102,7 @@ static char recursive_call = false;     /* to MatchObject() */
 /* Necessary for proper disambiguation when addressing a character;
    i.e., when 'held' doesn't refer to held by the player, etc.
 */
-int parse_location;	/* usually var[location] */
+int parse_location;   /* usually var[location] */
 
 
 /* ADDALLOBJECTS
@@ -110,90 +110,90 @@ int parse_location;	/* usually var[location] */
 
 void AddAllObjects(int loc)
 {
-	int i;
+   int i;
 
-	if (loc==var[player] && domain!=loc)
-		return;
+   if (loc==var[player] && domain!=loc)
+      return;
 
-	/* Try to add everything in the specified domain
-	   to objlist[]
-	*/
-	for (i=Child(loc); i!=0; i=Sibling(i))
-	{
-		if (i==var[xobject]) continue;
+   /* Try to add everything in the specified domain
+      to objlist[]
+   */
+   for (i=Child(loc); i!=0; i=Sibling(i))
+   {
+      if (i==var[xobject]) continue;
 
-		TryObj(i);
-		if (domain==0)
-		{
-			if (Child(i)) AddAllObjects(i);
-		}
-	}
+      TryObj(i);
+      if (domain==0)
+      {
+         if (Child(i)) AddAllObjects(i);
+      }
+   }
 }
 
 
 /* ADDOBJ
 
-	Adds the object <obj> to objlist[], making all related adjustments.
+   Adds the object <obj> to objlist[], making all related adjustments.
 */
 
 void AddObj(int obj)
 {
-	int i;
+   int i;
 
-	for (i=0; i<objcount; i++)
-	{
-		if (objlist[i]==obj)
-			return;
-	}
+   for (i=0; i<objcount; i++)
+   {
+      if (objlist[i]==obj)
+         return;
+   }
 
-	objlist[(int)objcount] = obj;
-	if (++objcount> MAXOBJLIST) objcount = MAXOBJLIST;
+   objlist[(int)objcount] = obj;
+   if (++objcount> MAXOBJLIST) objcount = MAXOBJLIST;
 }
 
 
 /* ADDPOSSIBLEOBJECT
 
-	Adds <obj> as a contender to the possible object list, noting that
-	it was referred to as either a noun or an adjective.
+   Adds <obj> as a contender to the possible object list, noting that
+   it was referred to as either a noun or an adjective.
 */
 
 void AddPossibleObject(int obj, char type, unsigned int w)
 {
-	int i;
+   int i;
 
-	if (pobjcount==MAXPOBJECTS)
-		return;
+   if (pobjcount==MAXPOBJECTS)
+      return;
 
-	for (i=0; i<pobjcount; i++)
-	{
-		/* If it is already in the list */
-		if (pobjlist[i].obj==obj)
-		{
-			/* Being referred to with a noun outweighs being
-			   referred to previously with an adjective
-			*/
-			if (type==(char)noun || ObjWordType(obj, w, noun))
-				pobjlist[i].type = (char)noun;
+   for (i=0; i<pobjcount; i++)
+   {
+      /* If it is already in the list */
+      if (pobjlist[i].obj==obj)
+      {
+         /* Being referred to with a noun outweighs being
+            referred to previously with an adjective
+         */
+         if (type==(char)noun || ObjWordType(obj, w, noun))
+            pobjlist[i].type = (char)noun;
 
-			return;
-		}
-	}
+         return;
+      }
+   }
 
-	/* Getting this to point is presuming that we're adding an object
-	   referred to with an adjective, but check just to be sure it isn't
-	   also a noun for that same object
-	*/
-	if (ObjWordType(obj, w, noun)) type = (char)noun;
-	
-	pobjlist[pobjcount].obj = obj;
-	pobjlist[pobjcount].type = type;
+   /* Getting this to point is presuming that we're adding an object
+      referred to with an adjective, but check just to be sure it isn't
+      also a noun for that same object
+   */
+   if (ObjWordType(obj, w, noun)) type = (char)noun;
 
-	pobjcount++;
+   pobjlist[pobjcount].obj = obj;
+   pobjlist[pobjcount].type = type;
+
+   pobjcount++;
 #ifdef DEBUG_PARSER
 {
-	char buf[100];
-	sprintf(buf, "AddPossibleObject(%d:\"%s\")", obj, Name(obj));
-	Printout(buf);
+   char buf[100];
+   sprintf(buf, "AddPossibleObject(%d:\"%s\")", obj, Name(obj));
+   Printout(buf);
 }
 #endif
 }
@@ -201,131 +201,131 @@ void AddPossibleObject(int obj, char type, unsigned int w)
 
 /* ADVANCEGRAMMAR
 
-	Move the address in the grammar table past the current token.
+   Move the address in the grammar table past the current token.
 */
 
 void AdvanceGrammar(void)
 {
-	int a;
+   int a;
 
-	defseg = gameseg;
+   defseg = gameseg;
 
-	switch (a = Peek(grammaraddr))
-	{
-		case FORWARD_SLASH_T:
-		case HELD_T:
-		case MULTI_T:
-		case MULTIHELD_T:
-		case ANYTHING_T:
-		case NUMBER_T:
-		case PARENT_T:
-		case NOTHELD_T:
-		case MULTINOTHELD_T:
-		case WORD_T:
-		case OBJECT_T:
-		case XOBJECT_T:
-		case STRING_T:
-			grammaraddr++;
-			break;
+   switch (a = Peek(grammaraddr))
+   {
+      case FORWARD_SLASH_T:
+      case HELD_T:
+      case MULTI_T:
+      case MULTIHELD_T:
+      case ANYTHING_T:
+      case NUMBER_T:
+      case PARENT_T:
+      case NOTHELD_T:
+      case MULTINOTHELD_T:
+      case WORD_T:
+      case OBJECT_T:
+      case XOBJECT_T:
+      case STRING_T:
+         grammaraddr++;
+         break;
 
-		case ASTERISK_T:
-		case ATTR_T:
-			grammaraddr += 2;
-			break;
+      case ASTERISK_T:
+      case ATTR_T:
+         grammaraddr += 2;
+         break;
 
-		case DICTENTRY_T:
-		case ROUTINE_T:
-		case OBJECTNUM_T:
-			grammaraddr += 3;
-			break;
+      case DICTENTRY_T:
+      case ROUTINE_T:
+      case OBJECTNUM_T:
+         grammaraddr += 3;
+         break;
 
-		case OPEN_BRACKET_T:
-			grammaraddr +=5;
-			break;
-	}
+      case OPEN_BRACKET_T:
+         grammaraddr +=5;
+         break;
+   }
 }
 
 
 /* ANYOBJWORD
 
-	For when it's only necessary to know if word[wn] is an object word for
-	any object, not a particular object.  Returns 1 for an object word or -1
-	for a non-object word.
+   For when it's only necessary to know if word[wn] is an object word for
+   any object, not a particular object.  Returns 1 for an object word or -1
+   for a non-object word.
 */
 
 int AnyObjWord(int wn)
 {
-	int i;
-	
-	if (objword_cache[wn])
-		return objword_cache[wn];
+   int i;
 
-	for (i=0; i<objects; i++)
-	{
-		if (ObjWord(i, wd[wn]))
-		{
-			return (objword_cache[wn] = 1);
-		}
-	}
+   if (objword_cache[wn])
+      return objword_cache[wn];
 
-	return (objword_cache[wn] = -1);
+   for (i=0; i<objects; i++)
+   {
+      if (ObjWord(i, wd[wn]))
+      {
+         return (objword_cache[wn] = 1);
+      }
+   }
+
+   return (objword_cache[wn] = -1);
 }
 
 
 /* AVAILABLE
 
-	The non_grammar argument is true when called from a non-
-	grammar function such as RunEvents().
+   The non_grammar argument is true when called from a non-
+   grammar function such as RunEvents().
 */
 
 int Available(int obj, char non_grammar)
 {
-	int temp_stack_depth;
+   int temp_stack_depth;
 
-	if (findobjectaddr)
-	{
-		passlocal[0] = obj;
+   if (findobjectaddr)
+   {
+      passlocal[0] = obj;
 
-		/* if anything or (Routine) grammar */
-		if ((Peek(grammaraddr)==ANYTHING_T
-			|| (Peek(grammaraddr)==OPEN_BRACKET_T && Peek(grammaraddr+1)==ROUTINE_T))
-			&& non_grammar==0)
-		{
-			passlocal[1] = 0;
-		}
-		else
-		{
-			if (domain > 0)
-				passlocal[1] = domain;
-			else if (speaking && non_grammar==0)
-				passlocal[1] = GrandParent(speaking);
-			/* domain of -1 is an explicit 'parent' */
+      /* if anything or (Routine) grammar */
+      if ((Peek(grammaraddr)==ANYTHING_T
+         || (Peek(grammaraddr)==OPEN_BRACKET_T && Peek(grammaraddr+1)==ROUTINE_T))
+         && non_grammar==0)
+      {
+         passlocal[1] = 0;
+      }
+      else
+      {
+         if (domain > 0)
+            passlocal[1] = domain;
+         else if (speaking && non_grammar==0)
+            passlocal[1] = GrandParent(speaking);
+         /* domain of -1 is an explicit 'parent' */
 /*
-			else if (domain==-1)
-				passlocal[1] = parse_location;
+         else if (domain==-1)
+            passlocal[1] = parse_location;
 */
-			else
-				passlocal[1] = parse_location;
-		}
+         else
+            passlocal[1] = parse_location;
+      }
 
-		ret = 0;
+      ret = 0;
 
-		PassLocals(2);
-		temp_stack_depth = stack_depth;
+      PassLocals(2);
+      temp_stack_depth = stack_depth;
 
-		SetStackFrame(stack_depth, RUNROUTINE_BLOCK, 0, 0);
+      SetStackFrame(stack_depth, RUNROUTINE_BLOCK, 0, 0);
 
 #if defined (DEBUGGER)
-		DebugRunRoutine((long)findobjectaddr*address_scale);
+      DebugRunRoutine((long)findobjectaddr*address_scale);
 #else
-		RunRoutine((long)findobjectaddr*address_scale);
+      RunRoutine((long)findobjectaddr*address_scale);
 #endif
-		retflag = 0;
-		stack_depth = temp_stack_depth;
-		return ret;
-	}
-	else
-		return 1;
+      retflag = 0;
+      stack_depth = temp_stack_depth;
+      return ret;
+   }
+   else
+      return 1;
 }
 
 
@@ -333,1473 +333,1472 @@ int Available(int obj, char non_grammar)
 
 void CallLibraryParse(void)
 {
-	if (parseaddr)
-	{
+   if (parseaddr)
+   {
 #ifdef DEBUG_PARSER
-		Printout("CallLibraryParse()");
+      Printout("CallLibraryParse()");
 #endif
-		parse_called_twice = false;
+      parse_called_twice = false;
 
-		SetStackFrame(RESET_STACK_DEPTH, RUNROUTINE_BLOCK, 0, 0);
+      SetStackFrame(RESET_STACK_DEPTH, RUNROUTINE_BLOCK, 0, 0);
 
-		ret = 0;
-		PassLocals(0);
+      ret = 0;
+      PassLocals(0);
 #if defined (DEBUGGER)
-		DebugRunRoutine((long)parseaddr*address_scale);
+      DebugRunRoutine((long)parseaddr*address_scale);
 #else
-		RunRoutine((long)parseaddr*address_scale);
+      RunRoutine((long)parseaddr*address_scale);
 #endif
-		retflag = 0;
+      retflag = 0;
 
-		/* Returning non-zero return calls the
-		   engine's Parse routine again.
-		*/
-		if (ret)
-		{
-			parse_called_twice = true;
-			Parse();
-		}
+      /* Returning non-zero return calls the
+         engine's Parse routine again.
+      */
+      if (ret)
+      {
+         parse_called_twice = true;
+         Parse();
+      }
 #ifdef DEBUG_PARSER
-		if (ret)
-			Printout("CallLibraryParse() returned true");
-		else
-			Printout("CallLibraryParse() returned false");
+      if (ret)
+         Printout("CallLibraryParse() returned true");
+      else
+         Printout("CallLibraryParse() returned false");
 #endif
-	}
+   }
 }
 
 
 /* DOMAINOBJ
 
-	Takes into account the preset domain for checking an object's
-	presence; <domain> is 0, -1, or an object number..
+   Takes into account the preset domain for checking an object's
+   presence; <domain> is 0, -1, or an object number..
 */
 
 int DomainObj(int obj)
 {
-	int yes = false;
+   int yes = false;
 
-	if (obj != var[actor])
-	{
-		switch (domain)
-		{
-			case 0:
-			case -1:
-			{
-				if (Parent(obj)==parse_location)
-					yes = true;
-				else if ((parse_allflag) && GrandParent(obj)==parse_location)
-					yes = true;
-				else
-				{
-					if (Parent(obj)==parse_location && !InList(Parent(obj)))
-						yes = true;
-				}
+   if (obj != var[actor])
+   {
+      switch (domain)
+      {
+         case 0:
+         case -1:
+         {
+            if (Parent(obj)==parse_location)
+               yes = true;
+            else if ((parse_allflag) && GrandParent(obj)==parse_location)
+               yes = true;
+            else
+            {
+               if (Parent(obj)==parse_location && !InList(Parent(obj)))
+                  yes = true;
+            }
 
-				if (Peek(grammaraddr)==MULTINOTHELD_T)
-				{
-					if (Parent(obj)==var[actor])
-						yes = false;
-				}
-				break;
-			}
+            if (Peek(grammaraddr)==MULTINOTHELD_T)
+            {
+               if (Parent(obj)==var[actor])
+                  yes = false;
+            }
+            break;
+         }
 
-			default:
-			{
-				if (Parent(obj)==domain)
-					yes = true;
-			}
-		}
-	}
+         default:
+         {
+            if (Parent(obj)==domain)
+               yes = true;
+         }
+      }
+   }
 
-	return yes;
+   return yes;
 }
 
 
 /* FINDWORD
 
-	Returns the dictionary address of <a>.
+   Returns the dictionary address of <a>.
 */
 
 unsigned int FindWord(char *a)
 {
-	unsigned int ptr = 0;
-	int i, p, alen;
+   unsigned int ptr = 0;
+   int i, p, alen;
 
-	if (a[0]=='\0')
-		return 0;
+   if (a[0]=='\0')
+      return 0;
 
-	alen = strlen(a);
+   alen = strlen(a);
 
-	defseg = dicttable;
+   defseg = dicttable;
 
-	for (i=1; i<=dictcount; i++)
-	{
-		if (alen==(p = Peek(ptr+2)) && (unsigned char)(MEM(dicttable*16L+ptr+3)-CHAR_TRANSLATION)==(unsigned char)a[0])
-		{
-			if (!strcmp(GetString(ptr + 2), a))
-			{
-				defseg = gameseg;
-				return ptr;
-			}
-		}
+   for (i=1; i<=dictcount; i++)
+   {
+      if (alen==(p = Peek(ptr+2)) && (unsigned char)(MEM(dicttable*16L+ptr+3)-CHAR_TRANSLATION)==(unsigned char)a[0])
+      {
+         if (!strcmp(GetString(ptr + 2), a))
+         {
+            defseg = gameseg;
+            return ptr;
+         }
+      }
 
-		ptr += (p + 1);
-	}
-	
-	/* As a last resort, see if the first 6 characters of the word (if it
-	   has at least six characters) match a dictionary word:
-	*/
-	if (alen >= 6)
-	{
-		unsigned int possible = 0;
-		int posscount = 0;
+      ptr += (p + 1);
+   }
 
-		ptr = 0;
-	
-		for (i=1; i<=dictcount; i++)
-		{
-			if (alen<=(p = Peek(ptr+2)) && (unsigned char)MEM(dicttable*16L+ptr+3)-CHAR_TRANSLATION==a[0])
-			{
-				if (!strncmp(GetString(ptr + 2), a, alen))
-				{
-					/* As long as the dictionary word 
-					   doesn't contain a space */
-					if (!strrchr(GetString(ptr+2), ' '))
-					{
-						possible = ptr;
-						posscount++;
-					}
-				}
-			}
-			ptr += (p + 1);
-		}
-		
-		if (posscount==1)
-			return possible;
-	}
+   /* As a last resort, see if the first 6 characters of the word (if it
+      has at least six characters) match a dictionary word:
+   */
+   if (alen >= 6)
+   {
+      unsigned int possible = 0;
+      int posscount = 0;
 
-	defseg = gameseg;
+      ptr = 0;
 
-	return UNKNOWN_WORD;                    /* not found */
+      for (i=1; i<=dictcount; i++)
+      {
+         if (alen<=(p = Peek(ptr+2)) && (unsigned char)MEM(dicttable*16L+ptr+3)-CHAR_TRANSLATION==a[0])
+         {
+            if (!strncmp(GetString(ptr + 2), a, alen))
+            {
+               /* As long as the dictionary word
+                  doesn't contain a space */
+               if (!strrchr(GetString(ptr+2), ' '))
+               {
+                  possible = ptr;
+                  posscount++;
+               }
+            }
+         }
+         ptr += (p + 1);
+      }
+
+      if (posscount==1)
+         return possible;
+   }
+
+   defseg = gameseg;
+
+   return UNKNOWN_WORD;                    /* not found */
 }
 
 
 /* INLIST
 
-	Checks to see if <obj> is in objlist[].
+   Checks to see if <obj> is in objlist[].
 */
 
 int InList(int obj)
 {
-	int i;
+   int i;
 
-	for (i=0; i<objcount; i++)
-	{
-		if (objlist[i]==obj)
-			return true;
-	}
-	return false;
+   for (i=0; i<objcount; i++)
+   {
+      if (objlist[i]==obj)
+         return true;
+   }
+   return false;
 }
 
 
 /* KILLWORD
 
-	Deletes word[a].
+   Deletes word[a].
 */
 
 void KillWord(int a)
 {
-	int i;
+   int i;
 
-	if (a>words)
-		return;
+   if (a>words)
+      return;
 
-	for (i=a; i<words; i++)
-		word[i] = word[i+1];
-	word[words] = "";
+   for (i=a; i<words; i++)
+      word[i] = word[i+1];
+   word[words] = "";
 
-	RemoveWord(a);
-	words--;
+   RemoveWord(a);
+   words--;
 }
 
 
 /* MATCHCOMMAND
 
-	Here, briefly, is how MatchCommand() works:
+   Here, briefly, is how MatchCommand() works:
 
-		1.  Match the verb.
+      1. Match the verb.
 
-		2.  If no match, check to see if the line begins with an
-		    object (character) and try to match it.
+      2. If no match, check to see if the line begins with an
+         object (character) and try to match it.
 
-		3.  If found, try to match a syntax for that verb, including
-		    objects, dictionary words, numbers, attributes, and
-		    routines.  If any objects are specified, skip over them
-		    for now, marking the start and finish.  This is done
-		    mostly in MatchWord().
+      3. If found, try to match a syntax for that verb, including
+         objects, dictionary words, numbers, attributes, and
+         routines.  If any objects are specified, skip over them
+         for now, marking the start and finish.  This is done
+         mostly in MatchWord().
 
-		4.  Match the xobject, if there is one--via MatchObject().
+      4. Match the xobject, if there is one--via MatchObject().
 
-		5.  If all is well, return to match the objects that were
-		    previously skipped over, loading them into objlist[].
-		    Once again, this is done by MatchObject().
+      5. If all is well, return to match the objects that were
+         previously skipped over, loading them into objlist[].
+         Once again, this is done by MatchObject().
 
-	(The reason the objects are initially skipped is because it may
-	be necessary to know where to look for them--this may require
-	knowing what the xobject is, if the syntax is something like:
+   (The reason the objects are initially skipped is because it may
+   be necessary to know where to look for them--this may require
+   knowing what the xobject is, if the syntax is something like:
 
-		"get" <object> "from" <xobject>)
+      "get" <object> "from" <xobject>)
 
-	The variable <obj_match_state> is the indicator of what stage
-	object-matching is at:
+   The variable <obj_match_state> is the indicator of what stage
+   object-matching is at:
 
-		obj_match_state = 0  - haven't matched anything yet
+      obj_match_state = 0  - haven't matched anything yet
 
-		obj_match_state = 1  - xobject has been matched
+      obj_match_state = 1  - xobject has been matched
 
-		obj_match_state = 2  - matching object(s), loading
-				       objlist[]
+      obj_match_state = 2  - matching object(s), loading objlist[]
 
-		obj_match_state = 5  - matching first word/name, i.e.,
-				       "Bob, <do something>"
+      obj_match_state = 5  - matching first word/name, i.e.,
+                              "Bob, <do something>"
 */
 
 int MatchCommand()
 {
-	int i, j, flag, a, mw = 0, gotspeaker = 0;
-	int wordnum;
-	int numverbs = 0, nextverb = 0;
-	unsigned int ptr, verbptr, nextgrammar;
-	unsigned int obj, propaddr;
+   int i, j, flag, a, mw = 0, gotspeaker = 0;
+   int wordnum;
+   int numverbs = 0, nextverb = 0;
+   unsigned int ptr, verbptr, nextgrammar;
+   unsigned int obj, propaddr;
 
 #ifdef DEBUG_PARSER
-	Printout("Entering MatchCommand()");
+   Printout("Entering MatchCommand()");
 #endif
 
-	odomain = 0;
-	
-	/* Reset these for command-matching */
-	if (!speaking)
-	{
-		var[actor] = var[player];
-		parse_location = var[location];
-	}
-	else
-	{
-		var[actor] = speaking;
-		parse_location = GrandParent(speaking);
-	}
+   odomain = 0;
 
-	if (!strcmp(word[1], "~oops"))
-	{
-		strcpy(parseerr, "");
+   /* Reset these for command-matching */
+   if (!speaking)
+   {
+      var[actor] = var[player];
+      parse_location = var[location];
+   }
+   else
+   {
+      var[actor] = speaking;
+      parse_location = GrandParent(speaking);
+   }
 
-		/* "oops" on its own */
-		if (words==1 || !strcmp(oops, ""))
-		{
-			ParseError(16, 0);       /* "You'll have to make a mistake..." */
-			return 0;
-		}
+   if (!strcmp(word[1], "~oops"))
+   {
+      strcpy(parseerr, "");
 
-		/* trying to correct more than one word */
-		if (words > 2 || oopscount)
-		{
-			ParseError(17, 0);       /* "...one word at a time..." */
-			return 0;
-		}
+      /* "oops" on its own */
+      if (words==1 || !strcmp(oops, ""))
+      {
+         ParseError(16, 0);       /* "You'll have to make a mistake..." */
+         return 0;
+      }
 
-		/* trying to correct a correction */
-		if (!strcmp(Left(errbuf, 5), "~oops"))
-		{
-			ParseError(13, 0);
-			return 0;
-		}
+      /* trying to correct more than one word */
+      if (words > 2 || oopscount)
+      {
+         ParseError(17, 0);       /* "...one word at a time..." */
+         return 0;
+      }
 
-		/* Rebuild the corrected buffer */
-		oopscount = 1;
-		strcpy(line, word[2]);
-		for (i=1; i<=(int)strlen(errbuf); i++)
-		{
-			if (!strcmp(Mid(errbuf, i, strlen(oops)), oops))
-				break;
-		}
+      /* trying to correct a correction */
+      if (!strcmp(Left(errbuf, 5), "~oops"))
+      {
+         ParseError(13, 0);
+         return 0;
+      }
 
-		strcpy(buffer, errbuf);
-		buffer[i-1] = '\0';
-		strcat(buffer, line);
+      /* Rebuild the corrected buffer */
+      oopscount = 1;
+      strcpy(line, word[2]);
+      for (i=1; i<=(int)strlen(errbuf); i++)
+      {
+         if (!strcmp(Mid(errbuf, i, strlen(oops)), oops))
+            break;
+      }
 
-		strcat(buffer, Right(errbuf, strlen(errbuf) - i - strlen(oops) + 1));
+      strcpy(buffer, errbuf);
+      buffer[i-1] = '\0';
+      strcat(buffer, line);
 
-		SeparateWords();
-		if (!Parse())
-			return 0;
+      strcat(buffer, Right(errbuf, strlen(errbuf) - i - strlen(oops) + 1));
 
-		CallLibraryParse();
-	}
+      SeparateWords();
+      if (!Parse())
+         return 0;
 
-	if (word[1][0]=='.') KillWord(1);
+      CallLibraryParse();
+   }
+
+   if (word[1][0]=='.') KillWord(1);
 
 
-	/*
-	 * STEP 1:  Match verb
-	 *
-	 */
+   /*
+    * STEP 1:  Match verb
+    *
+    */
 
-	ptr = 64;
+   ptr = 64;
 
 MatchVerb:
 
 #ifdef DEBUG_PARSER
-	Printout("MatchCommand(): Step 1");
+   Printout("MatchCommand(): Step 1");
 #endif
-	if (words==0)
-		return 0;
+   if (words==0)
+      return 0;
 
-	defseg = gameseg;
+   defseg = gameseg;
 
-	grammaraddr = 0;
-	domain = 0;
-	obj_match_state = 0;
-	xverb = 0;
-	starts_with_verb = 0;
-	objcount = 0;
-	parse_allflag = false;
-	objstart = 0;
-	object_is_number = false;
+   grammaraddr = 0;
+   domain = 0;
+   obj_match_state = 0;
+   xverb = 0;
+   starts_with_verb = 0;
+   objcount = 0;
+   parse_allflag = false;
+   objstart = 0;
+   object_is_number = false;
 
-	for (i=1; i<MAXWORDS; i++)
-		objword_cache[i] = 0;
+   for (i=1; i<MAXWORDS; i++)
+      objword_cache[i] = 0;
 
-	var[object] = 0;
-	var[xobject] = 0;
-	var[self] = 0;
-	var[verbroutine] = 0;
+   var[object] = 0;
+   var[xobject] = 0;
+   var[self] = 0;
+   var[verbroutine] = 0;
 
-	while ((a = Peek(ptr)) != 255)
-	{
-		defseg = gameseg;
+   while ((a = Peek(ptr)) != 255)
+   {
+      defseg = gameseg;
 
-		/* verb or xverb header */
-		if (a==VERB_T || a==XVERB_T)
-		{
-			/* Skim through 1 or more verb words */
-			numverbs = Peek(ptr + 1);
-			verbptr = ptr + 2;
-			for (i=1; i<=numverbs; i++)
-			{
-				/* 0xffff signals something other than a 
-				   dictionary word--see BuildVerb() in hcbuild.c.
-				   This will be the case, like, 1% of the time.
-				*/
+      /* verb or xverb header */
+      if (a==VERB_T || a==XVERB_T)
+      {
+         /* Skim through 1 or more verb words */
+         numverbs = Peek(ptr + 1);
+         verbptr = ptr + 2;
+         for (i=1; i<=numverbs; i++)
+         {
+            /* 0xffff signals something other than a
+               dictionary word--see BuildVerb() in hcbuild.c.
+               This will be the case, like, 1% of the time.
+            */
 
-				/* If it is a dictionary word... */
-				if (PeekWord(verbptr)!=0xffff)
-				{
-					/* If one of the verb words matches the first
-					   word in the input line
-					*/
-					if (wd[1]==PeekWord(verbptr))
-					{
-						grammaraddr = ptr;
-						goto GotVerb;
-					}
+            /* If it is a dictionary word... */
+            if (PeekWord(verbptr)!=0xffff)
+            {
+               /* If one of the verb words matches the first
+                  word in the input line
+               */
+               if (wd[1]==PeekWord(verbptr))
+               {
+                  grammaraddr = ptr;
+                  goto GotVerb;
+               }
 
-					verbptr += 2;
-				}
+               verbptr += 2;
+            }
 
-				/* ...otherwise assume it's an object (value) */
-				else
-				{
-					codeptr = verbptr + 1; /* skip 0xffff */
+            /* ...otherwise assume it's an object (value) */
+            else
+            {
+               codeptr = verbptr + 1; /* skip 0xffff */
 
-					/* GetVal(), not GetValue(), since it's
-					   always a simple value
-					*/
-					obj = GetVal();
+               /* GetVal(), not GetValue(), since it's
+                  always a simple value
+               */
+               obj = GetVal();
 
-					/* codeptr can't be >65535 on a 16-bit
-					   compiler
-					*/
-					verbptr = (unsigned int)codeptr;
-					propaddr = PropAddr(obj, noun, 0);
-					if (propaddr)
-					{
-						defseg = proptable;
-						a = Peek(propaddr+1);	/* obj.#prop */
-						defseg = gameseg;
+               /* codeptr can't be >65535 on a 16-bit
+                  compiler
+               */
+               verbptr = (unsigned int)codeptr;
+               propaddr = PropAddr(obj, noun, 0);
+               if (propaddr)
+               {
+                  defseg = proptable;
+                  a = Peek(propaddr+1);   /* obj.#prop */
+                  defseg = gameseg;
 
-						for (j=1; j<=a; j++)
-						{
-							if (wd[1]==(unsigned)GetProp(obj, noun, j, 0))
-							{
-								grammaraddr = ptr;
-								goto GotVerb;
-							}
-						}
-					}
-				}
-			}
+                  for (j=1; j<=a; j++)
+                  {
+                     if (wd[1]==(unsigned)GetProp(obj, noun, j, 0))
+                     {
+                        grammaraddr = ptr;
+                        goto GotVerb;
+                     }
+                  }
+               }
+            }
+         }
 
-			/* Otherwise skip over this verb header */
-			ptr += 2 + numverbs * 2;
-		}
+         /* Otherwise skip over this verb header */
+         ptr += 2 + numverbs * 2;
+      }
 
-		/* anything else */
-		else
-			ptr += Peek(ptr + 1) + 1;
-	}
+      /* anything else */
+      else
+         ptr += Peek(ptr + 1) + 1;
+   }
 
 
-	/*
-	 * STEP 2:  Match object/character (if no verb match)
-	 *
-	 */
+   /*
+    * STEP 2:  Match object/character (if no verb match)
+    *
+    */
 #ifdef DEBUG_PARSER
-	Printout("MatchCommand(): Step 2");
+   Printout("MatchCommand(): Step 2");
 #endif
-	/* If we hit the end of the grammar without finding a verb match: */
-	if (Peek(ptr)==255)
-	{
-		/* If we already tried this once */
-		if (gotspeaker)
-		{
-			if (!starts_with_verb)
-				/* "Better start with a verb..." */
-				ParseError(2, 0);
-			else
-				/* "That doesn't make any sense..." */
-				ParseError(6, 0);
-			return 0;
-		}
+   /* If we hit the end of the grammar without finding a verb match: */
+   if (Peek(ptr)==255)
+   {
+      /* If we already tried this once */
+      if (gotspeaker)
+      {
+         if (!starts_with_verb)
+            /* "Better start with a verb..." */
+            ParseError(2, 0);
+         else
+            /* "That doesn't make any sense..." */
+            ParseError(6, 0);
+         return 0;
+      }
 
-		/* See if the command begins with an object
-		   (character) name:
-		*/
-		flag = 0;
-		if (AnyObjWord(1)==1)
-			flag = 1;
+      /* See if the command begins with an object
+         (character) name:
+      */
+      flag = 0;
+      if (AnyObjWord(1)==1)
+         flag = 1;
 
-		/* No match, ergo an invalid command */
-		if (flag==0 && nextverb==true)
-		{
-			strcpy(parseerr, "");
-			ParseError(6, 0);        /* "...doesn't make any sense..." */
-			return 0;
-		}
+      /* No match, ergo an invalid command */
+      if (flag==0 && nextverb==true)
+      {
+         strcpy(parseerr, "");
+         ParseError(6, 0);        /* "...doesn't make any sense..." */
+         return 0;
+      }
 
-		/* No provision made for addressing objects (characters) */
-		if (flag==0 || speaktoaddr==0)
-		{
-			strcpy(parseerr, "");
-			ParseError(2, 0);        /* "Better start with a verb..." */
-			return 0;
-		}
+      /* No provision made for addressing objects (characters) */
+      if (flag==0 || speaktoaddr==0)
+      {
+         strcpy(parseerr, "");
+         ParseError(2, 0);        /* "Better start with a verb..." */
+         return 0;
+      }
 
-		/* Count how many object words there are */
-		for (i=2; i<=words; i++)
-		{
-			if (AnyObjWord(i)!=1)
-				break;
-		}
+      /* Count how many object words there are */
+      for (i=2; i<=words; i++)
+      {
+         if (AnyObjWord(i)!=1)
+            break;
+      }
 
-		/* Try to match the first word to a valid object */
-		objfinish = i - 1;
-		obj_match_state = 5;
-		i = 1;
-		recursive_call = 0;
-		
-		if (MatchObject(&i) != true)
-			return 0;  /* unsuccessful */
-		
-		speaking = pobj;                        /* successful */
-		gotspeaker = true;
+      /* Try to match the first word to a valid object */
+      objfinish = i - 1;
+      obj_match_state = 5;
+      i = 1;
+      recursive_call = 0;
 
-		/* So erase the object name from the start of the line */
-		for (i=1; i<=objfinish; i++)
-			KillWord(1);
-		if (word[1][0]=='~') KillWord(1);
-		
-		/* If it's a name and that's all...*/
-		if (words==0)
-			return true;
+      if (MatchObject(&i) != true)
+         return 0;  /* unsuccessful */
 
-		/* ...or else proceed as usual */
-		ptr = 64;
-		goto MatchVerb;
-	}
-	else if (!gotspeaker)
-		speaking = 0;
+      speaking = pobj;                        /* successful */
+      gotspeaker = true;
+
+      /* So erase the object name from the start of the line */
+      for (i=1; i<=objfinish; i++)
+         KillWord(1);
+      if (word[1][0]=='~') KillWord(1);
+
+      /* If it's a name and that's all...*/
+      if (words==0)
+         return true;
+
+      /* ...or else proceed as usual */
+      ptr = 64;
+      goto MatchVerb;
+   }
+   else if (!gotspeaker)
+      speaking = 0;
 
 GotVerb:
 
-	if (!speaking)
-	{
-		var[actor] = var[player];
-		parse_location = var[location];
-	}
-	else
-	{
-		var[actor] = speaking;
-		parse_location = GrandParent(speaking);
-	}
+   if (!speaking)
+   {
+      var[actor] = var[player];
+      parse_location = var[location];
+   }
+   else
+   {
+      var[actor] = speaking;
+      parse_location = GrandParent(speaking);
+   }
 
-	obj_match_state = 0;
-	starts_with_verb = 1;
-	strcpy(parseerr, word[1]);
+   obj_match_state = 0;
+   starts_with_verb = 1;
+   strcpy(parseerr, word[1]);
 
-	if (Peek(grammaraddr)==XVERB_T) xverb = true;
-	grammaraddr += 2 + numverbs * 2;
+   if (Peek(grammaraddr)==XVERB_T) xverb = true;
+   grammaraddr += 2 + numverbs * 2;
 
-	/*
-	 * STEP 3:  Match proper grammar structure (syntax)
-	 *
-	 */
+   /*
+    * STEP 3:  Match proper grammar structure (syntax)
+    *
+    */
 #ifdef DEBUG_PARSER
-	Printout("MatchCommand(): Step 3");
+   Printout("MatchCommand(): Step 3");
 #endif
 
-	/*
-	 * (STEP 4:  We'll be matching xobject, if any, before object)
-	 *
-	 */
+   /*
+    * (STEP 4:  We'll be matching xobject, if any, before object)
+    *
+    */
 #ifdef DEBUG_PARSER
-	Printout("MatchCommand(): Step 4");
+   Printout("MatchCommand(): Step 4");
 #endif
 
-	/* Loop until end of grammar table, or next verb:
-	 */
-	while (Peek(grammaraddr)!=255 &&
-		Peek(grammaraddr)!=VERB_T && Peek(grammaraddr)!=XVERB_T)
-	{
-		wordnum = 1;
+   /* Loop until end of grammar table, or next verb:
+    */
+   while (Peek(grammaraddr)!=255 &&
+      Peek(grammaraddr)!=VERB_T && Peek(grammaraddr)!=XVERB_T)
+   {
+      wordnum = 1;
 
-		nextgrammar = grammaraddr + Peek(grammaraddr + 1) + 1;
+      nextgrammar = grammaraddr + Peek(grammaraddr + 1) + 1;
 
-		/* Loop until end of table or next verb: */
-		while (Peek(grammaraddr) != 255 && Peek(grammaraddr) != VERB_T && Peek(grammaraddr) != XVERB_T)
-		{
-			mw = MatchWord(&wordnum);
+      /* Loop until end of table or next verb: */
+      while (Peek(grammaraddr) != 255 && Peek(grammaraddr) != VERB_T && Peek(grammaraddr) != XVERB_T)
+      {
+         mw = MatchWord(&wordnum);
 
-			if (mw==true)
-			{
-				/* end of both input and grammar */
-				if (wd[wordnum]==0 && Peek(grammaraddr)==ROUTINE_T)
-				{
-					full_buffer = (char)wordnum;
-					break;
-				}
+         if (mw==true)
+         {
+            /* end of both input and grammar */
+            if (wd[wordnum]==0 && Peek(grammaraddr)==ROUTINE_T)
+            {
+               full_buffer = (char)wordnum;
+               break;
+            }
 
-				/* end of grammar, not input */
-				if (Peek(grammaraddr)==ROUTINE_T)
-				{
-					mw = false;
-					goto NextStructure;
-				}
-			}
-			else
-			{
-				/* If error already signalled */
-				if (mw==2)
-					return 0;
+            /* end of grammar, not input */
+            if (Peek(grammaraddr)==ROUTINE_T)
+            {
+               mw = false;
+               goto NextStructure;
+            }
+         }
+         else
+         {
+            /* If error already signalled */
+            if (mw==2)
+               return 0;
 
-				/* No match, so try next structure */
-				else
-				{
+            /* No match, so try next structure */
+            else
+            {
 NextStructure:
-					grammaraddr = nextgrammar;
-					var[object] = 0;
-					var[xobject] = 0;
-					var[verbroutine] = 0;
-					domain = 0;
-					odomain = 0;
-					obj_match_state = 0;
-					xverb = 0;
-					objcount = 0;
-					objstart = 0;
-					break;
-				}
-			}
-		}
+               grammaraddr = nextgrammar;
+               var[object] = 0;
+               var[xobject] = 0;
+               var[verbroutine] = 0;
+               domain = 0;
+               odomain = 0;
+               obj_match_state = 0;
+               xverb = 0;
+               objcount = 0;
+               objstart = 0;
+               break;
+            }
+         }
+      }
 
-		/* Matched the complete syntax of a verb */
-		if (mw==true)
-		{
-			var[verbroutine] = PeekWord(grammaraddr + 1);
-			break;
-		}
-	}
+      /* Matched the complete syntax of a verb */
+      if (mw==true)
+      {
+         var[verbroutine] = PeekWord(grammaraddr + 1);
+         break;
+      }
+   }
 
-	if (mw != true)
-	{
-		if (mw==false)	/* mw = 2 if error already printed */
-		{
-			/* If there's more grammar to check... */
-			if (Peek(grammaraddr) != 255)
-			{
-				ptr = grammaraddr;
-				nextverb = true;
-				goto MatchVerb;
-			}
+   if (mw != true)
+   {
+      if (mw==false)   /* mw = 2 if error already printed */
+      {
+         /* If there's more grammar to check... */
+         if (Peek(grammaraddr) != 255)
+         {
+            ptr = grammaraddr;
+            nextverb = true;
+            goto MatchVerb;
+         }
 
-			/* ...or if we reached the end without a sensible
-			   syntax matched:
-			*/
-			strcpy(parseerr, "");
+         /* ...or if we reached the end without a sensible
+            syntax matched:
+         */
+         strcpy(parseerr, "");
 
-			/* "...doesn't make any sense..." */
-			ParseError(6, 0);
-		}
-		return 0;
-	}
+         /* "...doesn't make any sense..." */
+         ParseError(6, 0);
+      }
+      return 0;
+   }
 
 
-	/*
-	 * STEP 5:  Match remaining object(s), if any
-	 *
-	 */
+   /*
+    * STEP 5:  Match remaining object(s), if any
+    *
+    */
 #ifdef DEBUG_PARSER
-	Printout("MatchCommand(): Step 5");
+   Printout("MatchCommand(): Step 5");
 #endif
 
-	/* If there are objects waiting to be loaded into objlist[] */
-	if (objstart)
-	{
-		ResetFindObject();
+   /* If there are objects waiting to be loaded into objlist[] */
+   if (objstart)
+   {
+      ResetFindObject();
 
-		obj_match_state = 2;
-		recursive_call = false;
-		if (odomain) domain = odomain;
+      obj_match_state = 2;
+      recursive_call = false;
+      if (odomain) domain = odomain;
 
-		grammaraddr = objgrammar;
-		i = objstart;
+      grammaraddr = objgrammar;
+      i = objstart;
 
-		/* If there was a problem matching them */
-		if (MatchObject(&i)==false)
-			return 0;
-	}
+      /* If there was a problem matching them */
+      if (MatchObject(&i)==false)
+         return 0;
+   }
 
-	/* Got a successfully matched verb with all the requisite
-	   parameters (if any).
-	*/
+   /* Got a successfully matched verb with all the requisite
+      parameters (if any).
+   */
 
-	if (words < wordnum)
-		remaining = 0;
-	else
-		remaining = (char)(words - wordnum);
+   if (words < wordnum)
+      remaining = 0;
+   else
+      remaining = (char)(words - wordnum);
 
 #ifdef DEBUG_PARSER
-	Printout("MatchCommand(): Leaving");
+   Printout("MatchCommand(): Leaving");
 #endif
-	return true;
+   return true;
 }
 
 
 /* MATCHOBJECT
 
-	The argument is the word number we're starting matching on.
+   The argument is the word number we're starting matching on.
 
-	NOTE:  recusive_call is set to 0 if this is the first call.
-	MatchObject() sets it to 1 when calling itself when asking
-	for clarification as to which object is meant.
+   NOTE:  recusive_call is set to 0 if this is the first call.
+   MatchObject() sets it to 1 when calling itself when asking
+   for clarification as to which object is meant.
 
-	Return -1 on a recursive call to allow parsing to continue.
+   Return -1 on a recursive call to allow parsing to continue.
 */
 
 #define MAX_MOBJ 16     /* maximum number of matchable object words */
 
 int MatchObject(int *wordnum)
 {
-	char found_noun = false;
-	int i, j, k, m, flag;
-	int mobjs; unsigned int mobj[MAX_MOBJ];
-	int allmatch, roomloc;
-	int bestobj = 0;
-	char bestavail = 0;
+   char found_noun = false;
+   int i, j, k, m, flag;
+   int mobjs; unsigned int mobj[MAX_MOBJ];
+   int allmatch, roomloc;
+   int bestobj = 0;
+   char bestavail = 0;
 
-	/* If this is a recursive call, we're not adding new objects */
-	if (!recursive_call) addflag = true;
+   /* If this is a recursive call, we're not adding new objects */
+   if (!recursive_call) addflag = true;
 
-	stack_depth = 0;
+   stack_depth = 0;
 
-	pobj = 0;                          /* possible object */
-	objcount = 0;                      /* of objlist[] */
-	pobjcount = 0;                     /* of pobjlist[] */
-	mobjs = 0;                         /* # of previous words in phrase */
-	bestavail = 0;                     /* adjective or noun */
+   pobj = 0;                          /* possible object */
+   objcount = 0;                      /* of objlist[] */
+   pobjcount = 0;                     /* of pobjlist[] */
+   mobjs = 0;                         /* # of previous words in phrase */
+   bestavail = 0;                     /* adjective or noun */
 
 #ifdef DEBUG_PARSER
-	Printout("MatchObject(): Entering");
+   Printout("MatchObject(): Entering");
 #endif
-	strcpy(parseerr, "");
+   strcpy(parseerr, "");
 
-	do                                 /* starting at word #a */
-	{
-		/* Check first to make sure it's not a housekeeping word
-		   such as "~and" or "~all".
-		*/
-		if (word[*wordnum][0]!='~' && word[*wordnum][0]!='\0')
-		{
-			if (parseerr[0]!='\0') strcat(parseerr, " ");
-			strcat(parseerr, word[*wordnum]);
+   do                                 /* starting at word #a */
+   {
+      /* Check first to make sure it's not a housekeeping word
+         such as "~and" or "~all".
+      */
+      if (word[*wordnum][0]!='~' && word[*wordnum][0]!='\0')
+      {
+         if (parseerr[0]!='\0') strcat(parseerr, " ");
+         strcat(parseerr, word[*wordnum]);
 
-			flag = 0;
-			for (i=0; i<objects; i++)
-			{
-				if (wd[*wordnum]==0)
-					break;
+         flag = 0;
+         for (i=0; i<objects; i++)
+         {
+            if (wd[*wordnum]==0)
+               break;
 
-				/* Might be this object if wd[*wordnum] is an
-				   adjective or noun of object i
-				*/
-				m = ObjWord(i, wd[*wordnum]);
+            /* Might be this object if wd[*wordnum] is an
+               adjective or noun of object i
+            */
+            m = ObjWord(i, wd[*wordnum]);
 
-				if (m)
-				{
-					flag = true;
-					allmatch = true;
+            if (m)
+            {
+               flag = true;
+               allmatch = true;
 
-					/* check previously matched words */
-					for (j=1; j<=mobjs; j++)
-					{
-						if (!ObjWord(i, mobj[j])) /* || wd[*wordnum]==mobj[j]) */
-							allmatch = false;
-					}
+               /* check previously matched words */
+               for (j=1; j<=mobjs; j++)
+               {
+                  if (!ObjWord(i, mobj[j])) /* || wd[*wordnum]==mobj[j]) */
+                     allmatch = false;
+               }
 
-					/* matches all previous words */
-					if (allmatch==true)
-					{
-						AddPossibleObject(i, (char)m, wd[*wordnum]);
-						pobj = i;
-						if (bestavail==0 || bestavail>=(char)m)
-						{
-							if (!bestobj)
-								bestobj = i;
-							bestavail = (char)m;
-						}
-					}
+               /* matches all previous words */
+               if (allmatch==true)
+               {
+                  AddPossibleObject(i, (char)m, wd[*wordnum]);
+                  pobj = i;
+                  if (bestavail==0 || bestavail>=(char)m)
+                  {
+                     if (!bestobj)
+                        bestobj = i;
+                     bestavail = (char)m;
+                  }
+               }
 
-					/* doesn't match previous words */
-					else
-						SubtractPossibleObject(i);
-				}
+               /* doesn't match previous words */
+               else
+                  SubtractPossibleObject(i);
+            }
 
-				/* definitely not this object */
-				else
-					SubtractPossibleObject(i);
-			}
+            /* definitely not this object */
+            else
+               SubtractPossibleObject(i);
+         }
 
 
-			/* If checking the start of an input line, i.e. for
-			   a command addressed to an object (character):
-			*/
-			if (obj_match_state==5 && !flag) goto Clarify;
-		}
+         /* If checking the start of an input line, i.e. for
+            a command addressed to an object (character):
+         */
+         if (obj_match_state==5 && !flag) goto Clarify;
+      }
 
-		else if (!strcmp(word[*wordnum], "~any"))
-			goto NextLoop;
+      else if (!strcmp(word[*wordnum], "~any"))
+         goto NextLoop;
 
-		/* "~and", "~all",... */
-		else
-			goto Clarify;
+      /* "~and", "~all",... */
+      else
+         goto Clarify;
 
-		/* Didn't get any suspects */
-		if (pobjcount==0)
-		{
-			/* If "~and", "~all",... */
-			if (word[*wordnum][0]=='~')
-			{
-				/* If checking the xobject */
-				if (obj_match_state==1)
-				{
-					strcpy(parseerr, word[1]);
-					/* "...can't use multiple objects..."
-					   (as indirect objects) */
-					ParseError(7, 0);
-					return 0;
-				}
-				goto Clarify;
-			}
+      /* Didn't get any suspects */
+      if (pobjcount==0)
+      {
+         /* If "~and", "~all",... */
+         if (word[*wordnum][0]=='~')
+         {
+            /* If checking the xobject */
+            if (obj_match_state==1)
+            {
+               strcpy(parseerr, word[1]);
+               /* "...can't use multiple objects..."
+                  (as indirect objects) */
+               ParseError(7, 0);
+               return 0;
+            }
+            goto Clarify;
+         }
 
-			/* Got an unmatchable sequence of words */
-			else
-			{
-				if (obj_match_state==5)
-				{
-					if (!starts_with_verb)
-						/* "Better start with a verb..." */
-						ParseError(2, 0);
-					else
-						/* "That doesn't make any sense..." */
-						ParseError(6, 0);
-				}
-				else
-					/* "(no such thing)..." */
-					ParseError(5, 0);
-				return 0;
-			}
-		}
+         /* Got an unmatchable sequence of words */
+         else
+         {
+            if (obj_match_state==5)
+            {
+               if (!starts_with_verb)
+                  /* "Better start with a verb..." */
+                  ParseError(2, 0);
+               else
+                  /* "That doesn't make any sense..." */
+                  ParseError(6, 0);
+            }
+            else
+               /* "(no such thing)..." */
+               ParseError(5, 0);
+            return 0;
+         }
+      }
 
-		if (word[*wordnum][0]!='~')
-		{
-			/* Go back for next word in this object phrase */
+      if (word[*wordnum][0]!='~')
+      {
+         /* Go back for next word in this object phrase */
 
-			mobjs++;
-			if (mobjs==MAX_MOBJ)
-			{
-				/* "(no such thing)..." */
-				ParseError(5, 0);
-				return 0;
-			}
-			mobj[mobjs] = wd[*wordnum];
-		}
-		else
-		{
-			/* Since hitting "~and" or "~all", we've obviously
-			   finished an object phrase
-			*/
-			(*wordnum)++;
-			goto Clarify;
-		}
+         mobjs++;
+         if (mobjs==MAX_MOBJ)
+         {
+            /* "(no such thing)..." */
+            ParseError(5, 0);
+            return 0;
+         }
+         mobj[mobjs] = wd[*wordnum];
+      }
+      else
+      {
+         /* Since hitting "~and" or "~all", we've obviously
+            finished an object phrase
+         */
+         (*wordnum)++;
+         goto Clarify;
+      }
 
 NextLoop:
-		(*wordnum)++;                   /* next word */
-		if ((*wordnum > words || word[*wordnum][0]=='\0')
-			|| *wordnum > objfinish)
-			goto Clarify;
-	}
-	while (true);                           /* endless loop */
+      (*wordnum)++;                   /* next word */
+      if ((*wordnum > words || word[*wordnum][0]=='\0')
+         || *wordnum > objfinish)
+         goto Clarify;
+   }
+   while (true);                           /* endless loop */
 
 
 Clarify:
 
 #ifdef DEBUG_PARSER
-	Printout("MatchObject(): Clarify");
+   Printout("MatchObject(): Clarify");
 #endif
-	/* If "~and", "~all",... */
-	if (word[*wordnum][0]=='~')
-	{
-		/* If checking the xobject or addressing a command */
-		if (obj_match_state==1 || speaking)
-		{
-			strcpy(parseerr, word[1]);
-			/* "...can't use multiple objects..."
-			   (as indirect objects) */
-			ParseError(7, 0);
-			return 0;
-		}
-	}
+   /* If "~and", "~all",... */
+   if (word[*wordnum][0]=='~')
+   {
+      /* If checking the xobject or addressing a command */
+      if (obj_match_state==1 || speaking)
+      {
+         strcpy(parseerr, word[1]);
+         /* "...can't use multiple objects..."
+            (as indirect objects) */
+         ParseError(7, 0);
+         return 0;
+      }
+   }
 
-	if (!strcmp(word[*wordnum], "~all"))    /* if "~all" is specified */
-	{
-		parse_allflag = true;
-		
-		/* If one or more words were already matched, however... */
+   if (!strcmp(word[*wordnum], "~all"))    /* if "~all" is specified */
+   {
+      parse_allflag = true;
 
-		if (mobjs > 0)
-		{
-			ParseError(6, 0);       /* "...doesn't make any sense..." */
-			return 0;
-		}
+      /* If one or more words were already matched, however... */
 
-		if (!domain)    /* no particular domain object specified */
-			roomloc = parse_location;
-		else
-			roomloc = domain;
+      if (mobjs > 0)
+      {
+         ParseError(6, 0);       /* "...doesn't make any sense..." */
+         return 0;
+      }
 
-		AddAllObjects(roomloc);
+      if (!domain)    /* no particular domain object specified */
+         roomloc = parse_location;
+      else
+         roomloc = domain;
 
-		(*wordnum)++;
+      AddAllObjects(roomloc);
 
-
-		/* Done processing the object phrase yet? */
-
-		/* only >GET ALL EXCEPT... if we're not done the object phrase */
-		if (*wordnum<=objfinish && strcmp(word[*wordnum], "~except"))
-		{
-			ParseError(6, 0);   /* "Doesn't make any sense..." */
-			return 0;
-		}
-
-		if ((*wordnum > words || word[*wordnum][0]=='\0')
-			|| (obj_match_state != 1 && *wordnum >= objfinish))
-		{
-			if (!objcount && !speaking)
-			{
-				strcpy(parseerr, word[1]);
-				ParseError(9, 0);   /* "Nothing to (verb)..." */
-				return 0;
-			}
-			return true;
-		}
-
-		/* Go back for the next piece of the phrase */
-		pobjcount = 0;
-		(*wordnum)--;
-		goto NextLoop;
-	}
+      (*wordnum)++;
 
 
-	/* If we have a possible object or set of objects, go through the
-	   disqualification process, either to sort out any confusion, or
-	   even if there's only one possible object, to make sure it's
-	   available
-	*/
-	if (pobjcount >= 1)
-	{
-		bestavail = 0;
+      /* Done processing the object phrase yet? */
 
-		for (k=0; k<pobjcount; k++)	/* disqualify if unavailable */
-		{
-			i = pobjlist[k].obj;
+      /* only >GET ALL EXCEPT... if we're not done the object phrase */
+      if (*wordnum<=objfinish && strcmp(word[*wordnum], "~except"))
+      {
+         ParseError(6, 0);   /* "Doesn't make any sense..." */
+         return 0;
+      }
 
-			/* held or multiheld */
-			if ((domain) && domain==var[actor])
-			{
-				if (Parent(i) != var[actor])
-				{
-					SubtractPossibleObject(i);
-					k--;
-				}
-				else
-					pobj = i;
-			}
+      if ((*wordnum > words || word[*wordnum][0]=='\0')
+         || (obj_match_state != 1 && *wordnum >= objfinish))
+      {
+         if (!objcount && !speaking)
+         {
+            strcpy(parseerr, word[1]);
+            ParseError(9, 0);   /* "Nothing to (verb)..." */
+            return 0;
+         }
+         return true;
+      }
 
-			else if ((Peek(grammaraddr)==NOTHELD_T || Peek(grammaraddr)==MULTINOTHELD_T) 
-				&& Parent(i)==var[actor])
-			{
-				SubtractPossibleObject(i);
-				k--;
-
-				/* if this was the last suspect */
-				if (pobjcount<1)  /* i.e., 0 */
-				{
-					ParseError(11, i);  /* "You don't see that..." */
-					return 0;
-				}
-			}
-
-			/* otherwise */
-			else if (Available(i, 0)==false) /* and obj_match_state!=5) */
-			{
-				SubtractPossibleObject(i);
-				k--;
-			}
-			else
-				pobj = i;
-
-			/* Try to determine the best available object */
-			if ((!bestavail) || (bestavail==(char)adjective && pobjlist[k].type==(char)noun))
-			{
-				m = domain;
-				/* Temporary parent domain */
-				domain = -1;
-				if (Available(i, 0))
-				{
-					bestavail = pobjlist[k].type;
-					bestobj = i;
-				}
-				domain = m;
-			}
-
-			/* Pick a default (poor) best match */
-			if (!bestobj)
-				bestobj = i;
-		}
+      /* Go back for the next piece of the phrase */
+      pobjcount = 0;
+      (*wordnum)--;
+      goto NextLoop;
+   }
 
 
-		/* Disqualify if an object is less exact--i.e., if the
-		   word is a noun for one object but only an adjective for
-		   another, disqualify the one for which it is an
-		   adjective.
-		*/
-		if (pobjcount > 1)
-		{
-			for (i=0; i<pobjcount; i++)
-			{
-				if (pobjlist[i].type==(char)noun)
-					found_noun = true;
-			}
+   /* If we have a possible object or set of objects, go through the
+      disqualification process, either to sort out any confusion, or
+      even if there's only one possible object, to make sure it's
+      available
+   */
+   if (pobjcount >= 1)
+   {
+      bestavail = 0;
 
-			if (found_noun)
-			{
-				for (i=0; i<pobjcount; i++)
-				{
-					/* Use ObjWord()'s test to see if this word
-					   should get upgraded from an adjective to a noun
-					*/
-					if (pobjlist[i].type==(char)adjective)
-					{
-						if (ObjWordType(pobjlist[i].obj, wd[*wordnum-1], noun))
-							pobjlist[i].type = (char)noun;
-					}
+      for (k=0; k<pobjcount; k++)   /* disqualify if unavailable */
+      {
+         i = pobjlist[k].obj;
 
-					if (pobjlist[i].type==(char)adjective)
-					{
-						SubtractPossibleObject(pobjlist[i].obj);
-						i--;
-					}
+         /* held or multiheld */
+         if ((domain) && domain==var[actor])
+         {
+            if (Parent(i) != var[actor])
+            {
+               SubtractPossibleObject(i);
+               k--;
+            }
+            else
+               pobj = i;
+         }
 
-					if (pobjcount==1) break;
-				}
-			}
-		}
+         else if ((Peek(grammaraddr)==NOTHELD_T || Peek(grammaraddr)==MULTINOTHELD_T)
+            && Parent(i)==var[actor])
+         {
+            SubtractPossibleObject(i);
+            k--;
+
+            /* if this was the last suspect */
+            if (pobjcount<1)  /* i.e., 0 */
+            {
+               ParseError(11, i);  /* "You don't see that..." */
+               return 0;
+            }
+         }
+
+         /* otherwise */
+         else if (Available(i, 0)==false) /* and obj_match_state!=5) */
+         {
+            SubtractPossibleObject(i);
+            k--;
+         }
+         else
+            pobj = i;
+
+         /* Try to determine the best available object */
+         if ((!bestavail) || (bestavail==(char)adjective && pobjlist[k].type==(char)noun))
+         {
+            m = domain;
+            /* Temporary parent domain */
+            domain = -1;
+            if (Available(i, 0))
+            {
+               bestavail = pobjlist[k].type;
+               bestobj = i;
+            }
+            domain = m;
+         }
+
+         /* Pick a default (poor) best match */
+         if (!bestobj)
+            bestobj = i;
+      }
 
 
-		/* If we're dealing with an 'anything' object, prefer an
-		   object that's currently available to one that isn't
-		*/
-		if (pobjcount > 1 && Peek(grammaraddr)==ANYTHING_T)
-		{
-			for (i=0; i<pobjcount; i++)
-			{
-				if (Available(pobjlist[i].obj, true))
-				{
-					for (j=0; j<pobjcount; j++)
-					{
-						if (j!=i)
-						{
-							if (!Available(pobjlist[j].obj, true))
-							{
-								SubtractPossibleObject(pobjlist[j].obj);
-								j--;	/* don't skip one */
-								if (pobjcount<=1) break;
-							}
-						}
-					}
-				}
-				if (pobjcount<=1) break;
-			}
-		}
+      /* Disqualify if an object is less exact--i.e., if the
+         word is a noun for one object but only an adjective for
+         another, disqualify the one for which it is an
+         adjective.
+      */
+      if (pobjcount > 1)
+      {
+         for (i=0; i<pobjcount; i++)
+         {
+            if (pobjlist[i].type==(char)noun)
+               found_noun = true;
+         }
+
+         if (found_noun)
+         {
+            for (i=0; i<pobjcount; i++)
+            {
+               /* Use ObjWord()'s test to see if this word
+                  should get upgraded from an adjective to a noun
+               */
+               if (pobjlist[i].type==(char)adjective)
+               {
+                  if (ObjWordType(pobjlist[i].obj, wd[*wordnum-1], noun))
+                     pobjlist[i].type = (char)noun;
+               }
+
+               if (pobjlist[i].type==(char)adjective)
+               {
+                  SubtractPossibleObject(pobjlist[i].obj);
+                  i--;
+               }
+
+               if (pobjcount==1) break;
+            }
+         }
+      }
 
 
-		/* Use whatever disambiguation the FindObject routine might provide */
-		if (pobjcount > 1 && findobjectaddr)
-		{
-			for (k=0; k<pobjcount; k++)
-			{
-				i = pobjlist[k].obj;
-				ret = 0;
-				passlocal[0] = i;
-				passlocal[1] = 0;
-				PassLocals(2);
+      /* If we're dealing with an 'anything' object, prefer an
+         object that's currently available to one that isn't
+      */
+      if (pobjcount > 1 && Peek(grammaraddr)==ANYTHING_T)
+      {
+         for (i=0; i<pobjcount; i++)
+         {
+            if (Available(pobjlist[i].obj, true))
+            {
+               for (j=0; j<pobjcount; j++)
+               {
+                  if (j!=i)
+                  {
+                     if (!Available(pobjlist[j].obj, true))
+                     {
+                        SubtractPossibleObject(pobjlist[j].obj);
+                        j--;   /* don't skip one */
+                        if (pobjcount<=1) break;
+                     }
+                  }
+               }
+            }
+            if (pobjcount<=1) break;
+         }
+      }
 
-				SetStackFrame(RESET_STACK_DEPTH, RUNROUTINE_BLOCK, 0, 0);
+
+      /* Use whatever disambiguation the FindObject routine might provide */
+      if (pobjcount > 1 && findobjectaddr)
+      {
+         for (k=0; k<pobjcount; k++)
+         {
+            i = pobjlist[k].obj;
+            ret = 0;
+            passlocal[0] = i;
+            passlocal[1] = 0;
+            PassLocals(2);
+
+            SetStackFrame(RESET_STACK_DEPTH, RUNROUTINE_BLOCK, 0, 0);
 #if defined (DEBUGGER)
-				DebugRunRoutine((long)findobjectaddr*address_scale);
+            DebugRunRoutine((long)findobjectaddr*address_scale);
 #else
-				RunRoutine((long)findobjectaddr*address_scale);
+            RunRoutine((long)findobjectaddr*address_scale);
 #endif
-				retflag = 0;
+            retflag = 0;
 
-				if (ret==0)     /* returned false */
-				{
-					SubtractPossibleObject(i);
-					k--;	/* so we don't skip one */
-					if (pobjcount<=1) break;
-				}
-				else
-				{
-					bestobj = i;
-					pobj = i;
-				}
+            if (ret==0)     /* returned false */
+            {
+               SubtractPossibleObject(i);
+               k--;   /* so we don't skip one */
+               if (pobjcount<=1) break;
+            }
+            else
+            {
+               bestobj = i;
+               pobj = i;
+            }
 
-				if (pobjcount==1) break;
-			}
-		}
-
-
-		/* If this is a clarification-required call to MatchObject(),
-		   return -1 if more than one possible object is found.
-		*/
-		if (pobjcount > 1 && recursive_call)
-			return -1;
+            if (pobjcount==1) break;
+         }
+      }
 
 
-		/* On the other hand, if we've managed to disqualify
-		   everything:
-		*/
-		if (pobjcount==0 && !speaking)
-		{
-			if (obj_match_state==5)
-			{
-				if (!starts_with_verb)
-					/* "Better start with a verb..." */
-					ParseError(2, 0);
-				else
-					/* "That doesn't make any sense..." */
-					ParseError(6, 0);
-			}
-			else
-			{
-				if ((!domain) || domain != var[actor])
-				{
-					if (Peek(grammaraddr)==ANYTHING_T)
-						/* "...haven't seen..." */
-						ParseError(10, bestobj);
-					else if (domain)
-						/* "...don't see that there..." */
-						ParseError(14, bestobj);
-					else
-						/* "...don't see any..." */
-						ParseError(11, bestobj);
-				}
-				else
-					ParseError(15, bestobj);  /* "...don't have any..." */
-			}
-			return 0;
-		}
-		else if (pobjcount==0)
-			pobj = bestobj;
+      /* If this is a clarification-required call to MatchObject(),
+         return -1 if more than one possible object is found.
+      */
+      if (pobjcount > 1 && recursive_call)
+         return -1;
 
 
-		/* If, after all this, there still exists some confusion
-		   about what object is meant:
-		*/
-		if (pobjcount > 1)
-		{
-			int wtemp;
-			unsigned int wdtemp[MAXWORDS+1];
-			int tempobjlist[MAXWORDS+1], tempobjcount;
-			struct pobject_structure temppobjlist[MAXPOBJECTS];
-			int tempobjfinish;
-			int temppobjcount;
-			int tempaddflag;
+      /* On the other hand, if we've managed to disqualify
+         everything:
+      */
+      if (pobjcount==0 && !speaking)
+      {
+         if (obj_match_state==5)
+         {
+            if (!starts_with_verb)
+               /* "Better start with a verb..." */
+               ParseError(2, 0);
+            else
+               /* "That doesn't make any sense..." */
+               ParseError(6, 0);
+         }
+         else
+         {
+            if ((!domain) || domain != var[actor])
+            {
+               if (Peek(grammaraddr)==ANYTHING_T)
+                  /* "...haven't seen..." */
+                  ParseError(10, bestobj);
+               else if (domain)
+                  /* "...don't see that there..." */
+                  ParseError(14, bestobj);
+               else
+                  /* "...don't see any..." */
+                  ParseError(11, bestobj);
+            }
+            else
+               ParseError(15, bestobj);  /* "...don't have any..." */
+         }
+         return 0;
+      }
+      else if (pobjcount==0)
+         pobj = bestobj;
 
-			char tempxverb = xverb;
-			ParseError(8, 0);      /* "Which...do you mean..." */
-			xverb = tempxverb;
 
-			for (i=1; i<=words; i++)      /* save word arrays */
-				wdtemp[i] = wd[i];
-			wtemp = words;
-			tempobjfinish = objfinish;
+      /* If, after all this, there still exists some confusion
+         about what object is meant:
+      */
+      if (pobjcount > 1)
+      {
+         int wtemp;
+         unsigned int wdtemp[MAXWORDS+1];
+         int tempobjlist[MAXWORDS+1], tempobjcount;
+         struct pobject_structure temppobjlist[MAXPOBJECTS];
+         int tempobjfinish;
+         int temppobjcount;
+         int tempaddflag;
 
-			for (i=0; i<=objcount; i++)   /* save object arrays */
-				tempobjlist[i] = objlist[i];
-			for (i=0; i<=pobjcount; i++)
-				temppobjlist[i] = pobjlist[i];
+         char tempxverb = xverb;
+         ParseError(8, 0);      /* "Which...do you mean..." */
+         xverb = tempxverb;
 
-			tempobjcount = objcount;
-			temppobjcount = pobjcount;
-			tempaddflag = addflag;
+         for (i=1; i<=words; i++)      /* save word arrays */
+            wdtemp[i] = wd[i];
+         wtemp = words;
+         tempobjfinish = objfinish;
+
+         for (i=0; i<=objcount; i++)   /* save object arrays */
+            tempobjlist[i] = objlist[i];
+         for (i=0; i<=pobjcount; i++)
+            temppobjlist[i] = pobjlist[i];
+
+         tempobjcount = objcount;
+         temppobjcount = pobjcount;
+         tempaddflag = addflag;
 
 
-			/* Get a new input and properly parse it; after
-			   all, it may be returned to MatchCommand() as
-			   a potentially valid command.
-			*/
-			GetCommand();
-			SeparateWords();
-			if (words==0)
-			{
-				ParseError(0, 1);
-				return 0;
-			}
-			if (!Parse())
-				return 0;
+         /* Get a new input and properly parse it; after
+            all, it may be returned to MatchCommand() as
+            a potentially valid command.
+         */
+         GetCommand();
+         SeparateWords();
+         if (words==0)
+         {
+            ParseError(0, 1);
+            return 0;
+         }
+         if (!Parse())
+            return 0;
 
-			objfinish = words;
+         objfinish = words;
 
-			/* Do we not care?  i.e. is "any", "either", etc. given? */
-			if (!strcmp(word[1], "~any") && words==1)
-			{
-				for (k=0; k<pobjcount; k++)
-				{
-					i = pobjlist[k].obj;
+         /* Do we not care?  i.e. is "any", "either", etc. given? */
+         if (!strcmp(word[1], "~any") && words==1)
+         {
+            for (k=0; k<pobjcount; k++)
+            {
+               i = pobjlist[k].obj;
 
-					if (strcmp(Name(i), ""))
-					{
-						pobj = i;
-						sprintf(line, "(%s)", Name(i));
-						AP(line);
-						goto RestoreTempArrays;
-					}
-				}
-			}
+               if (strcmp(Name(i), ""))
+               {
+                  pobj = i;
+                  sprintf(line, "(%s)", Name(i));
+                  AP(line);
+                  goto RestoreTempArrays;
+               }
+            }
+         }
 
-			/* Check to see if any object is disqualified by
-			   any one of the words.
-			*/
-			for (i=1; i<=words; i++)
-			{
-				if (word[i][0]!='~')
-				{
-					for (j=0; j<pobjcount; j++)
-					{
-						if (!ObjWord(pobjlist[j].obj, wd[i]))
-						{
-							SubtractPossibleObject(pobjlist[j].obj);
-							j--;
-						}
-					}
-				}
-			}
-			if (pobjcount==1)
-			{
-				pobj = pobjlist[0].obj;
-				full_buffer = false;
-				goto RestoreTempArrays;
-			}
+         /* Check to see if any object is disqualified by
+            any one of the words.
+         */
+         for (i=1; i<=words; i++)
+         {
+            if (word[i][0]!='~')
+            {
+               for (j=0; j<pobjcount; j++)
+               {
+                  if (!ObjWord(pobjlist[j].obj, wd[i]))
+                  {
+                     SubtractPossibleObject(pobjlist[j].obj);
+                     j--;
+                  }
+               }
+            }
+         }
+         if (pobjcount==1)
+         {
+            pobj = pobjlist[0].obj;
+            full_buffer = false;
+            goto RestoreTempArrays;
+         }
 
-			/* Check to see if the first word is a noun
-			   or adjective for any of the possible suspect objects.
-			*/
-			flag = 0;
-			for (i=0; i<pobjcount; i++)
-			{
-				if (ObjWord(pobjlist[i].obj, wd[1]))
-				{
-					flag = 1;
-					break;
-				}
-			}
-			if (!strcmp(word[1], "~all"))
-				flag = 1;
+         /* Check to see if the first word is a noun
+            or adjective for any of the possible suspect objects.
+         */
+         flag = 0;
+         for (i=0; i<pobjcount; i++)
+         {
+            if (ObjWord(pobjlist[i].obj, wd[1]))
+            {
+               flag = 1;
+               break;
+            }
+         }
+         if (!strcmp(word[1], "~all"))
+            flag = 1;
 
-			/* If not, tell MatchCommand() that there's a 
-			   new command coming down the hopper.
-			*/
-			if (flag==0)
-			{
-				full_buffer = true;
-				return 0;
-			}
+         /* If not, tell MatchCommand() that there's a
+            new command coming down the hopper.
+         */
+         if (flag==0)
+         {
+            full_buffer = true;
+            return 0;
+         }
 
-			/* Here, tell MatchObject()--this function--
-			   that this isn't a virgin call.
-			*/
-			recursive_call = true;
-			addflag = true;
-			i = 1;
-			j = MatchObject(&i);
-			if (j==false)	/* parsing error */
-			{
-				full_buffer = false;
-				return 0;
-			}
-			else if (j==-1)	/* multiple matches found */
-			{
-				/* See if a single entered word matches
-				   exactly the name of only one object
-				*/
-				if (words==1)
-				{
-					flag = 0;
-					for (j=0; j<temppobjcount; j++)
-					{
-						if (wd[1]==(unsigned int)GetProp(temppobjlist[j].obj, 0, 1, 0))
-						{
-							pobj = temppobjlist[j].obj;
-							flag++;
-						}
-					}
-					if (flag==1)
-					{
-						full_buffer = false;
-						goto RestoreTempArrays;
-					}
-				}
+         /* Here, tell MatchObject()--this function--
+            that this isn't a virgin call.
+         */
+         recursive_call = true;
+         addflag = true;
+         i = 1;
+         j = MatchObject(&i);
+         if (j==false)   /* parsing error */
+         {
+            full_buffer = false;
+            return 0;
+         }
+         else if (j==-1)   /* multiple matches found */
+         {
+            /* See if a single entered word matches
+               exactly the name of only one object
+            */
+            if (words==1)
+            {
+               flag = 0;
+               for (j=0; j<temppobjcount; j++)
+               {
+                  if (wd[1]==(unsigned int)GetProp(temppobjlist[j].obj, 0, 1, 0))
+                  {
+                     pobj = temppobjlist[j].obj;
+                     flag++;
+                  }
+               }
+               if (flag==1)
+               {
+                  full_buffer = false;
+                  goto RestoreTempArrays;
+               }
+            }
 
-				/* Now, even if we weren't able to find a
-				   match, check to see if the last word
-				   belongs to only one of the possible
-				   suspects, especially if it's a noun.
-				*/
-				flag = 0;
-				bestobj = 0;
-				i = words;
-				while (wd[i]==0) i--;
-				for (j=0; j<temppobjcount; j++)
-				{
-					if ((m = ObjWord(temppobjlist[j].obj, wd[i])) != 0)
-					{
-						if (!bestobj || m<=bestobj)
-						{
-							flag++;
-							bestobj = m;
-							pobj = temppobjlist[j].obj;
-						}
-					}
-				}
-				if (flag != 1)
-				{
-					/* "You'll have to be more specific..." */
-					ParseError(13, 0);
-					full_buffer = false;
-					return 0;
-				}
-				full_buffer = false;
-			}
+            /* Now, even if we weren't able to find a
+               match, check to see if the last word
+               belongs to only one of the possible
+               suspects, especially if it's a noun.
+            */
+            flag = 0;
+            bestobj = 0;
+            i = words;
+            while (wd[i]==0) i--;
+            for (j=0; j<temppobjcount; j++)
+            {
+               if ((m = ObjWord(temppobjlist[j].obj, wd[i])) != 0)
+               {
+                  if (!bestobj || m<=bestobj)
+                  {
+                     flag++;
+                     bestobj = m;
+                     pobj = temppobjlist[j].obj;
+                  }
+               }
+            }
+            if (flag != 1)
+            {
+               /* "You'll have to be more specific..." */
+               ParseError(13, 0);
+               full_buffer = false;
+               return 0;
+            }
+            full_buffer = false;
+         }
 
 RestoreTempArrays:
-		/* Rebuild <buffer> and word[] array */
-			strcpy(buffer, "");
-			for (i=1; i<=wtemp; i++)
-			{
-				strcat(buffer, GetWord(wdtemp[i]));
-				strcat(buffer, " ");
-			}
-			SeparateWords();
+      /* Rebuild <buffer> and word[] array */
+         strcpy(buffer, "");
+         for (i=1; i<=wtemp; i++)
+         {
+            strcat(buffer, GetWord(wdtemp[i]));
+            strcat(buffer, " ");
+         }
+         SeparateWords();
 
-		/* Restore wd[] array after SeparateWords() */
-			for (i=1; i<=wtemp; i++)
-				wd[i] = wdtemp[i];
-			words = wtemp;
-			objfinish = tempobjfinish;
+      /* Restore wd[] array after SeparateWords() */
+         for (i=1; i<=wtemp; i++)
+            wd[i] = wdtemp[i];
+         words = wtemp;
+         objfinish = tempobjfinish;
 
-		/* Restore object lists */
-			for (i=0; i<temppobjcount; i++)
-				pobjlist[i] = temppobjlist[i];
-			pobjcount = temppobjcount;
+      /* Restore object lists */
+         for (i=0; i<temppobjcount; i++)
+            pobjlist[i] = temppobjlist[i];
+         pobjcount = temppobjcount;
 
-			/* Multiple disambig. results for a non-multi verb? */
-			i = Peek(grammaraddr);
-			if (objcount>1 && i!=MULTI_T && i!=MULTIHELD_T && i!=MULTINOTHELD_T)
-			{
-				strcpy(parseerr, word[1]);
-				/* "You can't...multiple objects." */
-				ParseError(3, 0);
-				return 0;
-			}
+         /* Multiple disambig. results for a non-multi verb? */
+         i = Peek(grammaraddr);
+         if (objcount>1 && i!=MULTI_T && i!=MULTIHELD_T && i!=MULTINOTHELD_T)
+         {
+            strcpy(parseerr, word[1]);
+            /* "You can't...multiple objects." */
+            ParseError(3, 0);
+            return 0;
+         }
 
-			/* Check objlist against original pobjlist */
-			for (i=0; i<objcount; i++)
-			{
-				flag = 0;
-				for (j=0; j<pobjcount; j++)
-				{
-					if (pobjlist[j].obj==objlist[i])
-						flag = true;
-				}
-				if (!flag)
-				{
-					/* "You'll have to be more specific..." */
-					ParseError(13, 0);
-					full_buffer = false;
-					return 0;
-				}
-			}
+         /* Check objlist against original pobjlist */
+         for (i=0; i<objcount; i++)
+         {
+            flag = 0;
+            for (j=0; j<pobjcount; j++)
+            {
+               if (pobjlist[j].obj==objlist[i])
+                  flag = true;
+            }
+            if (!flag)
+            {
+               /* "You'll have to be more specific..." */
+               ParseError(13, 0);
+               full_buffer = false;
+               return 0;
+            }
+         }
 
-			/* Check pobjlist against disambiguation objlist */
-			for (i=0; i<pobjcount; i++)
-			{
-				flag = 0;
-				for (j=0; j<objcount; j++)
-				{
-					if (pobjlist[i].obj==objlist[j])
-						flag = true;
-				}
-				if (!flag)
-				{
-					SubtractPossibleObject(pobjlist[i].obj);
-					i--;
-				}
-			}
+         /* Check pobjlist against disambiguation objlist */
+         for (i=0; i<pobjcount; i++)
+         {
+            flag = 0;
+            for (j=0; j<objcount; j++)
+            {
+               if (pobjlist[i].obj==objlist[j])
+                  flag = true;
+            }
+            if (!flag)
+            {
+               SubtractPossibleObject(pobjlist[i].obj);
+               i--;
+            }
+         }
 
-			for (i=0; i<=tempobjcount; i++)
-				objlist[i] = tempobjlist[i];
-			objcount = (char)tempobjcount;
-			addflag = (char)tempaddflag;
+         for (i=0; i<=tempobjcount; i++)
+            objlist[i] = tempobjlist[i];
+         objcount = (char)tempobjcount;
+         addflag = (char)tempaddflag;
 
-			if (word[*wordnum][0]=='~') (*wordnum)--;
-		}
-	}
+         if (word[*wordnum][0]=='~') (*wordnum)--;
+      }
+   }
 
-	/* Rule out "noun noun" and "noun adjective" combinations */
+   /* Rule out "noun noun" and "noun adjective" combinations */
 
-	i = 0;                        /* count nouns */
-	k = 10;                       /* best (i.e., lowest) match */
-	for (j=1; j<=mobjs; j++)
-	{
-		if ((m = ObjWord(pobj, mobj[j]))==noun)
-		{
-			k = noun;
-			i++;
-		}
-		else if (k==noun) i = 2;
-	}
+   i = 0;                        /* count nouns */
+   k = 10;                       /* best (i.e., lowest) match */
+   for (j=1; j<=mobjs; j++)
+   {
+      if ((m = ObjWord(pobj, mobj[j]))==noun)
+      {
+         k = noun;
+         i++;
+      }
+      else if (k==noun) i = 2;
+   }
 
-	/* Can't use more than one noun for a given object */
-	if (i > 1)
-	{
-		/* "...no such thing" */
-		ParseError(5, 0);
-		return 0;
-	}
+   /* Can't use more than one noun for a given object */
+   if (i > 1)
+   {
+      /* "...no such thing" */
+      ParseError(5, 0);
+      return 0;
+   }
 
-	/* Check finally to make sure it's valid */
-	ResetFindObject();
-	if (!ValidObj(pobj))
-		return false;
+   /* Check finally to make sure it's valid */
+   ResetFindObject();
+   if (!ValidObj(pobj))
+      return false;
 
-	/* Finally--now add it or subtract it from the list, as
-	   appropriate:
-	*/
-	if (addflag==true)
-	{
-		if (pobjcount)
-		{
-			for (i=0; i<pobjcount; i++)
-				AddObj(pobjlist[i].obj);
-		}
+   /* Finally--now add it or subtract it from the list, as
+      appropriate:
+   */
+   if (addflag==true)
+   {
+      if (pobjcount)
+      {
+         for (i=0; i<pobjcount; i++)
+            AddObj(pobjlist[i].obj);
+      }
 
-		/* backup */
-		else if (pobj != 0)
-			AddObj(pobj);
-	}
-	else
-		SubtractObj(pobj);
+      /* backup */
+      else if (pobj != 0)
+         AddObj(pobj);
+   }
+   else
+      SubtractObj(pobj);
 
-	/* If the object wasn't where it was specifically claimed to be,
-	   applies to second pass through object phrase(s) after xobject
-	   is found (since <obj_match_state> is 2):
-	*/
-	if (obj_match_state==2 && domain != 0 &&
-		Parent(pobj) != domain && pobj != 0 && !speaking)
-	{
-		if (domain==var[player])
-			ParseError(15, pobj);    /* "You don't have any..." */
-		else
-			ParseError(14, pobj);    /* "You don't see any...there..." */
-		return 0;
-	}
+   /* If the object wasn't where it was specifically claimed to be,
+      applies to second pass through object phrase(s) after xobject
+      is found (since <obj_match_state> is 2):
+   */
+   if (obj_match_state==2 && domain != 0 &&
+      Parent(pobj) != domain && pobj != 0 && !speaking)
+   {
+      if (domain==var[player])
+         ParseError(15, pobj);    /* "You don't have any..." */
+      else
+         ParseError(14, pobj);    /* "You don't see any...there..." */
+      return 0;
+   }
 
-	if (!strcmp(word[*wordnum], "~except"))
-	{
-		if (obj_match_state==1)
-		{
-			ParseError(7, 0);	/* can't have multiple xobjects */
-			return 0;
-		}
-		addflag = false;
-	}
+   if (!strcmp(word[*wordnum], "~except"))
+   {
+      if (obj_match_state==1)
+      {
+         ParseError(7, 0);   /* can't have multiple xobjects */
+         return 0;
+      }
+      addflag = false;
+   }
 
-	if ((strcmp(word[*wordnum], "~and") && strcmp(word[*wordnum], "~except"))
-		|| obj_match_state==5)
-	{
-		/* At the end yet? */
-		if ((*wordnum > words || word[*wordnum][0]=='\0')
-			|| *wordnum > objfinish)
-		{
-			if ((objcount > 0 && pobj != 0) || recursive_call || speaking)
-				return true;
-			else
-			{
-				/* No objects found */
-				strcpy(parseerr, word[1]);
-				ParseError(9, 0);   /* "Nothing to (verb)..." */
-				return 0;
-			}
-		}
-	}
+   if ((strcmp(word[*wordnum], "~and") && strcmp(word[*wordnum], "~except"))
+      || obj_match_state==5)
+   {
+      /* At the end yet? */
+      if ((*wordnum > words || word[*wordnum][0]=='\0')
+         || *wordnum > objfinish)
+      {
+         if ((objcount > 0 && pobj != 0) || recursive_call || speaking)
+            return true;
+         else
+         {
+            /* No objects found */
+            strcpy(parseerr, word[1]);
+            ParseError(9, 0);   /* "Nothing to (verb)..." */
+            return 0;
+         }
+      }
+   }
 
-	/* Go back for the next object phrase */
-	pobjcount = 0;
-	mobjs = 0;
-	strcpy(parseerr, "");
+   /* Go back for the next object phrase */
+   pobjcount = 0;
+   mobjs = 0;
+   strcpy(parseerr, "");
 
-	goto NextLoop;
+   goto NextLoop;
 }
 
 
@@ -1807,565 +1806,565 @@ RestoreTempArrays:
 
 int MatchWord(int *wordnum)
 {
-	char num[18];
-	int i, p, t, flag, finish;
-	unsigned int thissyntax, nextsyntax;
+   char num[18];
+   int i, p, t, flag, finish;
+   unsigned int thissyntax, nextsyntax;
 
-	if (wd[*wordnum]==0)
-		return 0;
+   if (wd[*wordnum]==0)
+      return 0;
 
-	switch ((t = Peek(grammaraddr)))
-	{
-		/* the verb ("*") */
-		case ASTERISK_T:
-			(*wordnum)++;
-			AdvanceGrammar();
-			return true;
+   switch ((t = Peek(grammaraddr)))
+   {
+      /* the verb ("*") */
+      case ASTERISK_T:
+         (*wordnum)++;
+         AdvanceGrammar();
+         return true;
 
-		/* a non-specific dictionary word */
-		case WORD_T:
-			if (obj_match_state==1)
-				var[xobject] = wd[*wordnum];
-			else
-			{
-				var[object] = wd[*wordnum];
-				obj_match_state = 1;
-			}
-			object_is_number = true;
-			(*wordnum)++;
-			AdvanceGrammar();
-			return true;
+      /* a non-specific dictionary word */
+      case WORD_T:
+         if (obj_match_state==1)
+            var[xobject] = wd[*wordnum];
+         else
+         {
+            var[object] = wd[*wordnum];
+            obj_match_state = 1;
+         }
+         object_is_number = true;
+         (*wordnum)++;
+         AdvanceGrammar();
+         return true;
 
-		/* a specific dictionary entry */
-		case DICTENTRY_T:
+      /* a specific dictionary entry */
+      case DICTENTRY_T:
 CheckWord:
-			/* matches word */
-			if (wd[*wordnum]==PeekWord(grammaraddr + 1))
-			{
-				(*wordnum)++;
-				AdvanceGrammar();
-				while (Peek(grammaraddr)==9)
-					grammaraddr += 4;
-				return true;
-			}
-			else
-			{
-				/* if next word is a "/" */
-				if (Peek(grammaraddr + 3)==FORWARD_SLASH_T)
-				{
-					AdvanceGrammar();       /* this word */
-					AdvanceGrammar();       /* "/" */
-					goto CheckWord;
-				}
+         /* matches word */
+         if (wd[*wordnum]==PeekWord(grammaraddr + 1))
+         {
+            (*wordnum)++;
+            AdvanceGrammar();
+            while (Peek(grammaraddr)==9)
+               grammaraddr += 4;
+            return true;
+         }
+         else
+         {
+            /* if next word is a "/" */
+            if (Peek(grammaraddr + 3)==FORWARD_SLASH_T)
+            {
+               AdvanceGrammar();       /* this word */
+               AdvanceGrammar();       /* "/" */
+               goto CheckWord;
+            }
 
-				return 0;
-			}
+            return 0;
+         }
 
-		/* alternative dictionary words */
-		case FORWARD_SLASH_T:
-			grammaraddr++;
-			return true;
+      /* alternative dictionary words */
+      case FORWARD_SLASH_T:
+         grammaraddr++;
+         return true;
 
-		/* a number */
-		case NUMBER_T:
-			if ((STARTS_AS_NUMBER(word[*wordnum])) &&
-				!strcmp(itoa(atoi(word[*wordnum]), num, 10), word[*wordnum]))
-			{
-				if (obj_match_state==1)
-					var[xobject] = atoi(word[*wordnum]);
-				else
-				{
-					var[object] = atoi(word[*wordnum]);
-					obj_match_state = 1;
-				}
-				object_is_number = true;
-				AdvanceGrammar();
-				(*wordnum)++;
-				return true;
-			}
-			break;
+      /* a number */
+      case NUMBER_T:
+         if ((STARTS_AS_NUMBER(word[*wordnum])) &&
+            !strcmp(itoa(atoi(word[*wordnum]), num, 10), word[*wordnum]))
+         {
+            if (obj_match_state==1)
+               var[xobject] = atoi(word[*wordnum]);
+            else
+            {
+               var[object] = atoi(word[*wordnum]);
+               obj_match_state = 1;
+            }
+            object_is_number = true;
+            AdvanceGrammar();
+            (*wordnum)++;
+            return true;
+         }
+         break;
 
-		/* a string enclosed in quotes */
-		case STRING_T:
-			if (parsestr[0]=='\"')
-			{
-				AdvanceGrammar();
-				(*wordnum)++;
-				return true;
-			}
-			else
-				return 0;
+      /* a string enclosed in quotes */
+      case STRING_T:
+         if (parsestr[0]=='\"')
+         {
+            AdvanceGrammar();
+            (*wordnum)++;
+            return true;
+         }
+         else
+            return 0;
 
-		default:
-		{
-		
-		/* Some manifestation of an object (or objects) before domain is
-		   found, since <obj_match_state> is initially set to 0:
-		*/
-			if (obj_match_state==0)
-			{
-				if (Peek(grammaraddr)==HELD_T || Peek(grammaraddr)==MULTIHELD_T)
-					odomain = var[actor];
+      default:
+      {
 
-				obj_match_state = 1;    /* since next set of object words
-							   must be the xobject */
-				objstart = *wordnum;
-				objgrammar = grammaraddr;
+      /* Some manifestation of an object (or objects) before domain is
+         found, since <obj_match_state> is initially set to 0:
+      */
+         if (obj_match_state==0)
+         {
+            if (Peek(grammaraddr)==HELD_T || Peek(grammaraddr)==MULTIHELD_T)
+               odomain = var[actor];
 
-				while (wd[*wordnum] != 0)
-				{
-					finish = *wordnum;
+            obj_match_state = 1;    /* since next set of object words
+                        must be the xobject */
+            objstart = *wordnum;
+            objgrammar = grammaraddr;
 
-					/* Check what's coming up in case it's a dictionary
-					   word--which would override an object phrase.
-					*/
-					thissyntax = grammaraddr;
-					AdvanceGrammar();
-					nextsyntax = grammaraddr;
-					grammaraddr = thissyntax;
+            while (wd[*wordnum] != 0)
+            {
+               finish = *wordnum;
 
-					/* dictionary word or string */
+               /* Check what's coming up in case it's a dictionary
+                  word--which would override an object phrase.
+               */
+               thissyntax = grammaraddr;
+               AdvanceGrammar();
+               nextsyntax = grammaraddr;
+               grammaraddr = thissyntax;
+
+               /* dictionary word or string */
 CheckWordorString:
-					p = Peek(nextsyntax);
-					if (p==DICTENTRY_T || p==STRING_T)
-					{
-						if ((PeekWord(nextsyntax + 1)==wd[*wordnum]) ||
-							(p==STRING_T && wd[*wordnum]==UNKNOWN_WORD))
-						{
-							grammaraddr = nextsyntax;
-							if (*wordnum != objstart)
-								return true;
-							else
-								return false;
-						}
-						else if (Peek(nextsyntax + 3)==FORWARD_SLASH_T)
-						{
-							thissyntax = grammaraddr;
-							grammaraddr = nextsyntax + 3;
-							AdvanceGrammar();
-							nextsyntax = grammaraddr;
-							grammaraddr = thissyntax;
-							
-							goto CheckWordorString;
-						}
-					}
+               p = Peek(nextsyntax);
+               if (p==DICTENTRY_T || p==STRING_T)
+               {
+                  if ((PeekWord(nextsyntax + 1)==wd[*wordnum]) ||
+                     (p==STRING_T && wd[*wordnum]==UNKNOWN_WORD))
+                  {
+                     grammaraddr = nextsyntax;
+                     if (*wordnum != objstart)
+                        return true;
+                     else
+                        return false;
+                  }
+                  else if (Peek(nextsyntax + 3)==FORWARD_SLASH_T)
+                  {
+                     thissyntax = grammaraddr;
+                     grammaraddr = nextsyntax + 3;
+                     AdvanceGrammar();
+                     nextsyntax = grammaraddr;
+                     grammaraddr = thissyntax;
 
-					/* or a number */
-					else if ((p==NUMBER_T && STARTS_AS_NUMBER(word[*wordnum])) &&
-						!strcmp(word[*wordnum], itoa(atoi(word[*wordnum]), num, 10)))
-					{
-						grammaraddr = nextsyntax;
-						if (*wordnum != objstart)
-							return true;
-						else
-							return false;
-					}
+                     goto CheckWordorString;
+                  }
+               }
 
-					/* Pass over any object words--they'll be matched
-					   specifically later in MatchCommand().
-					*/
-					flag = 0;
-					if (AnyObjWord(*wordnum)==1)
-					{
-						(*wordnum)++;
-						flag = 1;
-					}
+               /* or a number */
+               else if ((p==NUMBER_T && STARTS_AS_NUMBER(word[*wordnum])) &&
+                  !strcmp(word[*wordnum], itoa(atoi(word[*wordnum]), num, 10)))
+               {
+                  grammaraddr = nextsyntax;
+                  if (*wordnum != objstart)
+                     return true;
+                  else
+                     return false;
+               }
 
-					/* if "~and", "~all",... */
-					if (word[*wordnum][0]=='~')
-					{
-						int multicheck = Peek(grammaraddr);
-						
-						(*wordnum)++;
-						flag = 1;
+               /* Pass over any object words--they'll be matched
+                  specifically later in MatchCommand().
+               */
+               flag = 0;
+               if (AnyObjWord(*wordnum)==1)
+               {
+                  (*wordnum)++;
+                  flag = 1;
+               }
 
-						/* multi or multi(something) */
-						if (multicheck != MULTI_T &&
-							multicheck != MULTIHELD_T &&
-							multicheck != MULTINOTHELD_T)
-						{
-							strcpy(parseerr, word[1]);
-							/* "You can't...multiple objects." */
-							ParseError(3, 0);
-							return 2;
-						}
-					}
+               /* if "~and", "~all",... */
+               if (word[*wordnum][0]=='~')
+               {
+                  int multicheck = Peek(grammaraddr);
 
-					objfinish = finish;
+                  (*wordnum)++;
+                  flag = 1;
 
-					if (flag==0)
-						return 0;
-				}
+                  /* multi or multi(something) */
+                  if (multicheck != MULTI_T &&
+                     multicheck != MULTIHELD_T &&
+                     multicheck != MULTINOTHELD_T)
+                  {
+                     strcpy(parseerr, word[1]);
+                     /* "You can't...multiple objects." */
+                     ParseError(3, 0);
+                     return 2;
+                  }
+               }
 
-				AdvanceGrammar();
-				return true;
-			}
+               objfinish = finish;
 
-		/* hitting xobject */
+               if (flag==0)
+                  return 0;
+            }
 
-			else if (obj_match_state==1)
-			{
-				int temp_objfinish = objfinish;
+            AdvanceGrammar();
+            return true;
+         }
 
-				/* If we don't know the verbroutine, try to figure it out */
-				if (var[verbroutine]==0)
-				{
-					thissyntax = grammaraddr;
-					AdvanceGrammar();
-					nextsyntax = grammaraddr;
-					grammaraddr = thissyntax;
-					if (Peek(nextsyntax)==ROUTINE_T)
-					{
-						var[verbroutine] = PeekWord(nextsyntax+1);
-					}
-				}
+      /* hitting xobject */
 
-				p = Peek(grammaraddr);
-				
-				/* If the xobject is specifically a parent of the
-				   object(s) to be matched later:
-				*/
-				if (p==PARENT_T) domain = -1;
+         else if (obj_match_state==1)
+         {
+            int temp_objfinish = objfinish;
 
-				/* Also deal with held xobjects */
-				t = domain;
-				if (p==HELD_T || p==MULTIHELD_T)
-					domain = var[actor];
+            /* If we don't know the verbroutine, try to figure it out */
+            if (var[verbroutine]==0)
+            {
+               thissyntax = grammaraddr;
+               AdvanceGrammar();
+               nextsyntax = grammaraddr;
+               grammaraddr = thissyntax;
+               if (Peek(nextsyntax)==ROUTINE_T)
+               {
+                  var[verbroutine] = PeekWord(nextsyntax+1);
+               }
+            }
 
-				/* Figure out where this xobject must end, as per grammar */
-				objfinish = -1;
-				if (*wordnum < words)
-				{
-					thissyntax = grammaraddr;
-					AdvanceGrammar();
-					nextsyntax = grammaraddr;
-					grammaraddr = thissyntax;
+            p = Peek(grammaraddr);
+
+            /* If the xobject is specifically a parent of the
+               object(s) to be matched later:
+            */
+            if (p==PARENT_T) domain = -1;
+
+            /* Also deal with held xobjects */
+            t = domain;
+            if (p==HELD_T || p==MULTIHELD_T)
+               domain = var[actor];
+
+            /* Figure out where this xobject must end, as per grammar */
+            objfinish = -1;
+            if (*wordnum < words)
+            {
+               thissyntax = grammaraddr;
+               AdvanceGrammar();
+               nextsyntax = grammaraddr;
+               grammaraddr = thissyntax;
 
 CheckXobjectFinish:
-					p = Peek(nextsyntax);
-					for (i=*wordnum+1; i<=words; i++)
-					{
-						if (p==DICTENTRY_T || p==STRING_T)
-						{
-							if ((PeekWord(nextsyntax + 1)==wd[i]) ||
-								(p==STRING_T && wd[i]==UNKNOWN_WORD))
-							{
-								objfinish = i-1;
-								break;
-							}
-						}
-						else if (Peek(nextsyntax + 3)==FORWARD_SLASH_T)
-						{
-							thissyntax = grammaraddr;
-							grammaraddr = nextsyntax + 3;
-							AdvanceGrammar();
-							nextsyntax = grammaraddr;
-							grammaraddr = thissyntax;
-						
-							goto CheckXobjectFinish;
-						}
-						else if ((p==NUMBER_T && STARTS_AS_NUMBER(word[*wordnum])) &&
-							!strcmp(word[*wordnum], itoa(atoi(word[*wordnum]), num, 10)))
-						{
-							objfinish = i;
-							break;
-						}
-						else
-							break;
-					}
+               p = Peek(nextsyntax);
+               for (i=*wordnum+1; i<=words; i++)
+               {
+                  if (p==DICTENTRY_T || p==STRING_T)
+                  {
+                     if ((PeekWord(nextsyntax + 1)==wd[i]) ||
+                        (p==STRING_T && wd[i]==UNKNOWN_WORD))
+                     {
+                        objfinish = i-1;
+                        break;
+                     }
+                  }
+                  else if (Peek(nextsyntax + 3)==FORWARD_SLASH_T)
+                  {
+                     thissyntax = grammaraddr;
+                     grammaraddr = nextsyntax + 3;
+                     AdvanceGrammar();
+                     nextsyntax = grammaraddr;
+                     grammaraddr = thissyntax;
 
-				}
+                     goto CheckXobjectFinish;
+                  }
+                  else if ((p==NUMBER_T && STARTS_AS_NUMBER(word[*wordnum])) &&
+                     !strcmp(word[*wordnum], itoa(atoi(word[*wordnum]), num, 10)))
+                  {
+                     objfinish = i;
+                     break;
+                  }
+                  else
+                     break;
+               }
 
-				if (objfinish==-1) objfinish = words;
+            }
 
-				/* Regardless, try to match the xobject */
-				recursive_call = false;
-				if (MatchObject(&(*wordnum))==0)
-				{
-					objfinish = temp_objfinish;
+            if (objfinish==-1) objfinish = words;
 
-					return 2;
-				}
-				else
-				{
-					objfinish = temp_objfinish;
+            /* Regardless, try to match the xobject */
+            recursive_call = false;
+            if (MatchObject(&(*wordnum))==0)
+            {
+               objfinish = temp_objfinish;
 
-					domain = 0;
-					if (ValidObj(pobj)==false)
-						return 2;
-					domain = t;
+               return 2;
+            }
+            else
+            {
+               objfinish = temp_objfinish;
 
-					if (objcount==1)
-						var[xobject] = objlist[0];
-					else
-						var[xobject] = pobj;
-					if (domain==-1) domain = var[xobject]; /* parent */
-					obj_match_state = 2;
+               domain = 0;
+               if (ValidObj(pobj)==false)
+                  return 2;
+               domain = t;
 
-					AdvanceGrammar();
+               if (objcount==1)
+                  var[xobject] = objlist[0];
+               else
+                  var[xobject] = pobj;
+               if (domain==-1) domain = var[xobject]; /* parent */
+               obj_match_state = 2;
 
-					/* Can't have multiple xobjects */
-					if (objcount > 1)
-					{
-						ParseError(7, 0);
-						return 2;
-					}
-					objcount = 0;
-					return true;
-				}
-			}
-		}
-	}
-	
-	return 0;
+               AdvanceGrammar();
+
+               /* Can't have multiple xobjects */
+               if (objcount > 1)
+               {
+                  ParseError(7, 0);
+                  return 2;
+               }
+               objcount = 0;
+               return true;
+            }
+         }
+      }
+   }
+
+   return 0;
 }
 
 
 /* OBJWORDTYPE
 
-	Returns true if the specified object has the specified word
-	as an adjective or noun (as specified by type).
+   Returns true if the specified object has the specified word
+   as an adjective or noun (as specified by type).
 */
 
 int ObjWordType(int obj, unsigned int w, int type)
 {
-	int j, num;
-	unsigned int pa;
-	
-	pa = PropAddr(obj, type, 0);
-	if (pa)
-	{
-		defseg = proptable;
-		num = Peek(pa + 1);
-		
-		if (num==PROP_ROUTINE)
-		{
-			if ((unsigned int)GetProp(obj, type, 1, false)==w)
-			{
-				defseg = gameseg;
-				return true;
-			}
-		}
-		else
-		{
-			for (j=1; j<=num; j++)
-			{
-				if (PeekWord(pa + j * 2)==w)
-				{
-					defseg = gameseg;
-					return true;
-				}
-			}
-		}
-	}
+   int j, num;
+   unsigned int pa;
 
-	defseg = gameseg;
+   pa = PropAddr(obj, type, 0);
+   if (pa)
+   {
+      defseg = proptable;
+      num = Peek(pa + 1);
 
-	return false;
+      if (num==PROP_ROUTINE)
+      {
+         if ((unsigned int)GetProp(obj, type, 1, false)==w)
+         {
+            defseg = gameseg;
+            return true;
+         }
+      }
+      else
+      {
+         for (j=1; j<=num; j++)
+         {
+            if (PeekWord(pa + j * 2)==w)
+            {
+               defseg = gameseg;
+               return true;
+            }
+         }
+      }
+   }
+
+   defseg = gameseg;
+
+   return false;
 }
 
 
 /* OBJWORD
 
-	Returns <adjective> if the word at dictionary address <w> is
-	an adjective of <obj>, or <noun> if it is a noun.
+   Returns <adjective> if the word at dictionary address <w> is
+   an adjective of <obj>, or <noun> if it is a noun.
 */
 
 int ObjWord(int obj, unsigned int w)
 {
-	if ((obj_parselist) && !(obj_parselist[obj/8]&1<<(obj%8)))
-		return 0;
+   if ((obj_parselist) && !(obj_parselist[obj/8]&1<<(obj%8)))
+      return 0;
 
-	if (ObjWordType(obj, w, adjective))
-		return adjective;
-	
-	if (ObjWordType(obj, w, noun))
-		return noun;
-		
-	return 0;
+   if (ObjWordType(obj, w, adjective))
+      return adjective;
+
+   if (ObjWordType(obj, w, noun))
+      return noun;
+
+   return 0;
 }
 
 
 /* PARSE
 
-	Turns word[] into dictionary addresses stored in wd[].  Takes care
-	of fingering illegal (unknown) words and doing alterations such
-	as compounds, removals, and synonyms.
+   Turns word[] into dictionary addresses stored in wd[].  Takes care
+   of fingering illegal (unknown) words and doing alterations such
+   as compounds, removals, and synonyms.
 */
 
 int Parse()
 {
-	char foundstring = 0;           /* allow one unknown word/phrase */
-	int notfound_word = 0;
-	int i, j, k, m;
-	char num[33];
-	char tempword[81];
-	unsigned int period, comma;
-	unsigned int synptr;
+   char foundstring = 0;           /* allow one unknown word/phrase */
+   int notfound_word = 0;
+   int i, j, k, m;
+   char num[33];
+   char tempword[81];
+   unsigned int period, comma;
+   unsigned int synptr;
 
-	period = FindWord(".");
-	comma = FindWord(",");
+   period = FindWord(".");
+   comma = FindWord(",");
 
-	strcpy(parsestr, "");           /* for storing any unknown string */
-	parsed_number = 0;              /*  "     "     "  parsed number  */
+   strcpy(parsestr, "");           /* for storing any unknown string */
+   parsed_number = 0;              /*  "     "     "  parsed number  */
 
-	for (i=1; i<=words; i++)        /* find dictionary addresses */
-	{
-		if (word[i][0]=='\"' && foundstring==0)
-		{
-			strcpy(parsestr, word[i]);
-			foundstring = 1;
-			wd[i] = UNKNOWN_WORD;
-		}
-		else
-		{
-			wd[i] = FindWord(word[i]);
+   for (i=1; i<=words; i++)        /* find dictionary addresses */
+   {
+      if (word[i][0]=='\"' && foundstring==0)
+      {
+         strcpy(parsestr, word[i]);
+         foundstring = 1;
+         wd[i] = UNKNOWN_WORD;
+      }
+      else
+      {
+         wd[i] = FindWord(word[i]);
 
-			/* Numbers -32768 to 32767 are valid...*/
-			if (!strcmp(word[i], itoa(atoi(word[i]), num, 10)))
-			{
+         /* Numbers -32768 to 32767 are valid...*/
+         if (!strcmp(word[i], itoa(atoi(word[i]), num, 10)))
+         {
 #if !defined (MATH_16BIT)
-				if (atoi(word[i]) > 32767 || atoi(word[i]) < -32768)
-					goto NotinDictionary;
+            if (atoi(word[i]) > 32767 || atoi(word[i]) < -32768)
+               goto NotinDictionary;
 #endif
-				parsed_number = atoi(word[i]);
-				if (parseerr[0]=='\0')
-					strcpy(parseerr, word[i]);
-			}
+            parsed_number = atoi(word[i]);
+            if (parseerr[0]=='\0')
+               strcpy(parseerr, word[i]);
+         }
 
-			/* Otherwise it must be a dictionary entry */
-			else
-			{
-				/* If it's not in the dictionary */
-				if (wd[i]==UNKNOWN_WORD)
-				{
+         /* Otherwise it must be a dictionary entry */
+         else
+         {
+            /* If it's not in the dictionary */
+            if (wd[i]==UNKNOWN_WORD)
+            {
 NotinDictionary:
-					if (!notfound_word)
-					{
-						strcpy(parseerr, word[i]);
-						strcpy(oops, word[i]);
+               if (!notfound_word)
+               {
+                  strcpy(parseerr, word[i]);
+                  strcpy(oops, word[i]);
 
-						notfound_word = i;
-					}
-				}
-			}
-		}
-	}
+                  notfound_word = i;
+               }
+            }
+         }
+      }
+   }
 
-	/* Return here instead of immediately, so that we have a chance
-	   to load the rest of the recognized words into the word array
-	*/
-	if (notfound_word)
-	{
-		i = notfound_word;
+   /* Return here instead of immediately, so that we have a chance
+      to load the rest of the recognized words into the word array
+   */
+   if (notfound_word)
+   {
+      i = notfound_word;
 
-		/* "...can't use the word..." */
-		ParseError(1, 0);
-		strcpy(errbuf, "");
-		for (i=1; i<=words; i++)
-		{
-			strcat(errbuf, word[i]);
-			if (i != words) strcat(errbuf, " ");
-		}
+      /* "...can't use the word..." */
+      ParseError(1, 0);
+      strcpy(errbuf, "");
+      for (i=1; i<=words; i++)
+      {
+         strcat(errbuf, word[i]);
+         if (i != words) strcat(errbuf, " ");
+      }
 
-		return 0;
-	}
+      return 0;
+   }
 
-	wd[words+1] = 0;
-	oopscount = 0;
+   wd[words+1] = 0;
+   oopscount = 0;
 
 
-	/* Do synonyms, removals, compounds, punctuation */
+   /* Do synonyms, removals, compounds, punctuation */
 
-	for (i=1; i<=words; i++)                /* Look through words... */
-	{
-		synptr = 2;
+   for (i=1; i<=words; i++)                /* Look through words... */
+   {
+      synptr = 2;
 
-		for (j=1; j<=syncount; j++)  /* ...and alterations */
-		{
-			defseg = syntable;
-			if (wd[i]==PeekWord(synptr + 1))
-			{
-				switch (Peek(synptr))
-				{
-					case 0:        /* synonym */
-					{
-						defseg = syntable;
-						wd[i] = PeekWord(synptr + 3);
-						m = strlen(GetWord(wd[i])) - strlen(word[i]);
-						if (m)
-						{
-							if (m + (int)strlen(buffer) > 81)
-								{strcpy(buffer, "");
-								words = 0;
-								ParseError(0, 0);
-								return 0;}
+      for (j=1; j<=syncount; j++)  /* ...and alterations */
+      {
+         defseg = syntable;
+         if (wd[i]==PeekWord(synptr + 1))
+         {
+            switch (Peek(synptr))
+            {
+               case 0:        /* synonym */
+               {
+                  defseg = syntable;
+                  wd[i] = PeekWord(synptr + 3);
+                  m = strlen(GetWord(wd[i])) - strlen(word[i]);
+                  if (m)
+                  {
+                     if (m + (int)strlen(buffer) > 81)
+                        {strcpy(buffer, "");
+                        words = 0;
+                        ParseError(0, 0);
+                        return 0;}
 
-							for (k=words; k>i; k--)
-							{
-								strcpy(tempword, word[k]);
-								word[k] += m;
-								strcpy(word[k], tempword);
-							}
-						}
-						strcpy(word[i], GetWord(wd[i]));
-						i--;
-						break;
-					}
+                     for (k=words; k>i; k--)
+                     {
+                        strcpy(tempword, word[k]);
+                        word[k] += m;
+                        strcpy(word[k], tempword);
+                     }
+                  }
+                  strcpy(word[i], GetWord(wd[i]));
+                  i--;
+                  break;
+               }
 
-					case 1:        /* removal */
-					{
-						KillWord(i);
-						i--;
-						break;
-					}
+               case 1:        /* removal */
+               {
+                  KillWord(i);
+                  i--;
+                  break;
+               }
 
-					case 2:        /* compound */
-					{
-						if (wd[i+1]==PeekWord(synptr+3))
-						{
-							strcat(word[i], word[i+1]);
-							wd[i] = FindWord(word[i]);
-							KillWord(i+1);
-						}
-						break;
-					}
-				}
-				goto NextSyn;
-			}
+               case 2:        /* compound */
+               {
+                  if (wd[i+1]==PeekWord(synptr+3))
+                  {
+                     strcat(word[i], word[i+1]);
+                     wd[i] = FindWord(word[i]);
+                     KillWord(i+1);
+                  }
+                  break;
+               }
+            }
+            goto NextSyn;
+         }
 NextSyn:
-			synptr += 5;
-		}
+         synptr += 5;
+      }
 
-		if (wd[i]==comma)
-		{
-			if (strcmp(word[i+1], "~and"))
-			{
-				word[i] = "~and";
-				wd[i] = FindWord("~and");
-			}
-			else
-				KillWord(i);
-		}
+      if (wd[i]==comma)
+      {
+         if (strcmp(word[i+1], "~and"))
+         {
+            word[i] = "~and";
+            wd[i] = FindWord("~and");
+         }
+         else
+            KillWord(i);
+      }
 
-		if (wd[i]==period)
-		{
-			wd[i] = 0;
-			word[i] = "";
-		}
-	}
+      if (wd[i]==period)
+      {
+         wd[i] = 0;
+         word[i] = "";
+      }
+   }
 
-	defseg = gameseg;
+   defseg = gameseg;
 
-	if (strcmp(word[1], "~oops")) strcpy(oops, "");
+   if (strcmp(word[1], "~oops")) strcpy(oops, "");
 
-	if (words==0)
-	{
-		ParseError(0,0);        /* What? */
-		return false;
-	}
-		
-	return true;
+   if (words==0)
+   {
+      ParseError(0,0);        /* What? */
+      return false;
+   }
+
+   return true;
 }
 
 
@@ -2373,501 +2372,501 @@ NextSyn:
 
 void ParseError(int e, int a)
 {
-	int i, k, count;
+   int i, k, count;
 
-	remaining = 0;
-	xverb = true;
+   remaining = 0;
+   xverb = true;
 
-	if (e==5 && !strcmp(parseerr, "")) e = 6;
+   if (e==5 && !strcmp(parseerr, "")) e = 6;
 
-	if (parseerroraddr)
-	{
-		ret = 0;
-		passlocal[0] = e;
-		passlocal[1] = a;
-		PassLocals(2);
+   if (parseerroraddr)
+   {
+      ret = 0;
+      passlocal[0] = e;
+      passlocal[1] = a;
+      PassLocals(2);
 
-		SetStackFrame(RESET_STACK_DEPTH, RUNROUTINE_BLOCK, 0, 0);
+      SetStackFrame(RESET_STACK_DEPTH, RUNROUTINE_BLOCK, 0, 0);
 
 #if defined (DEBUGGER)
-		DebugRunRoutine((long)parseerroraddr*address_scale);
+      DebugRunRoutine((long)parseerroraddr*address_scale);
 #else
-		RunRoutine((long)parseerroraddr*address_scale);
+      RunRoutine((long)parseerroraddr*address_scale);
 #endif
-		stack_depth = 0;
-		retflag = 0;
-		if (ret)
-		{
-			if (ret==2) reparse_everything = true;
-			return;
-		}
-	}
+      stack_depth = 0;
+      retflag = 0;
+      if (ret)
+      {
+         if (ret==2) reparse_everything = true;
+         return;
+      }
+   }
 
-	switch (e)
-	{
-		case 0:
-			AP("What?");
-			break;
+   switch (e)
+   {
+      case 0:
+         AP("What?");
+         break;
 
-		case 1:
-			sprintf(line, "You can't use the word \"%s\".", parseerr);
-			AP(line);
-			break;
+      case 1:
+         sprintf(line, "You can't use the word \"%s\".", parseerr);
+         AP(line);
+         break;
 
-		case 2:
-			AP("Better start with a verb.");
-			break;
+      case 2:
+         AP("Better start with a verb.");
+         break;
 
-		case 3:
-			sprintf(line, "You can't %s multiple objects.", parseerr);
-			AP(line);
-			break;
+      case 3:
+         sprintf(line, "You can't %s multiple objects.", parseerr);
+         AP(line);
+         break;
 
-		case 4:
-			AP("Can't do that.");
-			break;
+      case 4:
+         AP("Can't do that.");
+         break;
 
-		case 5:
-			sprintf(line, "You haven't seen any \"%s\", nor are you likely to in the near future even if such a thing exists.", parseerr);
-			AP(line);
-			break;
+      case 5:
+         sprintf(line, "You haven't seen any \"%s\", nor are you likely to in the near future even if such a thing exists.", parseerr);
+         AP(line);
+         break;
 
-		case 6:
-			AP("That doesn't make any sense.");
-			break;
+      case 6:
+         AP("That doesn't make any sense.");
+         break;
 
-		case 7:
-			AP("You can't use multiple objects like that.");
-			break;
+      case 7:
+         AP("You can't use multiple objects like that.");
+         break;
 
-		case 8:
-		{
-			sprintf(line, "Which %s do you mean, ", !parse_called_twice?parseerr:"exactly");
-			count = 1;
-			for (k=0; k<pobjcount; k++)
-			{
-				i = pobjlist[k].obj;
+      case 8:
+      {
+         sprintf(line, "Which %s do you mean, ", !parse_called_twice?parseerr:"exactly");
+         count = 1;
+         for (k=0; k<pobjcount; k++)
+         {
+            i = pobjlist[k].obj;
 
-				if (strcmp(Name(i), ""))
-				{
-					if (count==pobjcount)
-					{
-						if (count > 2) strcat(line, ",");
-						strcat(line, " or ");
-					}
-					else
-					{
-						if (count != 1)
-							strcat(line, ", ");
-					}
-					if (GetProp(i, article, 1, 0))
-					{
-						char *w = GetWord(GetProp(i, article, 1, 0));
-						/* Don't use "a" or "an" in listing */
-						/*
-						if (!strcmp(w, "a") || !strcmp(w, "an"))
-							strcat(line, "the ");
-						else
-							sprintf(line+strlen(line), "%s ", w);
-						*/
-						/* We'll just use "the" */
-						if (w) strcat(line, "the ");
-					}
-					strcat(line, Name(i));
-					count++;
-				}
-			}
-			strcat(line, "?");
-			AP(line);
-			break;
-		}
+            if (strcmp(Name(i), ""))
+            {
+               if (count==pobjcount)
+               {
+                  if (count > 2) strcat(line, ",");
+                  strcat(line, " or ");
+               }
+               else
+               {
+                  if (count != 1)
+                     strcat(line, ", ");
+               }
+               if (GetProp(i, article, 1, 0))
+               {
+                  char *w = GetWord(GetProp(i, article, 1, 0));
+                  /* Don't use "a" or "an" in listing */
+                  /*
+                  if (!strcmp(w, "a") || !strcmp(w, "an"))
+                     strcat(line, "the ");
+                  else
+                     sprintf(line+strlen(line), "%s ", w);
+                  */
+                  /* We'll just use "the" */
+                  if (w) strcat(line, "the ");
+               }
+               strcat(line, Name(i));
+               count++;
+            }
+         }
+         strcat(line, "?");
+         AP(line);
+         break;
+      }
 
-		case 9:
-			sprintf(line, "Nothing to %s.", parseerr);
-			AP(line);
-			break;
+      case 9:
+         sprintf(line, "Nothing to %s.", parseerr);
+         AP(line);
+         break;
 
-		case 10:
-			AP("You haven't seen anything like that.");
-			break;
+      case 10:
+         AP("You haven't seen anything like that.");
+         break;
 
-		case 11:
-			AP("You don't see that.");
-			break;
+      case 11:
+         AP("You don't see that.");
+         break;
 
-		case 12:
-			sprintf(line, "You can't do that with the %s.", Name(a));
-			AP(line);
-			break;
+      case 12:
+         sprintf(line, "You can't do that with the %s.", Name(a));
+         AP(line);
+         break;
 
-		case 13:
-			AP("You'll have to be a little more specific.");
-			break;
+      case 13:
+         AP("You'll have to be a little more specific.");
+         break;
 
-		case 14:
-			AP("You don't see that there.");
-			break;
+      case 14:
+         AP("You don't see that there.");
+         break;
 
-		case 15:
-			AP("You don't have that.");
-			break;
+      case 15:
+         AP("You don't have that.");
+         break;
 
-		case 16:
-			AP("You'll have to make a mistake first.");
-			break;
+      case 16:
+         AP("You'll have to make a mistake first.");
+         break;
 
-		case 17:
-			AP("You can only correct one word at a time.");
-			break;
-	}
+      case 17:
+         AP("You can only correct one word at a time.");
+         break;
+   }
 }
 
 
 /* REMOVEWORD
 
-	Deletes wd[a].
+   Deletes wd[a].
 */
 
 void RemoveWord(int a)
 {
-	if (a > words)
-		return;
+   if (a > words)
+      return;
 
-	for (; a<words; a++)
-	{
-		wd[a] = wd[a + 1];
-		objword_cache[a] = objword_cache[a + 1];
-	}
-	wd[words] = 0;
-	objword_cache[words] = 0;
+   for (; a<words; a++)
+   {
+      wd[a] = wd[a + 1];
+      objword_cache[a] = objword_cache[a + 1];
+   }
+   wd[words] = 0;
+   objword_cache[words] = 0;
 }
 
 
 /* RESETFINDOBJECT
 
-	Call FindObject(0, 0) to reset library's disambiguation
-	mechanism.
+   Call FindObject(0, 0) to reset library's disambiguation
+   mechanism.
 */
 
 void ResetFindObject(void)
 {
-	if (findobjectaddr)
-	{
-		SetStackFrame(RESET_STACK_DEPTH, RUNROUTINE_BLOCK, 0, 0);
-		PassLocals(0);
+   if (findobjectaddr)
+   {
+      SetStackFrame(RESET_STACK_DEPTH, RUNROUTINE_BLOCK, 0, 0);
+      PassLocals(0);
 #if defined (DEBUGGER)
-		DebugRunRoutine((long)findobjectaddr*address_scale);
+      DebugRunRoutine((long)findobjectaddr*address_scale);
 #else
-		RunRoutine((long)findobjectaddr*address_scale);
+      RunRoutine((long)findobjectaddr*address_scale);
 #endif
-		retflag = 0;
-	}
+      retflag = 0;
+   }
 }
 
 
 /* SEPARATEWORDS
 
-	Splits <buffer> into the word[] array.  Also does nifty things
-	such as turning time values such as hh:mm into a single number
-	(representing minutes from midnight).
+   Splits <buffer> into the word[] array.  Also does nifty things
+   such as turning time values such as hh:mm into a single number
+   (representing minutes from midnight).
 */
 
 void SeparateWords(void)
 {
-	char inquote = 0;
-	char a[1025];
-	char b[2];
-	char w1[17], w2[17];            /* for time conversions */
-	char temp[17];
-	short n1, n2;                   /* must be 16 bits */
-	int bloc = 0;                   /* buffer location */
-	int i;
+   char inquote = 0;
+   char a[1025];
+   char b[2];
+   char w1[17], w2[17];            /* for time conversions */
+   char temp[17];
+   short n1, n2;                   /* must be 16 bits */
+   int bloc = 0;                   /* buffer location */
+   int i;
 
 
-	/* First filter the line of any user-specified punctuation */
-	do
-	{
-		i = strcspn(buffer, punc_string);
-		if (buffer[i]) buffer[i] = ' ';
-	} while (buffer[i]);
+   /* First filter the line of any user-specified punctuation */
+   do
+   {
+      i = strcspn(buffer, punc_string);
+      if (buffer[i]) buffer[i] = ' ';
+   } while (buffer[i]);
 
 
-	/* Begin the word-splitting proper: */
-	
-	words = 1;                      /* Setup a blank string */
+   /* Begin the word-splitting proper: */
 
-	for (i=0; i<MAXWORDS+1; i++)
-	{
-		word[i] = "";
-		wd[i] = 0;
-	}
-	word[1] = buffer;
+   words = 1;                      /* Setup a blank string */
 
-	strcpy(a, buffer);
-	strcpy(buffer, "");
-	
-	for (i=1; i<=(int)strlen(a); i++)
-	{
-		if (inquote!=1 && isascii(a[i-1]))
-			b[0] = (char)tolower(a[i-1]);
-		else b[0] = a[i-1];
-		b[1] = '\0';
+   for (i=0; i<MAXWORDS+1; i++)
+   {
+      word[i] = "";
+      wd[i] = 0;
+   }
+   word[1] = buffer;
 
-		if (b[0]=='\"' && inquote==1)
-		{
-			strcpy(buffer+bloc, b);
-			bloc++;
-			inquote++;
-		}
+   strcpy(a, buffer);
+   strcpy(buffer, "");
 
-		if (b[0]=='\"' || ((b[0]==' ' || b[0]=='!' || b[0]=='?') && inquote!=1))
-		{
-			if (word[words][0]!='\0')
-			{
-				bloc++;
-				if (++words > MAXWORDS) words = MAXWORDS;
-				word[words] = buffer + bloc;
-				strcpy(word[words], "");
-			}
+   for (i=1; i<=(int)strlen(a); i++)
+   {
+      if (inquote!=1 && isascii(a[i-1]))
+         b[0] = (char)tolower(a[i-1]);
+      else b[0] = a[i-1];
+      b[1] = '\0';
 
-			if (b[0]=='\"' && inquote==0)
-			{
-				strcpy(buffer+bloc, b);
-				bloc++;
-				inquote = 1;
-			}
-		}
-		else
-		{
-			if ((b[0]=='.' || b[0]==',') && inquote!=1)
-			{
-				if (word[words][0]!='\0')
-				{
-					bloc++;
-					if (++words > MAXWORDS) words = MAXWORDS;
-				}
-				word[words] = buffer + bloc;
-				strcpy(word[words], b);
-				bloc += strlen(b) + 1;
-				if (++words > MAXWORDS) words = MAXWORDS;
-				word[words] = buffer + bloc;
-				strcpy(word[words], "");
-			}
-			else
-			{
-				strcpy(buffer+bloc, b);
-				bloc++;
-			}
-		}
-	}
+      if (b[0]=='\"' && inquote==1)
+      {
+         strcpy(buffer+bloc, b);
+         bloc++;
+         inquote++;
+      }
 
-	if (!strcmp(word[words], "")) words--;
+      if (b[0]=='\"' || ((b[0]==' ' || b[0]=='!' || b[0]=='?') && inquote!=1))
+      {
+         if (word[words][0]!='\0')
+         {
+            bloc++;
+            if (++words > MAXWORDS) words = MAXWORDS;
+            word[words] = buffer + bloc;
+            strcpy(word[words], "");
+         }
 
-	for (i=1; i<=words; i++)
-	{
-		/* Convert hours:minutes time to minutes only */
-		if (strcspn(word[i], ":")!=strlen(word[i]) && strlen(word[i])<=5)
-		{
-			strcpy(w1, Left(word[i], strcspn(word[i], ":")));
-			strcpy(w2, Right(word[i], strlen(word[i]) - strcspn(word[i], ":") - 1));
-			n1 = (short)atoi(w1);
-			n2 = (short)atoi(w2);
+         if (b[0]=='\"' && inquote==0)
+         {
+            strcpy(buffer+bloc, b);
+            bloc++;
+            inquote = 1;
+         }
+      }
+      else
+      {
+         if ((b[0]=='.' || b[0]==',') && inquote!=1)
+         {
+            if (word[words][0]!='\0')
+            {
+               bloc++;
+               if (++words > MAXWORDS) words = MAXWORDS;
+            }
+            word[words] = buffer + bloc;
+            strcpy(word[words], b);
+            bloc += strlen(b) + 1;
+            if (++words > MAXWORDS) words = MAXWORDS;
+            word[words] = buffer + bloc;
+            strcpy(word[words], "");
+         }
+         else
+         {
+            strcpy(buffer+bloc, b);
+            bloc++;
+         }
+      }
+   }
 
-			if (!strcmp(Left(w2, 1), "0"))
-				strcpy(w2, Right(w2, strlen(w2) - 1));
+   if (!strcmp(word[words], "")) words--;
 
-			/* If this is indeed a hh:mm time, write it back
-			   as the modified word, storing the original hh:mm
-			   in parse$:
-			*/
-			if (!strcmp(w1, itoa((int)n1, temp, 10)) && !strcmp(w2, itoa((int)n2, temp, 10)) && (n1 > 0 && n1 < 25) && (n2 >= 0 && n2 < 60))
-			{
-				strcpy(parseerr, word[i]);
-				itoa(n1 * 60 + n2, word[i], 10);
-			}
-		}
-	}
+   for (i=1; i<=words; i++)
+   {
+      /* Convert hours:minutes time to minutes only */
+      if (strcspn(word[i], ":")!=strlen(word[i]) && strlen(word[i])<=5)
+      {
+         strcpy(w1, Left(word[i], strcspn(word[i], ":")));
+         strcpy(w2, Right(word[i], strlen(word[i]) - strcspn(word[i], ":") - 1));
+         n1 = (short)atoi(w1);
+         n2 = (short)atoi(w2);
+
+         if (!strcmp(Left(w2, 1), "0"))
+            strcpy(w2, Right(w2, strlen(w2) - 1));
+
+         /* If this is indeed a hh:mm time, write it back
+            as the modified word, storing the original hh:mm
+            in parse$:
+         */
+         if (!strcmp(w1, itoa((int)n1, temp, 10)) && !strcmp(w2, itoa((int)n2, temp, 10)) && (n1 > 0 && n1 < 25) && (n2 >= 0 && n2 < 60))
+         {
+            strcpy(parseerr, word[i]);
+            itoa(n1 * 60 + n2, word[i], 10);
+         }
+      }
+   }
 }
 
 
 /* SUBTRACTOBJ
 
-	Removes object <obj> from objlist[], making all related adjustments.
+   Removes object <obj> from objlist[], making all related adjustments.
 */
 
 void SubtractObj(int obj)
 {
-	int i, j;
+   int i, j;
 
-	for (i=0; i<objcount; i++)
-	{
-		if (objlist[i]==obj)
-		{
-			for (j=i; j<objcount; j++)
-				objlist[j] = objlist[j+1];
-			objcount--;
-			return;
-		}
-	}
+   for (i=0; i<objcount; i++)
+   {
+      if (objlist[i]==obj)
+      {
+         for (j=i; j<objcount; j++)
+            objlist[j] = objlist[j+1];
+         objcount--;
+         return;
+      }
+   }
 }
 
 
 /* SUBTRACTPOSSIBLEOBJECT
 
-	Removes <obj> as a possible contender for object disambiguation.
+   Removes <obj> as a possible contender for object disambiguation.
 */
 
 void SubtractPossibleObject(int obj)
 {
-	int i, j, last = 0;
+   int i, j, last = 0;
 
-	for (i=0; i<pobjcount; i++)
-	{
-		if (pobjlist[i].obj==obj)
-		{
-			if (pobjlist[i].obj==pobj && last!=0) pobj = last;
+   for (i=0; i<pobjcount; i++)
+   {
+      if (pobjlist[i].obj==obj)
+      {
+         if (pobjlist[i].obj==pobj && last!=0) pobj = last;
 
-			for (j=i; j+1<pobjcount; j++)
-			{
-				pobjlist[j] = pobjlist[j+1];
-			}
-			pobjcount--;
+         for (j=i; j+1<pobjcount; j++)
+         {
+            pobjlist[j] = pobjlist[j+1];
+         }
+         pobjcount--;
 
 #ifdef DEBUG_PARSER
 {
-	char buf[100];
-	sprintf(buf, "SubtractPossibleObject(%d:\"%s\")", obj, Name(obj));
-	Printout(buf);
+   char buf[100];
+   sprintf(buf, "SubtractPossibleObject(%d:\"%s\")", obj, Name(obj));
+   Printout(buf);
 }
 #endif
-			return;
-		}
-		else last = pobjlist[i].obj;
-	}
+         return;
+      }
+      else last = pobjlist[i].obj;
+   }
 }
 
 
 /* TRYOBJ
 
-	Called by MatchObject() to see if <obj> is available, and add it to
-	or subtract it from objlist[] accordingly.
+   Called by MatchObject() to see if <obj> is available, and add it to
+   or subtract it from objlist[] accordingly.
 */
 
 void TryObj(int obj)
 {
-	unsigned int tempdomain;
+   unsigned int tempdomain;
 
-	if ((obj_parselist) && !(obj_parselist[obj/8]&1<<(obj%8)))
-		return;
+   if ((obj_parselist) && !(obj_parselist[obj/8]&1<<(obj%8)))
+      return;
 
-	if (DomainObj(obj))
-	{
-		tempdomain = domain;
-		domain = 0;
+   if (DomainObj(obj))
+   {
+      tempdomain = domain;
+      domain = 0;
 
-		if (Available(obj, 0) && !InList(Parent(obj)))
-		{
-			AddObj(obj);
-		}
-		else
-		{
-			SubtractObj(obj);
-		}
+      if (Available(obj, 0) && !InList(Parent(obj)))
+      {
+         AddObj(obj);
+      }
+      else
+      {
+         SubtractObj(obj);
+      }
 
-		domain = tempdomain;
-	}
+      domain = tempdomain;
+   }
 }
 
 
 /* VALIDOBJ
 
-	Checks first of all to see if an object is available, then checks
-	if it meets all the qualifications demanded by the grammar syntax.
+   Checks first of all to see if an object is available, then checks
+   if it meets all the qualifications demanded by the grammar syntax.
 */
 
 int ValidObj(int obj)
 {
-	int attr, nattr = 0;
-	unsigned int addr;
+   int attr, nattr = 0;
+   unsigned int addr;
 
-	defseg = gameseg;
+   defseg = gameseg;
 
-	if (!Available(obj, 0) && !speaking &&
-		(Peek(grammaraddr)!=OPEN_BRACKET_T ||
-		Peek(grammaraddr+1)!=ROUTINE_T))
-	{
-		if (Peek(grammaraddr)==ANYTHING_T)
-			ParseError(10, obj);    /* "...haven't seen..." */
-		else
-			ParseError(11, obj);    /* "...don't see any..." */
-		return 0;
-	}
+   if (!Available(obj, 0) && !speaking &&
+      (Peek(grammaraddr)!=OPEN_BRACKET_T ||
+      Peek(grammaraddr+1)!=ROUTINE_T))
+   {
+      if (Peek(grammaraddr)==ANYTHING_T)
+         ParseError(10, obj);    /* "...haven't seen..." */
+      else
+         ParseError(11, obj);    /* "...don't see any..." */
+      return 0;
+   }
 
-	switch (Peek(grammaraddr))
-	{
-		case OPEN_BRACKET_T:
-		{
-			if (Peek(grammaraddr+1)==ROUTINE_T)
-			{
-				addr = PeekWord(grammaraddr+2);
-				ret = 0;
-				passlocal[0] = obj;
-				PassLocals(1);
+   switch (Peek(grammaraddr))
+   {
+      case OPEN_BRACKET_T:
+      {
+         if (Peek(grammaraddr+1)==ROUTINE_T)
+         {
+            addr = PeekWord(grammaraddr+2);
+            ret = 0;
+            passlocal[0] = obj;
+            PassLocals(1);
 
-				SetStackFrame(RESET_STACK_DEPTH, RUNROUTINE_BLOCK, 0, 0);
+            SetStackFrame(RESET_STACK_DEPTH, RUNROUTINE_BLOCK, 0, 0);
 
 #if defined (DEBUGGER)
-				DebugRunRoutine((long)addr*address_scale);
+            DebugRunRoutine((long)addr*address_scale);
 #else
-				RunRoutine((long)addr*address_scale);
+            RunRoutine((long)addr*address_scale);
 #endif
-				retflag = 0;
+            retflag = 0;
 
-				/* If the routine doesn't return true,
-				   the object doesn't qualify.
-				*/
-				if (!ret)
-					return (0);
-			}
-			else if (Peek(grammaraddr+1)==OBJECTNUM_T)
-			{
-				if (obj != (int)PeekWord(grammaraddr+2))
-				{
-					strcpy(parseerr, "");
-					if (GetProp(obj, article, 1, 0))
-						strcpy(parseerr, "the ");
-					strcat(parseerr, Name(obj));
+            /* If the routine doesn't return true,
+               the object doesn't qualify.
+            */
+            if (!ret)
+               return (0);
+         }
+         else if (Peek(grammaraddr+1)==OBJECTNUM_T)
+         {
+            if (obj != (int)PeekWord(grammaraddr+2))
+            {
+               strcpy(parseerr, "");
+               if (GetProp(obj, article, 1, 0))
+                  strcpy(parseerr, "the ");
+               strcat(parseerr, Name(obj));
 
-					/* "...can't do that with..." */
-					ParseError(12, obj);
-					return 0;
-				}
-			}
-			break;
-		}
+               /* "...can't do that with..." */
+               ParseError(12, obj);
+               return 0;
+            }
+         }
+         break;
+      }
 
-		case ATTR_T:
-		case NOT_T:
-		{
-			if (Peek(grammaraddr)==NOT_T) nattr = 1;
-			attr = Peek(grammaraddr + 1 + nattr);
+      case ATTR_T:
+      case NOT_T:
+      {
+         if (Peek(grammaraddr)==NOT_T) nattr = 1;
+         attr = Peek(grammaraddr + 1 + nattr);
 
-			/* If the attribute match is not made,
-			   the object doesn't qualify.
-			*/
-			if (!TestAttribute(obj, attr, nattr))
-			{
-				strcpy(parseerr, "");
-				if (GetProp(obj, article, 1, 0))
-					strcpy(parseerr, "the ");
-				strcat(parseerr, Name(obj));
+         /* If the attribute match is not made,
+            the object doesn't qualify.
+         */
+         if (!TestAttribute(obj, attr, nattr))
+         {
+            strcpy(parseerr, "");
+            if (GetProp(obj, article, 1, 0))
+               strcpy(parseerr, "the ");
+            strcat(parseerr, Name(obj));
 
-				/* "...can't do that with..." */
-				ParseError(12, obj);
-				return 0;
-			}
-			break;
-		}
-	}
-	return true;
+            /* "...can't do that with..." */
+            ParseError(12, obj);
+            return 0;
+         }
+         break;
+      }
+   }
+   return true;
 }

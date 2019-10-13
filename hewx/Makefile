@@ -72,7 +72,7 @@ CXXFLAGS = ${CFLAGS} -fno-rtti
 
 # C preprocessor
 
-CPPFLAGS = 
+CPPFLAGS =
 
 # linker
 
@@ -117,11 +117,11 @@ CHECKSYNTAXFILE := ${basename ${filter %${CHECKSTRING}, ${MM_ALL_SOURCES}}}
 
 .PHONY : checksyntax
 checksyntax:
-  ifneq (${CHECKSYNTAXFILE},)
-	@${MAKE} ${addsuffix .o, ${CHECKSYNTAXFILE}}
-  else
-	@echo No target to make ${CHECKSTRING}
-  endif
+	ifneq (${CHECKSYNTAXFILE},)
+		@${MAKE} ${addsuffix .o, ${CHECKSYNTAXFILE}}
+	else
+		@echo No target to make ${CHECKSTRING}
+	endif
 
 
 # target for touching appropriate source files
@@ -129,7 +129,7 @@ checksyntax:
 .PHONY : touch
 touch::
 	@list=$$(grep -l ${TOUCHSTRING} ${MM_ALL_SOURCES}); \
-     for file in $$list; do { echo $$file; touch $$file; } done
+	for file in $$list; do { echo $$file; touch $$file; } done
 
 
 # target for calculating dependencies (MAKEMAKE)
@@ -168,4 +168,3 @@ jdepend:
 ./hewxwin.o: ../source/hdinter.h ../source/heheader.h ../source/htokens.h ./hewx.h
 
 ../source/stringfn.o:  ../source/heheader.h
-

@@ -1,16 +1,16 @@
 /*
-	-------------------------------------------
-	HUGO COMPILER by Kent Tessman
-	Copyright (c) 1995-2006
+   -------------------------------------------
+   HUGO COMPILER by Kent Tessman
+   Copyright (c) 1995-2006
 
-	The General Coffee Company Film Productions
-	-------------------------------------------
+   The General Coffee Company Film Productions
+   -------------------------------------------
 
-	This source code is provided to allow porting of the Hugo Compiler
-	to different operating systems.  It may be distributed as is,
-	providing that there has been no modification or alteration of
-	the material contained therein; distribution of modified source code
-	is prohibited by the copyright holder.
+   This source code is provided to allow porting of the Hugo Compiler
+   to different operating systems.  It may be distributed as is,
+   providing that there has been no modification or alteration of
+   the material contained therein; distribution of modified source code
+   is prohibited by the copyright holder.
 */
 
 
@@ -33,8 +33,8 @@ int exitvalue = 0;
 
 /* MAIN
 
-	If FRONT_END is defined, the external main() function can pass the
-	calling parameters argc and argv to hc_main.
+   If FRONT_END is defined, the external main() function can pass the
+   calling parameters argc and argv to hc_main.
 */
 
 #if !defined (FRONT_END)
@@ -43,49 +43,49 @@ int main(int argc, char *argv[])
 int hc_main(int argc, char *argv[])
 #endif
 {
-	time(&tick);			/* get time compilation begins */
+   time(&tick);         /* get time compilation begins */
 
-	if (argc==1) Banner(stdout, "");
+   if (argc==1) Banner(stdout, "");
 
-	ParseCommand(argc, argv);       /* Parse command line, then open */
-	OpenFiles();			/*   files upon returning.	 */
+   ParseCommand(argc, argv);       /* Parse command line, then open */
+   OpenFiles();         /*   files upon returning.    */
 
-	if (listing && !spellcheck) Banner(listfile, listfilename);
+   if (listing && !spellcheck) Banner(listfile, listfilename);
 
 #ifdef STDPRN_SUPPORTED
-	if (printer && !spellcheck) Banner(stdprn, "printer");
+   if (printer && !spellcheck) Banner(stdprn, "printer");
 #endif
 
-	objectctr = 0;
+   objectctr = 0;
 
-	/* Define:  Read all the source file(s) into one contiguous file,
-	   defining all the objects, properties, attributes, and other
-	   global data. */
-	Pass1();
+   /* Define:  Read all the source file(s) into one contiguous file,
+      defining all the objects, properties, attributes, and other
+      global data. */
+   Pass1();
 
-	/* Build:  Actually write the code and construct object/property
-	   tables. */
-	Pass2();
+   /* Build:  Actually write the code and construct object/property
+      tables. */
+   Pass2();
 
-	/* Resolve and link:  Write object/property tables, array data,
-	   events, dictionary, etc. after code has been compiled.  Skim
-	   through again and resolve any necessary addresses. */
-	Pass3();
+   /* Resolve and link:  Write object/property tables, array data,
+      events, dictionary, etc. after code has been compiled.  Skim
+      through again and resolve any necessary addresses. */
+   Pass3();
 
-	PrintStatistics();
+   PrintStatistics();
 
-	CleanUpFiles();
+   CleanUpFiles();
 
-	return exitvalue;
+   return exitvalue;
 }
 
 
 void Banner(FILE *stream, char *name)
 {
-	fprintf(stream, "HUGO COMPILER v%d.%d%s by Kent Tessman (c) 1995-2006\n", HCVERSION, HCREVISION, HCINTERIM);
-	fprintf(stream, "The General Coffee Company Film Productions\n");
+   fprintf(stream, "HUGO COMPILER v%d.%d%s by Kent Tessman (c) 1995-2006\n", HCVERSION, HCREVISION, HCINTERIM);
+   fprintf(stream, "The General Coffee Company Film Productions\n");
 #if defined (PORT_NAME)
-	fprintf(stream, "%s port by %s\n", PORT_NAME, PORTER_NAME);
+   fprintf(stream, "%s port by %s\n", PORT_NAME, PORTER_NAME);
 #endif
-	if (ferror(stream)) FatalError(WRITE_E, name);
+   if (ferror(stream)) FatalError(WRITE_E, name);
 }
