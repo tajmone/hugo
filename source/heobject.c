@@ -26,16 +26,16 @@
 int CheckObjectRange(int obj);
 #endif
 
-int display_object = -1;      /* i.e., non-existent (yet) */
-char display_needs_repaint = 0;      /* for display object       */
+int display_object = -1;               /* i.e., non-existent (yet) */
+char display_needs_repaint = 0;        /* for display object       */
 int display_pointer_x = 0, display_pointer_y = 0;
 
 
 /* CHECKOBJECTRANGE
 
-   Shorthand since many of these object functions may call
-   CheckinRange() if the debugger is running and runtime_warnings
-   is set.
+      Shorthand since many of these object functions may call
+      CheckinRange() if the debugger is running and runtime_warnings
+      is set.
 */
 #if defined (DEBUGGER)
 int CheckObjectRange(int obj)
@@ -113,7 +113,7 @@ int Elder(int obj)
 
 /* GETATTRIBUTES
 
-   Returns one of four sets of 32 attributes.
+      Returns one of four sets of 32 attributes.
 */
 
 unsigned long GetAttributes(int obj, int attribute_set)
@@ -138,27 +138,27 @@ unsigned long GetAttributes(int obj, int attribute_set)
 
 /* GETPROP
 
-   Returns the value of '<obj>.<p> #<n>'  If <s> is true, the self global
-   is not set to <obj> in order to facilitate <obj>..<p> calls.
+      Returns the value of '<obj>.<p> #<n>'  If <s> is true, the self global
+      is not set to <obj> in order to facilitate <obj>..<p> calls.
 */
 
 int GetProp(int obj, int p, int n, char s)
 {
-   char objonly,         /* no verbroutine given in before, etc. */
-      isadditive = 0,      /* before, after, etc.         */
+   char objonly,              /* no verbroutine given in before, etc. */
+      isadditive = 0,         /* before, after, etc.                  */
       gotone = 0,             /* when a match has been made           */
       getpropaddress = 0;     /* when getting &object.property        */
    int i;
    int tempself,
-      objtype,      /* i.e., what we're matching to      */
+      objtype,                /* i.e., what we're matching to         */
       flag = 0;
    int g = 0;
    int templocals[MAXLOCALS];
    int temp_stack_depth;
    char tempinexpr = inexpr;
-   unsigned int pa,      /* property address         */
+   unsigned int pa,           /* property address                     */
       offset = 0;
-   long inprop,         /* code position in complex property   */
+   long inprop,               /* code position in complex property    */
       returnaddr;
 #if defined (DEBUGGER)
    long orig_inprop;
@@ -480,8 +480,8 @@ NoMorePropMatches:
 
 /* GRANDPARENT
 
-   Returns the value of the last object above <obj> in the tree
-   before object 0.
+      Returns the value of the last object above <obj> in the tree
+      before object 0.
 */
 
 int GrandParent(int obj)
@@ -531,8 +531,8 @@ void MoveObj(int obj, int p)
    /* Then move it to the new parent... */
 
    defseg = objtable;
-   PokeWord(objaddr + object_size-8, p);   /* new parent       */
-   PokeWord(objaddr + object_size-6, 0);   /* erase old sibling    */
+   PokeWord(objaddr + object_size-8, p);   /* new parent          */
+   PokeWord(objaddr + object_size-6, 0);   /* erase old sibling   */
 
    /* Only operate on the new parent if it isn't object 0 */
    if (p!=0)
@@ -595,8 +595,8 @@ int Parent(int obj)
 
 /* PROPADDR
 
-   Returns address of <obj>.<p> (with <offset> provided for additive
-   properties--i.e. subsequent calls with the same <obj> and <p>.
+      Returns address of <obj>.<p> (with <offset> provided for additive
+      properties--i.e. subsequent calls with the same <obj> and <p>.
 */
 
 unsigned int PropAddr(int obj, int p, unsigned int offset)
@@ -651,7 +651,7 @@ unsigned int PropAddr(int obj, int p, unsigned int offset)
 
 /* PUTATTRIBUTES
 
-   Writes (puts) one of four sets of 32 attributes.
+      Writes (puts) one of four sets of 32 attributes.
 */
 
 void PutAttributes(int obj, unsigned long a, int attribute_set)

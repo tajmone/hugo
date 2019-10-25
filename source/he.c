@@ -64,7 +64,7 @@ void MakeProgramPath(char *path);
 
 /* MAIN
 
-   If FRONT_END is defined, the external main() function can pass the
+      If FRONT_END is defined, the external main() function can pass the
       calling parameters argc and argv to he_main.
 */
 

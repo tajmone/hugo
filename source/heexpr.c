@@ -4,9 +4,9 @@
    Expression/value management functions:
 
       EvalExpr
-         Precedence
+      Precedence
       GetValue
-         GetVal
+      GetVal
       Increment
       IsIncrement
       SetupExpr
@@ -34,21 +34,21 @@ int exprt = true;
 
 #define MAX_EVAL_ELEMENTS 256
 
-int eval[MAX_EVAL_ELEMENTS];      /* expression components           */
-int evalcount;                          /* # of expr. components           */
+int eval[MAX_EVAL_ELEMENTS];        /* expression components           */
+int evalcount;                      /* # of expr. components           */
 int var[MAXLOCALS+MAXGLOBALS];      /* variables                       */
-int incdec;            /* value is being incremented/dec. */
-char getaddress = 0;                    /* true when finding &routine      */
-char inexpr = 0;                        /* true when in expression         */
-char inobj = 0;                         /* true when in object compound    */
+int incdec;                         /* value is being incremented/dec. */
+char getaddress = 0;                /* true when finding &routine      */
+char inexpr = 0;                    /* true when in expression         */
+char inobj = 0;                     /* true when in object compound    */
 
 int last_precedence;
 
 
 /* EVALEXPR
 
-   The new-and-improved expression evaluator.  Evaluates the current
-   expression (or sub-expression therein) beginning at eval[p].
+      The new-and-improved expression evaluator.  Evaluates the current
+      expression (or sub-expression therein) beginning at eval[p].
 */
 
 int EvalExpr(int p)
@@ -250,8 +250,8 @@ Printout(line);
       if ((debug_eval) && debug_eval_error) return 0;
 #endif
 
-      TrimExpr(p+4);          /* second value */
-      TrimExpr(p+2);          /* operator */
+      TrimExpr(p+4);                /* second value */
+      TrimExpr(p+2);                /* operator */
 
       eval[p] = 0;
       eval[p+1] = result;
@@ -266,7 +266,7 @@ Printout(line);
 
    result = eval[p+1];
 
-   TrimExpr(p);                    /* first value */
+   TrimExpr(p);                     /* first value */
 
 ReturnResult:
 
@@ -742,7 +742,7 @@ int GetVal()
 
 /* GETVALUE
 
-   Does any reckoning for more sophisticated constructions.
+      Does any reckoning for more sophisticated constructions.
 */
 
 int GetValue()
@@ -777,16 +777,16 @@ int GetValue()
    {
       switch (MEM(codeptr))
       {
-         case DECIMAL_T:                         /* object.property */
+         case DECIMAL_T:                     /* object.property */
          {
 DetermineProperty:
-            if (MEM(++codeptr)==DECIMAL_T)  /* object..property */
+            if (MEM(++codeptr)==DECIMAL_T)   /* object..property */
             {
                noself = true;
                codeptr++;
             }
 
-            if (MEM(codeptr)==POUND_T)      /* object.#property */
+            if (MEM(codeptr)==POUND_T)       /* object.#property */
             {
                codeptr++;
                inobj = true;
@@ -812,7 +812,7 @@ DetermineProperty:
                if (MEM(codeptr) != POUND_T)
                   n = 1;
 
-               else      /* object.property #x */
+               else                          /* object.property #x */
                {
                   codeptr++;
 
@@ -898,14 +898,14 @@ CheckAttribute:
             if (!inobj)
             {
                codeptr++;
-               p = GetValue();          /* testing parent */
+               p = GetValue();            /* testing parent */
                g = (p==Parent(g));
                if (nattr)
                   g = !g;
             }
          }
       }
-   }                                       /* end of "if (inobj==0)" */
+   }                                      /* end of "if (inobj==0)" */
 
    n = MEM(codeptr);
 
@@ -940,7 +940,7 @@ CheckAttribute:
 
 /* INCREMENT
 
-   Actually performs the increment given below by IsIncrement.
+      Actually performs the increment given below by IsIncrement.
 */
 
 int Increment(int a, char inctype)
@@ -979,9 +979,9 @@ int Increment(int a, char inctype)
 
 /* ISINCREMENT
 
-   If an increment/decrement is next up (i.e. ++, --, or +=, *=, etc.),
-   then sets incdec equal to the increment/decrement and repositions
-   codeptr.  Returns the token number of the operation, if any.
+      If an increment/decrement is next up (i.e. ++, --, or +=, *=, etc.),
+      then sets incdec equal to the increment/decrement and repositions
+      codeptr.  Returns the token number of the operation, if any.
 */
 
 char IsIncrement(long addr)
@@ -1034,9 +1034,9 @@ char IsIncrement(long addr)
 
 /* PRECEDENCE
 
-   Returns the precedence ranking of the operator represented by
-   token[t].  The lower the return value, the higher the rank in
-   terms of processing order.
+      Returns the precedence ranking of the operator represented by
+      token[t].  The lower the return value, the higher the rank in
+      terms of processing order.
 */
 
 int Precedence(int t)
@@ -1075,7 +1075,7 @@ int Precedence(int t)
 
 /* PRINTEXPR
 
-   Prints the current expression during expression tracing.
+      Prints the current expression during expression tracing.
 */
 
 #if defined (DEBUG_EXPR_EVAL)
@@ -1124,17 +1124,17 @@ ExitPrintExpr:
 
 /* SETUPEXPR
 
-   Reads the current expression from the current code position
-   into eval[], using the following key:
+      Reads the current expression from the current code position
+      into eval[], using the following key:
 
-      if eval[n] is 0, eval[n+1] is a value
-      if eval[n] is 1, eval[n+1] is a token
+         if eval[n] is 0, eval[n+1] is a value
+         if eval[n] is 1, eval[n+1] is a token
 
-   <inexpr> is used in various routines to keep track of
-   whether or not we're currently reading an expression.  If
-   <inexpr> is 1, we're in an expression; if 2, we may have
-   to step back one code position if encountering a closing
-   parentheses.
+      <inexpr> is used in various routines to keep track of
+      whether or not we're currently reading an expression.  If
+      <inexpr> is 1, we're in an expression; if 2, we may have
+      to step back one code position if encountering a closing
+      parentheses.
 */
 
 void SetupExpr(void)
@@ -1312,8 +1312,8 @@ SomeSymbolorToken:
 
 /* TRIMEXPR
 
-   Cuts off straggling components of eval[] after an expression or
-   sub-expression has been successfully evaluated.
+      Cuts off straggling components of eval[] after an expression or
+      sub-expression has been successfully evaluated.
 */
 
 void TrimExpr(int ptr)

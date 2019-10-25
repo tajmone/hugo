@@ -156,13 +156,13 @@ void CompilerDirective(void)
 
 /* COMPILERIF
 
-   Basically handles the constructions "#if", "#ifset", "#ifclear",
-   "#elseif", and "#else".  If a condition is met, ifset[ifsetnest]
-   is set to true.  This is used by any "else"-type flag-check to
-   see if the block should be included or ignored.
+      Basically handles the constructions "#if", "#ifset", "#ifclear",
+      "#elseif", and "#else".  If a condition is met, ifset[ifsetnest]
+      is set to true.  This is used by any "else"-type flag-check to
+      see if the block should be included or ignored.
 */
 
-extern char silent_IDWord;              /* from hccode.c */
+extern char silent_IDWord;             /* from hccode.c */
 
 void CompilerIf(void)
 {
@@ -311,7 +311,7 @@ SkiptoEndif:
 
 /* COMPILERMEM
 
-   Deals with all "$<limit>=<new limit>" commands.
+      Deals with all "$<limit>=<new limit>" commands.
 */
 
 void CompilerMem(void)
@@ -476,7 +476,7 @@ void CompilerMem(void)
       }
    }
 
-   if (strcmp(e, ""))              /* if there was an error */
+   if (strcmp(e, ""))               /* if there was an error */
    {
       sprintf(line, "%s already defined", e);
       Error(line);

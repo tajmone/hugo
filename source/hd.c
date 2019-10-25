@@ -53,40 +53,40 @@ char menubar_isactive;                      /* true or false       */
 int active_menu_heading;                    /* MENU_CONSTANT       */
 char **choice;                              /* array for SelectBox */
 
-char debugger_run = 0;                  /* true when running freely     */
-char debugger_interrupt = 0;      /* true if stepping       */
-char debugger_collapsing;      /* true if collapsing calls   */
-char during_input;         /* true in hugo_getline()    */
-char trace_complex_prop_routine = 0;   /* true if running obj.prop   */
-char debugger_step_over = 0;      /* true if stepping over   */
-char debugger_skip = 0;         /* true if skipping next   */
-char debugger_finish = 0;      /* true if finishing routine   */
-char debugger_step_back = 0;      /* true if stepping back   */
-char debugger_has_stepped_back = 0;   /* true once stepped back   */
-int step_nest;            /* stepping over nested calls   */
+char debugger_run = 0;                 /* true when running freely    */
+char debugger_interrupt = 0;           /* true if stepping            */
+char debugger_collapsing;              /* true if collapsing calls    */
+char during_input;                     /* true in hugo_getline()      */
+char trace_complex_prop_routine = 0;   /* true if running obj.prop    */
+char debugger_step_over = 0;           /* true if stepping over       */
+char debugger_skip = 0;                /* true if skipping next       */
+char debugger_finish = 0;              /* true if finishing routine   */
+char debugger_step_back = 0;           /* true if stepping back       */
+char debugger_has_stepped_back = 0;    /* true once stepped back      */
+int step_nest;                         /* stepping over nested calls  */
 
 char debug_line[MAXBUFFER];
 
 /* For engine routines: */
 /* hemisc.c */
-char runtime_error = 0;         /* set by FatalError()      */
+char runtime_error = 0;                /* set by FatalError()         */
 /* herun.c */
 struct call_structure call[MAXCALLS];
-int current_locals;                     /* locals in current routine    */
-char localname[MAXLOCALS][32];      /* names of current locals   */
-unsigned int currentroutine = 0;   /* for Code window caption      */
-int dbnest;            /* for nesting printed code     */
-char runtime_warnings = 1;              /* true if checking             */
-unsigned int runaway_counter = 0;   /* possible runaway loops   */
-long code_history[MAX_CODE_HISTORY];   /* for stepping backward   */
-int dbnest_history[MAX_CODE_HISTORY];   /* for keeping nesting right   */
-int history_last = 0;         /* last executed statement   */
-int history_count = 0;         /* total recorded statements   */
+int current_locals;                    /* locals in current routine   */
+char localname[MAXLOCALS][32];         /* names of current locals     */
+unsigned int currentroutine = 0;       /* for Code window caption     */
+int dbnest;                            /* for nesting printed code    */
+char runtime_warnings = 1;             /* true if checking            */
+unsigned int runaway_counter = 0;      /* possible runaway loops      */
+long code_history[MAX_CODE_HISTORY];   /* for stepping backward       */
+int dbnest_history[MAX_CODE_HISTORY];  /* for keeping nesting right   */
+int history_last = 0;                  /* last executed statement     */
+int history_count = 0;                 /* total recorded statements   */
 
 
 /* STARTDEBUGGER
 
-   Called by main() in HE.C.
+      Called by main() in HE.C.
 */
 
 void StartDebugger(void)
@@ -119,8 +119,8 @@ void StartDebugger(void)
 
 /* DEBUGGER
 
-   The main debugger event cycle, called whenever normal code
-   execution is interrupted to switch to the debugger.
+      The main debugger event cycle, called whenever normal code
+      execution is interrupted to switch to the debugger.
 */
 
 void Debugger(void)

@@ -46,13 +46,13 @@ extern char *hugo_strcpy(char *s, const char *t);
 
 /* Define the compiler being used as one of:
 
-   ACORN
-   AMIGA
-   DJGPP
-   GCC_UNIX (for gcc under Unix, Linux, BeOS)
-   QUICKC
-   RISCOS
-   WIN32 (Microsoft Visual C++)
+      ACORN
+      AMIGA
+      DJGPP
+      GCC_UNIX (for gcc under Unix, Linux, BeOS)
+      QUICKC
+      RISCOS
+      WIN32 (Microsoft Visual C++)
 
    (although this is typically done in the makefile)
 */
@@ -373,18 +373,18 @@ extern FILE *hugo_fopen (char *filename, char *mode);
 */
 #if defined (INIT_PASS)
 int MAXOBJECTS        = 1024;
-int MAXPROPERTIES     = 254;
-int MAXALIASES        = 256;
-int MAXEVENTS         = 256;
-int MAXROUTINES       = 320;
-int MAXLABELS         = 256;
-int MAXCONSTANTS      = 256;
-int MAXARRAYS         = 256;
+int MAXPROPERTIES     =  254;
+int MAXALIASES        =  256;
+int MAXEVENTS         =  256;
+int MAXROUTINES       =  320;
+int MAXLABELS         =  256;
+int MAXCONSTANTS      =  256;
+int MAXARRAYS         =  256;
 int MAXDICT           = 1024;
-int MAXDICTEXTEND     = 0;
-int MAXFLAGS          = 256;
-int MAXSPECIALWORDS   = 64;
-int MAXDIRECTORIES    = 16;
+int MAXDICTEXTEND     =    0;
+int MAXFLAGS          =  256;
+int MAXSPECIALWORDS   =   64;
+int MAXDIRECTORIES    =   16;
 
 int ENGINE_GLOBALS;
 int ENGINE_PROPERTIES;
@@ -619,8 +619,8 @@ extern char *word[];
 extern char line[];
 extern char full_buffer;
 extern char listing, objecttree, fullobj, printer, statistics, printdebug,
-   override, aborterror, memmap, hlb, builddebug, expandederr,
-   spellcheck, writeanyway;
+            override, aborterror, memmap, hlb, builddebug, expandederr,
+            spellcheck, writeanyway;
 extern char compile_v25;
 extern int percent, totallines, tlines;
 extern int er;
@@ -628,8 +628,8 @@ extern int warn;
 extern char **sets;
 extern char **directory; extern int directoryctr;
 extern char alloc_objects, alloc_properties, alloc_labels, alloc_routines,
-   alloc_events, alloc_aliases, alloc_constants, alloc_arrays,
-   alloc_sets, alloc_dict, alloc_syn, alloc_directories;
+            alloc_events, alloc_aliases, alloc_constants, alloc_arrays,
+            alloc_sets, alloc_dict, alloc_syn, alloc_directories;
 extern unsigned int dicttable;
 extern unsigned int lexstart[], lexlast[];
 extern char **lexentry;
@@ -648,7 +648,7 @@ extern unsigned int codestart;
 extern char endofgrammar;
 extern int passnumber;
 extern int objinitial, routineinitial, eventinitial, labelinitial,
-   propinitial;
+            propinitial;
 extern int objects, routines, events, labels;
 extern unsigned int initaddr;
 extern unsigned int mainaddr;

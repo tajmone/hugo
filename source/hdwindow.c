@@ -185,9 +185,9 @@ void DisplayMenu(int m, int selection)
 
 /* DRAWBOX
 
-   Draws a basic framed rectangle in the given color from (left, top)
-   to (right, bottom).  (Note:  the screen area must be saved
-   beforehand if it's going to be restored.)
+      Draws a basic framed rectangle in the given color from (left, top)
+      to (right, bottom).  (Note:  the screen area must be saved
+      beforehand if it's going to be restored.)
 */
 
 void DrawBox(int top, int bottom, int left, int right, int fcol, int bcol)
@@ -252,9 +252,9 @@ void DrawBoxwithCaptions(char *title, char *caption, int height, int width)
 
 /* INPUTBOX
 
-   Draws a box with the given title and caption, accepts an
-   input of maxlen characters, and returns the input string.
-   (The def argument gives the default string.)
+      Draws a box with the given title and caption, accepts an
+      input of maxlen characters, and returns the input string.
+      (The def argument gives the default string.)
 */
 
 char *InputBox(char *title, char *caption, int maxlen, char *def)
@@ -292,12 +292,12 @@ char *InputBox(char *title, char *caption, int maxlen, char *def)
 
 /* OPENMENU
 
-   Takes a MENU_CONSTANT as an argument.  Sets the object of a SELECT
-   event.action to MENU_CONSTANT + MENU_SUBHEADING.
+      Takes a MENU_CONSTANT as an argument.  Sets the object of a SELECT
+      event.action to MENU_CONSTANT + MENU_SUBHEADING.
 
-   (Note:  Here, the given   MENU_CONSTANT is converted to an integer
-   counting from 0, i.e., 0x10 becomes 0, 0x20 becomes 1, etc.,
-   before calling DisplayMenu.)
+      (Note:  Here, the given   MENU_CONSTANT is converted to an integer
+      counting from 0, i.e., 0x10 becomes 0, 0x20 becomes 1, etc.,
+      before calling DisplayMenu.)
 */
 
 void OpenMenu(int m)
@@ -440,8 +440,8 @@ CloseThisMenu:
 
 /* OPENMENUBAR
 
-   Sets the object of a SELECT event.action to MENU_CONSTANT +
-   MENU_SUBHEADING.
+      Sets the object of a SELECT event.action to MENU_CONSTANT +
+      MENU_SUBHEADING.
 */
 
 void OpenMenubar(void)
@@ -530,8 +530,8 @@ OpenActiveMenuHeading:
 
 /* PRINTLINEANDCAPTION
 
-   Prints a horizontal line with the specified caption centered in
-   the middle.
+      Prints a horizontal line with the specified caption centered in
+      the middle.
 */
 
 void PrintLineandCaption(int row, char *a, int highlight)
@@ -603,11 +603,11 @@ void PrintMenubar(void)
 
 /* PRINTMENUITEM
 
-   If letters is true, the shortcut letter of the selection (preceded
-   by '&') is highlighted.  If highlight is true, the whole selection
-   is highlighted.
+      If letters is true, the shortcut letter of the selection (preceded
+      by '&') is highlighted.  If highlight is true, the whole selection
+      is highlighted.
 
-   Returns the uppercase shortcut key of the printed selection, if any.
+      Returns the uppercase shortcut key of the printed selection, if any.
 */
 
 char PrintMenuItem(char *a, int letters, int highlight)
@@ -788,10 +788,10 @@ void PrintSelectedLine(int m, int i, int highlight)
 
 /* SELECTBOX
 
-   Returns the selected choice, or 0 if nothing is selected.
-   AllocateChoices(n) must be called first for n choices,
-   and the choice[] array must hold the choices (with 0 being
-   the title).  The default choice is given by def.
+      Returns the selected choice, or 0 if nothing is selected.
+      AllocateChoices(n) must be called first for n choices,
+      and the choice[] array must hold the choices (with 0 being
+      the title).  The default choice is given by def.
 */
 
 /* These two extern definitions, both from hdtools.c, are necessary

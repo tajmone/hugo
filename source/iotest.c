@@ -13,16 +13,16 @@
 #include "heheader.h"
 
 /* Defined Hugo colors: */
-#define HUGO_BLACK         0
-#define HUGO_BLUE          1
-#define HUGO_GREEN         2
-#define HUGO_CYAN          3
-#define HUGO_RED           4
-#define HUGO_MAGENTA       5
-#define HUGO_BROWN         6
-#define HUGO_WHITE         7
-#define HUGO_DARK_GRAY     8
-#define HUGO_LIGHT_BLUE    9
+#define HUGO_BLACK          0
+#define HUGO_BLUE           1
+#define HUGO_GREEN          2
+#define HUGO_CYAN           3
+#define HUGO_RED            4
+#define HUGO_MAGENTA        5
+#define HUGO_BROWN          6
+#define HUGO_WHITE          7
+#define HUGO_DARK_GRAY      8
+#define HUGO_LIGHT_BLUE     9
 #define HUGO_LIGHT_GREEN   10
 #define HUGO_LIGHT_CYAN    11
 #define HUGO_LIGHT_RED     12
@@ -269,11 +269,11 @@ void AP (char *a)
    char c, sticky = false, skipspchar = false, startofline = 0;
    int b, i, j, slen;
    int newline = 0;
-   int thisline, thisword;           /* widths in pixels or characters */
+   int thisline, thisword;          /* widths in pixels or characters */
    int tempfont;
 
-   char q[MAXBUFFER*2+1],            /* current word      */
-      r = '\0';                 /* current character */
+   char q[MAXBUFFER*2+1],           /* current word      */
+      r = '\0';                     /* current character */
 
    static int lastfcolor, lastbgcolor, lastfont;
 
@@ -576,8 +576,8 @@ GetNextChar:
 
 /* PRINTOUT
 
-   Since printf() does not take into account cursor-relocation,
-   color-setting and window-scrolling.
+      Since printf() does not take into account cursor-relocation,
+      color-setting and window-scrolling.
 */
 
 void Printout(char *a)
@@ -743,14 +743,14 @@ void PromptMore(void)
 
    k = hugo_waitforkey();
 
-   if (playback && k==27)         /* if ESC is pressed during playback */
+   if (playback && k==27)           /* if ESC is pressed during playback */
    {
       if (fclose(playback))
          FatalError(READ_E);
       playback = NULL;
    }
 
-   hugo_settextcolor(fcolor);      /* program colors */
+   hugo_settextcolor(fcolor);       /* program colors */
    hugo_setbackcolor(bgcolor);
 
    hugo_settextpos(1, physical_windowheight/lineheight+1);
@@ -783,34 +783,34 @@ void SetupDisplay(void)
 
 /* SPECIALCHAR
 
-   SpecialChar() is passed <a> as the string and <*i> as the
-   position in the string.  The character(s) at a[*i], a[*(i+1)],
-   etc. are converted into a single Latin-1 (i.e., greater than
-   127) character value.
+      SpecialChar() is passed <a> as the string and <*i> as the
+      position in the string.  The character(s) at a[*i], a[*(i+1)],
+      etc. are converted into a single Latin-1 (i.e., greater than
+      127) character value.
 
-   Assume that the AP() has already encountered a control
-   character ('\'), and that a[*i]... is one of:
+      Assume that the AP() has already encountered a control
+      character ('\'), and that a[*i]... is one of:
 
-      `a   accent grave on following character (e.g., 'a')
-      'a   accent acute on following character (e.g., 'a')
-      ~n   tilde on following (e.g., 'n' or 'N')
-      :a   umlaut on following (e.g., 'a')
-      ^a   circumflex on following (e.g., 'a')
-      ,c   cedilla on following (e.g., 'c' or 'C')
-      <   Spanish left quotation marks
-      >   Spanish right quotation marks
-      !   upside-down exclamation mark
-      ?   upside-down question mark
-      ae   ae ligature
-      AE   AE ligature
-      c   cents symbol
-      L   British pound
-      Y   Japanese Yen
-      -   em (long) dash
-      #nnn   character value given by nnn
+         `a     accent grave on following character (e.g., 'a')
+         'a     accent acute on following character (e.g., 'a')
+         ~n     tilde on following (e.g., 'n' or 'N')
+         :a     umlaut on following (e.g., 'a')
+         ^a     circumflex on following (e.g., 'a')
+         ,c     cedilla on following (e.g., 'c' or 'C')
+         <      Spanish left quotation marks
+         >      Spanish right quotation marks
+         !      upside-down exclamation mark
+         ?      upside-down question mark
+         ae     ae ligature
+         AE     AE ligature
+         c      cents symbol
+         L      British pound
+         Y      Japanese Yen
+         -      em (long) dash
+         #nnn   character value given by nnn
 
-   Note that the return value is a single character--which will
-   be either unchanged or a Latin-1 character value.
+      Note that the return value is a single character--which will
+      be either unchanged or a Latin-1 character value.
 */
 
 char SpecialChar(char *a, int *i)

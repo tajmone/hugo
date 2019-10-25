@@ -56,48 +56,48 @@ int GetVal(void);         /* from heexpr.c */
 
 #define STARTS_AS_NUMBER(a) (((a[0]>='0' && a[0]<='9') || a[0]=='-')?1:0)
 
-char buffer[MAXBUFFER+MAXWORDS];        /* input buffer                    */
-char errbuf[MAXBUFFER+1];               /* last invalid input              */
-char line[1025];                        /* line buffer                     */
+char buffer[MAXBUFFER+MAXWORDS];       /* input buffer                    */
+char errbuf[MAXBUFFER+1];              /* last invalid input              */
+char line[1025];                       /* line buffer                     */
 
-int words = 0;                          /* parsed word count               */
-char *word[MAXWORDS+1];                 /* breakdown into words            */
-unsigned int wd[MAXWORDS+1];            /*     "      "   dict. entries    */
-unsigned int parsed_number;             /* needed for numbers in input      */
+int words = 0;                         /* parsed word count               */
+char *word[MAXWORDS+1];                /* breakdown into words            */
+unsigned int wd[MAXWORDS+1];           /*     "      "   dict. entries    */
+unsigned int parsed_number;            /* needed for numbers in input     */
 
-signed char remaining = 0;              /* multiple commands in input      */
-char parseerr[MAXBUFFER+1];             /* for passing to RunPrint, etc.   */
-char parsestr[MAXBUFFER+1];             /* for passing quoted string       */
-char xverb;                             /* flag; 0 = regular verb          */
-char starts_with_verb;         /* input line; 0 = no verb word    */
-unsigned int grammaraddr;                /* address in grammar              */
-char *obj_parselist = NULL;             /* objects with noun/adjective     */
-int domain, odomain;                     /* of object(s)                    */
-int objlist[MAXOBJLIST];                /* for objects of verb             */
-char objcount;                          /* of objlist                      */
-char parse_allflag = false;             /* for "all" in MatchObject()      */
+signed char remaining = 0;             /* multiple commands in input      */
+char parseerr[MAXBUFFER+1];            /* for passing to RunPrint, etc.   */
+char parsestr[MAXBUFFER+1];            /* for passing quoted string       */
+char xverb;                            /* flag; 0 = regular verb          */
+char starts_with_verb;                 /* input line; 0 = no verb word    */
+unsigned int grammaraddr;              /* address in grammar              */
+char *obj_parselist = NULL;            /* objects with noun/adjective     */
+int domain, odomain;                   /* of object(s)                    */
+int objlist[MAXOBJLIST];               /* for objects of verb             */
+char objcount;                         /* of objlist                      */
+char parse_allflag = false;            /* for "all" in MatchObject()      */
 struct pobject_structure
-   pobjlist[MAXPOBJECTS];          /* for possible objects            */
-int pobjcount;                          /* of pobjlist                     */
-int pobj;                               /* last remaining suspect          */
-int obj_match_state;                    /* see MatchCommand() for details  */
-char objword_cache[MAXWORDS];           /* for MatchWord() xobject, etc.   */
-char object_is_number;                  /* number used in player command   */
-unsigned int objgrammar;                /* for 2nd pass                    */
-int objstart;                           /*  "   "   "                      */
-int objfinish;                          /*  "   "   "                      */
-char addflag;                           /* true if adding to objlist[]     */
-int speaking;                           /* if command is addressed to obj. */
+   pobjlist[MAXPOBJECTS];              /* for possible objects            */
+int pobjcount;                         /* of pobjlist                     */
+int pobj;                              /* last remaining suspect          */
+int obj_match_state;                   /* see MatchCommand() for details  */
+char objword_cache[MAXWORDS];          /* for MatchWord() xobject, etc.   */
+char object_is_number;                 /* number used in player command   */
+unsigned int objgrammar;               /* for 2nd pass                    */
+int objstart;                          /*  "   "   "                      */
+int objfinish;                         /*  "   "   "                      */
+char addflag;                          /* true if adding to objlist[]     */
+int speaking;                          /* if command is addressed to obj. */
 
-char oops[MAXBUFFER+1];                 /* illegal word                    */
-int oopscount = 0;                      /* # of corrections in a row       */
+char oops[MAXBUFFER+1];                /* illegal word                    */
+int oopscount = 0;                     /* # of corrections in a row       */
 
 char parse_called_twice;
 char reparse_everything;
-char punc_string[64];                   /* punctuation string */
+char punc_string[64];                  /* punctuation string */
 
 char full_buffer = false;
-static char recursive_call = false;     /* to MatchObject() */
+static char recursive_call = false;    /* to MatchObject() */
 
 /* Necessary for proper disambiguation when addressing a character;
    i.e., when 'held' doesn't refer to held by the player, etc.
@@ -133,7 +133,7 @@ void AddAllObjects(int loc)
 
 /* ADDOBJ
 
-   Adds the object <obj> to objlist[], making all related adjustments.
+      Adds the object <obj> to objlist[], making all related adjustments.
 */
 
 void AddObj(int obj)
@@ -153,8 +153,8 @@ void AddObj(int obj)
 
 /* ADDPOSSIBLEOBJECT
 
-   Adds <obj> as a contender to the possible object list, noting that
-   it was referred to as either a noun or an adjective.
+      Adds <obj> as a contender to the possible object list, noting that
+      it was referred to as either a noun or an adjective.
 */
 
 void AddPossibleObject(int obj, char type, unsigned int w)
@@ -201,7 +201,7 @@ void AddPossibleObject(int obj, char type, unsigned int w)
 
 /* ADVANCEGRAMMAR
 
-   Move the address in the grammar table past the current token.
+      Move the address in the grammar table past the current token.
 */
 
 void AdvanceGrammar(void)
@@ -248,9 +248,9 @@ void AdvanceGrammar(void)
 
 /* ANYOBJWORD
 
-   For when it's only necessary to know if word[wn] is an object word for
-   any object, not a particular object.  Returns 1 for an object word or -1
-   for a non-object word.
+      For when it's only necessary to know if word[wn] is an object word for
+      any object, not a particular object.  Returns 1 for an object word or -1
+      for a non-object word.
 */
 
 int AnyObjWord(int wn)
@@ -274,8 +274,8 @@ int AnyObjWord(int wn)
 
 /* AVAILABLE
 
-   The non_grammar argument is true when called from a non-
-   grammar function such as RunEvents().
+      The non_grammar argument is true when called from a non-
+      grammar function such as RunEvents().
 */
 
 int Available(int obj, char non_grammar)
@@ -371,8 +371,8 @@ void CallLibraryParse(void)
 
 /* DOMAINOBJ
 
-   Takes into account the preset domain for checking an object's
-   presence; <domain> is 0, -1, or an object number..
+      Takes into account the preset domain for checking an object's
+      presence; <domain> is 0, -1, or an object number..
 */
 
 int DomainObj(int obj)
@@ -418,7 +418,7 @@ int DomainObj(int obj)
 
 /* FINDWORD
 
-   Returns the dictionary address of <a>.
+      Returns the dictionary address of <a>.
 */
 
 unsigned int FindWord(char *a)
@@ -487,7 +487,7 @@ unsigned int FindWord(char *a)
 
 /* INLIST
 
-   Checks to see if <obj> is in objlist[].
+      Checks to see if <obj> is in objlist[].
 */
 
 int InList(int obj)
@@ -505,7 +505,7 @@ int InList(int obj)
 
 /* KILLWORD
 
-   Deletes word[a].
+      Deletes word[a].
 */
 
 void KillWord(int a)
@@ -526,42 +526,42 @@ void KillWord(int a)
 
 /* MATCHCOMMAND
 
-   Here, briefly, is how MatchCommand() works:
+      Here, briefly, is how MatchCommand() works:
 
-      1. Match the verb.
+         1. Match the verb.
 
-      2. If no match, check to see if the line begins with an
-         object (character) and try to match it.
+         2. If no match, check to see if the line begins with an
+            object (character) and try to match it.
 
-      3. If found, try to match a syntax for that verb, including
-         objects, dictionary words, numbers, attributes, and
-         routines.  If any objects are specified, skip over them
-         for now, marking the start and finish.  This is done
-         mostly in MatchWord().
+         3. If found, try to match a syntax for that verb, including
+            objects, dictionary words, numbers, attributes, and
+            routines.  If any objects are specified, skip over them
+            for now, marking the start and finish.  This is done
+            mostly in MatchWord().
 
-      4. Match the xobject, if there is one--via MatchObject().
+         4. Match the xobject, if there is one--via MatchObject().
 
-      5. If all is well, return to match the objects that were
-         previously skipped over, loading them into objlist[].
-         Once again, this is done by MatchObject().
+         5. If all is well, return to match the objects that were
+            previously skipped over, loading them into objlist[].
+            Once again, this is done by MatchObject().
 
-   (The reason the objects are initially skipped is because it may
-   be necessary to know where to look for them--this may require
-   knowing what the xobject is, if the syntax is something like:
+      (The reason the objects are initially skipped is because it may
+      be necessary to know where to look for them--this may require
+      knowing what the xobject is, if the syntax is something like:
 
-      "get" <object> "from" <xobject>)
+         "get" <object> "from" <xobject>)
 
-   The variable <obj_match_state> is the indicator of what stage
-   object-matching is at:
+      The variable <obj_match_state> is the indicator of what stage
+      object-matching is at:
 
-      obj_match_state = 0  - haven't matched anything yet
+         obj_match_state = 0  - haven't matched anything yet
 
-      obj_match_state = 1  - xobject has been matched
+         obj_match_state = 1  - xobject has been matched
 
-      obj_match_state = 2  - matching object(s), loading objlist[]
+         obj_match_state = 2  - matching object(s), loading objlist[]
 
-      obj_match_state = 5  - matching first word/name, i.e.,
-                              "Bob, <do something>"
+         obj_match_state = 5  - matching first word/name, i.e.,
+                                 "Bob, <do something>"
 */
 
 int MatchCommand()
@@ -996,13 +996,13 @@ NextStructure:
 
 /* MATCHOBJECT
 
-   The argument is the word number we're starting matching on.
+      The argument is the word number we're starting matching on.
 
-   NOTE:  recusive_call is set to 0 if this is the first call.
-   MatchObject() sets it to 1 when calling itself when asking
-   for clarification as to which object is meant.
+      NOTE:  recusive_call is set to 0 if this is the first call.
+      MatchObject() sets it to 1 when calling itself when asking
+      for clarification as to which object is meant.
 
-   Return -1 on a recursive call to allow parsing to continue.
+      Return -1 on a recursive call to allow parsing to continue.
 */
 
 #define MAX_MOBJ 16     /* maximum number of matchable object words */
@@ -2122,8 +2122,8 @@ CheckXobjectFinish:
 
 /* OBJWORDTYPE
 
-   Returns true if the specified object has the specified word
-   as an adjective or noun (as specified by type).
+      Returns true if the specified object has the specified word
+      as an adjective or noun (as specified by type).
 */
 
 int ObjWordType(int obj, unsigned int w, int type)
@@ -2166,8 +2166,8 @@ int ObjWordType(int obj, unsigned int w, int type)
 
 /* OBJWORD
 
-   Returns <adjective> if the word at dictionary address <w> is
-   an adjective of <obj>, or <noun> if it is a noun.
+      Returns <adjective> if the word at dictionary address <w> is
+      an adjective of <obj>, or <noun> if it is a noun.
 */
 
 int ObjWord(int obj, unsigned int w)
@@ -2187,9 +2187,9 @@ int ObjWord(int obj, unsigned int w)
 
 /* PARSE
 
-   Turns word[] into dictionary addresses stored in wd[].  Takes care
-   of fingering illegal (unknown) words and doing alterations such
-   as compounds, removals, and synonyms.
+      Turns word[] into dictionary addresses stored in wd[].  Takes care
+      of fingering illegal (unknown) words and doing alterations such
+      as compounds, removals, and synonyms.
 */
 
 int Parse()
@@ -2280,14 +2280,14 @@ NotinDictionary:
    {
       synptr = 2;
 
-      for (j=1; j<=syncount; j++)  /* ...and alterations */
+      for (j=1; j<=syncount; j++)         /* ...and alterations */
       {
          defseg = syntable;
          if (wd[i]==PeekWord(synptr + 1))
          {
             switch (Peek(synptr))
             {
-               case 0:        /* synonym */
+               case 0:                    /* synonym */
                {
                   defseg = syntable;
                   wd[i] = PeekWord(synptr + 3);
@@ -2524,7 +2524,7 @@ void ParseError(int e, int a)
 
 /* REMOVEWORD
 
-   Deletes wd[a].
+      Deletes wd[a].
 */
 
 void RemoveWord(int a)
@@ -2544,8 +2544,8 @@ void RemoveWord(int a)
 
 /* RESETFINDOBJECT
 
-   Call FindObject(0, 0) to reset library's disambiguation
-   mechanism.
+      Call FindObject(0, 0) to reset library's disambiguation
+      mechanism.
 */
 
 void ResetFindObject(void)
@@ -2566,9 +2566,9 @@ void ResetFindObject(void)
 
 /* SEPARATEWORDS
 
-   Splits <buffer> into the word[] array.  Also does nifty things
-   such as turning time values such as hh:mm into a single number
-   (representing minutes from midnight).
+      Splits <buffer> into the word[] array.  Also does nifty things
+      such as turning time values such as hh:mm into a single number
+      (representing minutes from midnight).
 */
 
 void SeparateWords(void)
@@ -2691,7 +2691,7 @@ void SeparateWords(void)
 
 /* SUBTRACTOBJ
 
-   Removes object <obj> from objlist[], making all related adjustments.
+      Removes object <obj> from objlist[], making all related adjustments.
 */
 
 void SubtractObj(int obj)
@@ -2713,7 +2713,7 @@ void SubtractObj(int obj)
 
 /* SUBTRACTPOSSIBLEOBJECT
 
-   Removes <obj> as a possible contender for object disambiguation.
+      Removes <obj> as a possible contender for object disambiguation.
 */
 
 void SubtractPossibleObject(int obj)
@@ -2748,8 +2748,8 @@ void SubtractPossibleObject(int obj)
 
 /* TRYOBJ
 
-   Called by MatchObject() to see if <obj> is available, and add it to
-   or subtract it from objlist[] accordingly.
+      Called by MatchObject() to see if <obj> is available, and add it to
+      or subtract it from objlist[] accordingly.
 */
 
 void TryObj(int obj)
@@ -2780,8 +2780,8 @@ void TryObj(int obj)
 
 /* VALIDOBJ
 
-   Checks first of all to see if an object is available, then checks
-   if it meets all the qualifications demanded by the grammar syntax.
+      Checks first of all to see if an object is available, then checks
+      if it meets all the qualifications demanded by the grammar syntax.
 */
 
 int ValidObj(int obj)

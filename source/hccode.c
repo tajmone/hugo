@@ -11,20 +11,20 @@
 #include "hcheader.h"
 
 
-long token_val = 0;      /* from IDWord() */
+long token_val = 0;              /* from IDWord() */
 /* Overrides IDWord()'s error-printing */
 char silent_IDWord = false;
 
-int nest = 0;                   /* for recursive calls             */
-int arguments = 0;              /* for routines                    */
-char hex[7];                    /* string for hex output           */
+int nest = 0;                    /* for recursive calls             */
+int arguments = 0;               /* for routines                    */
+char hex[7];                     /* string for hex output           */
 
 
 /* BEGINCODEBLOCK
 
-   Begins a new block of code, whether or not it is actually
-   enclosed in "{...}", since a single line following an 'if'
-   or 'window', etc. may not be.
+      Begins a new block of code, whether or not it is actually
+      enclosed in "{...}", since a single line following an 'if'
+      or 'window', etc. may not be.
 */
 
 void BeginCodeBlock(void)
@@ -111,7 +111,7 @@ void CodeFileIO(void)
    WriteCode((unsigned int)(returnpos/address_scale), 2);
    codeptr = returnpos;
 
-   infileblock = 0;      /* clear it when finished */
+   infileblock = 0;              /* clear it when finished */
 }
 
 
@@ -160,24 +160,24 @@ void CodeFor(void)
       if (i++==words || brackets)
          {strcpy(f, "");
          goto ForError;}
-      p = i;         /* start of parent obj. expr. */
-      strcat(f, "=child(");   /* build initial assignment */
+      p = i;                     /* start of parent obj. expr. */
+      strcat(f, "=child(");      /* build initial assignment */
       for (i=p; i<=words; i++)
          {strcat(f, word[i]);
          strcat(f, " ");}
       strcat(f, ");");
-      for (i=2; i<p-1; i++)   /* build end expression */
+      for (i=2; i<p-1; i++)      /* build end expression */
          {strcat(f, word[i]);
          strcat(f, " ");}
       strcat(f, ";");
-      for (i=2; i<p-1; i++)   /* build modifying expression */
+      for (i=2; i<p-1; i++)      /* build modifying expression */
          {strcat(f, word[i]);
          strcat(f, " ");}
       strcat(f, "=sibling(");
       for (i=2; i<p-1; i++)
          {strcat(f, word[i]);
          strcat(f, " ");}
-      strcat(f, "))");   /* finish building expression */
+      strcat(f, "))");           /* finish building expression */
 
       strcpy(buffer, f);
       strcpy(f, "");
@@ -201,7 +201,7 @@ void CodeFor(void)
    }
    if (++a > strlen(buffer)) goto ForError;
 
-   initexpr = a;                      /* mark initial expr. */
+   initexpr = a;                       /* mark initial expr. */
 
    while (buffer[a] != ';' || inquote)
    {
@@ -211,7 +211,7 @@ void CodeFor(void)
    }
    if (++a > strlen(buffer)) goto ForError;
 
-   endexpr = a;                       /* mark end expr. */
+   endexpr = a;                        /* mark end expr. */
 
    while (buffer[a] != ';' || inquote)
    {
@@ -221,9 +221,9 @@ void CodeFor(void)
    }
    if (++a > strlen(buffer)) goto ForError;
 
-   modexpr = a;                       /* mark modifying expr. */
+   modexpr = a;                        /* mark modifying expr. */
 
-   if (initexpr < endexpr - 2)        /* build initial expr. */
+   if (initexpr < endexpr - 2)         /* build initial expr. */
    {
       strcpy(buffer, "");
       inquote = 0;
@@ -253,7 +253,7 @@ void CodeFor(void)
 
    strcpy(buffer, "for");
 
-   if (endexpr < modexpr - 2)         /* build end expr. */
+   if (endexpr < modexpr - 2)          /* build end expr. */
    {
       a = 3;
       inquote = 0;
@@ -284,7 +284,7 @@ void CodeFor(void)
    full_buffer = 1;
    BuildCode(FOR_T);
 
-   if (f[modexpr+2] != ')')           /* build modifying expr. */
+   if (f[modexpr+2] != ')')            /* build modifying expr. */
    {
       brackets = 0;
       for (i=modexpr; f[i] != ')' || brackets || inquote; i++)
@@ -310,7 +310,7 @@ void CodeFor(void)
       full_buffer = 0;
    }
 
-   skipaddr = codeptr;          /* ...then write it once we know it */
+   skipaddr = codeptr;                 /* ...then write it once we know it */
    codeptr = returnpos;
    WriteCode((unsigned int)(skipaddr+3-returnpos), 2);
    codeptr = skipaddr;
@@ -339,7 +339,7 @@ void CodeIf(void)
 {
    long returnpos, skipaddr;
 
-   returnpos = codeptr + 1;        /* put skip addr. here */
+   returnpos = codeptr + 1;            /* put skip addr. here */
    CodeLine();
 
    BeginCodeBlock();
@@ -348,7 +348,7 @@ void CodeIf(void)
    full_buffer = 1;
    BuildCode(IF_T);
 
-   skipaddr = codeptr;             /* ...then write it once we know it */
+   skipaddr = codeptr;                 /* ...then write it once we know it */
    codeptr = returnpos;
    WriteCode((unsigned int)(skipaddr-returnpos), 2);
    codeptr = skipaddr;
@@ -357,16 +357,16 @@ void CodeIf(void)
 
 /* CODELINE
 
-   Compiles the line currently loaded in word[].  A brief overview is:
+      Compiles the line currently loaded in word[].  A brief overview is:
 
-      1.  Do any start-of-line analysis
-      2.  Loop through the line word-by-word
-            -  Check current state/adjustments
-            -  Main section:  Code tokens appropriately,
-               setting up syntax flags
-            -  Throw up any current-word errors
-      3.  Throw up any end-of-line errors
-      4.  Do any end-of-line adjustments
+         1.  Do any start-of-line analysis
+         2.  Loop through the line word-by-word
+               -  Check current state/adjustments
+               -  Main section:  Code tokens appropriately,
+                  setting up syntax flags
+               -  Throw up any current-word errors
+         3.  Throw up any end-of-line errors
+         4.  Do any end-of-line adjustments
 */
 
 #define SOME_VALUE   (-1)
@@ -739,7 +739,7 @@ void CodeLine(void)
          case ELDEST_T:
          case YOUNGER_T:
          case ELDER_T:
-         case SYSTEM_T:      /* use same syntax for system() */
+         case SYSTEM_T:          /* use same syntax for system() */
          {
             if (!glegal)
             {
@@ -804,7 +804,7 @@ void CodeLine(void)
             goto NextWord;
          }
 
-                        case LABEL_T:
+         case LABEL_T:
          {
             codeptr--;
             RememberAddr(codeptr, LABEL_T, (unsigned int)token_val);
@@ -906,11 +906,11 @@ void CodeLine(void)
 
             /* fall through */
 
-         case IS_T:               /* "is" */
+         case IS_T:                    /* "is" */
          {
             if (brackets>parambrackets) condexpr = true;
 
-            assign = 0;         /* no longer waiting for it */
+            assign = 0;                /* no longer waiting for it */
             if (pexpr && !paramlist) eol = 1;
             if (t==IS_T)
             {
@@ -963,7 +963,7 @@ void CodeLine(void)
    */
             if (condexpr && ((!paramlist) || parambrackets<brackets))
             {
-               codeptr--;         /* replace comma */
+               codeptr--;              /* replace comma */
 
                if (compend<=compstart)
                   goto CommaError;
@@ -1114,7 +1114,7 @@ DoneComma:
                   eol = true;
                   assign = false;
 
-                                                /* following value or '=' */
+                  /* following value or '=' */
                   if (lastt==SOME_VALUE || lastt==EQUALS_T)
                   {
                      nextt = 0;
@@ -1219,7 +1219,7 @@ DoneComma:
                if (i<words-1 && word[i+1][0]==';')
                {
                   evalue = i;
-                  i = words;   /* jump to EOL */
+                  i = words;           /* jump to EOL */
                }
             }
             break;
@@ -1405,7 +1405,7 @@ SkipObjPropCheck:;
 
          case REPEAT_T:
          {
-            nextt = 0;   /* cancel evalue */
+            nextt = 0;     /* cancel evalue */
             if (lastt!=MUSIC_T && lastt!=SOUND_T && lastt!=VIDEO_T)
                Error("Unexpected 'repeat'");
             break;
@@ -1517,10 +1517,10 @@ NextWord:
          switch (firstvalue)
          {
             /* Assignable values: */
-            case 0:          /* not set       */
-            case DECIMAL_T:       /* '.' property     */
-            case VAR_T:       /* variable     */
-            case OPEN_SQUARE_T: /* '[' array element */
+            case 0:              /* not set           */
+            case DECIMAL_T:      /* '.' property      */
+            case VAR_T:          /* variable          */
+            case OPEN_SQUARE_T:  /* '[' array element */
                break;
             default:
                Error("Illegal assignment to non-variable");
@@ -1633,14 +1633,14 @@ NextWord:
 
 /* CODESELECT
 
-   As in:
+      As in:
 
-      select <expr>
-      case <case1>:
-         {...}
-      case <case2>:
-         {...}
-      ...
+         select <expr>
+         case <case1>:
+            {...}
+         case <case2>:
+            {...}
+         ...
 */
 
 #define MAXCASELENGTH 1024
@@ -1758,10 +1758,10 @@ CaseOverflow:
 
 /* CODEWHILE
 
-   As in:
+      As in:
 
-      while <condition>
-         {...}
+         while <condition>
+            {...}
 */
 
 void CodeWhile(void)
@@ -1796,9 +1796,9 @@ void CodeWhile(void)
 
 /* CODEWINDOW
 
-   Checks to see if there's a following code block, such as
-   "window n {...}" vs. simply "window 0" (which has no following
-   code block).
+      Checks to see if there's a following code block, such as
+      "window n {...}" vs. simply "window 0" (which has no following
+      code block).
 */
 
 void CodeWindow(void)
@@ -1819,7 +1819,7 @@ void CodeWindow(void)
 
 /* IDWORD
 
-   Returns the token type of word[a].
+      Returns the token type of word[a].
 */
 
 int IDWord(int a)
@@ -2014,4 +2014,3 @@ int IDWord(int a)
 
    return 0;
 }
-

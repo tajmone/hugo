@@ -4,11 +4,11 @@
    contains line-decoding routines:
 
       AddLinetoCodeWindow
-         AddAddress
-         AddSymbol
-         AddString
-         DecodeLine
-         ShiftCodeLines
+      AddAddress
+      AddSymbol
+      AddString
+      DecodeLine
+      ShiftCodeLines
       AddStringtoCodeWindow
       GetToken
 
@@ -33,19 +33,19 @@ void AddAddress(long a, int *l, int lpos, int coltype);
 int AddSymbol(unsigned char *arr, long *addr, int *l, int lpos);
 
 
-long this_codeptr;         /* for error recovery    */
-long next_codeptr;         /* for skipping over     */
-int **codeline;                         /* code window contents  */
-int buffered_code_lines = 0;            /* waiting to be printed */
+long this_codeptr;               /* for error recovery    */
+long next_codeptr;               /* for skipping over     */
+int **codeline;                  /* code window contents  */
+int buffered_code_lines = 0;     /* waiting to be printed */
 
-char format_nesting = 1;   /* for spacing in Code window */
+char format_nesting = 1;      /* for spacing in Code window */
 char screen_line[256];
 
 
 /* ADDLINETOCODEWINDOW
 
-   Calls DecodeLine to decode the next instruction, and looks
-   after storing it in the codeline array.
+      Calls DecodeLine to decode the next instruction, and looks
+      after storing it in the codeline array.
 */
 
 void AddLinetoCodeWindow(long addr)
@@ -118,8 +118,8 @@ void AddStringtoCodeWindow(char *a)
 
 /* ADDADDRESS
 
-   Adds the supplied address to the line <l> at the given position,
-   in the specified color type.
+      Adds the supplied address to the line <l> at the given position,
+      in the specified color type.
 */
 
 void AddAddress(long a, int *l, int lpos, int coltype)
@@ -140,8 +140,8 @@ void AddAddress(long a, int *l, int lpos, int coltype)
 
 /* ADDSTRING
 
-   Adds the supplied string to the line <l> at the given position,
-   in the specified color type.
+      Adds the supplied string to the line <l> at the given position,
+      in the specified color type.
 */
 
 void AddString(char *s, int *l, int lpos, int coltype)
@@ -159,9 +159,9 @@ void AddString(char *s, int *l, int lpos, int coltype)
 
 /* ADDSYMBOL
 
-   Adds the current symbol (taken from the supplied array, usually
-   mem[]), to the line <l> at the given position, and returns the
-   number of characters added.
+      Adds the current symbol (taken from the supplied array, usually
+      mem[]), to the line <l> at the given position, and returns the
+      number of characters added.
 */
 
 int AddSymbol(unsigned char *arr, long *addr, int *l, int lpos)
@@ -218,11 +218,11 @@ int AddSymbol(unsigned char *arr, long *addr, int *l, int lpos)
 
 /* DECODELINE
 
-   The main line-decoding routine, decodes the chunk of code at the
-   supplied address into a line of pseudo-source, and returns a
-   pointer to the int array containing the line.  It's an int
-   array since the low byte contains the character, and the high
-   byte contains the color.
+      The main line-decoding routine, decodes the chunk of code at the
+      supplied address into a line of pseudo-source, and returns a
+      pointer to the int array containing the line.  It's an int
+      array since the low byte contains the character, and the high
+      byte contains the color.
 */
 
 int *DecodeLine(long addr)
@@ -390,9 +390,9 @@ AddSingleSymbol:
 
 /* GETTOKEN
 
-   Returns a token_structure (i.e., token, length, and color)
-   based on the TOKEN_T value at the given position in the
-   supplied array.
+      Returns a token_structure (i.e., token, length, and color)
+      based on the TOKEN_T value at the given position in the
+      supplied array.
 */
 
 struct token_structure GetToken(unsigned char *arr, long addr, int firsttoken)
@@ -590,9 +590,9 @@ PrintDictWord:
 
 /* SHIFTCODELINES
 
-   Shifts the array of window information up, deleting the
-   50 oldest lines.  Used by the AllocMem() function to
-   cannibalize code lines for other purposes.
+      Shifts the array of window information up, deleting the
+      50 oldest lines.  Used by the AllocMem() function to
+      cannibalize code lines for other purposes.
 */
 
 void ShiftCodeLines(void)
@@ -625,11 +625,11 @@ void ShiftCodeLines(void)
 
 /* int_print
 
-   Assumes that the high byte contains the color type, and the low
-   byte contains the ASCII character.  If the supplied color is
-   not -1, it is used as the background color and the text color
-   is set to color[SELECT_TEXT].  The printed string begins with
-   a[pos], and prints a maximum of width characters.
+      Assumes that the high byte contains the color type, and the low
+      byte contains the ASCII character.  If the supplied color is
+      not -1, it is used as the background color and the text color
+      is set to color[SELECT_TEXT].  The printed string begins with
+      a[pos], and prints a maximum of width characters.
 */
 
 void int_print(int *a, int col, int pos, int width)

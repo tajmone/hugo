@@ -322,4 +322,3 @@ NextResource:
    free(resourcepath);
    free(resourcename);
 }
-

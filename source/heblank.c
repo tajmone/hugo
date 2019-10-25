@@ -5,19 +5,19 @@
 
       hugo_blockalloc         hugo_clearfullscreen
       hugo_blockfree          hugo_clearwindow
-               hugo_settextmode
+                              hugo_settextmode
       hugo_splitpath          hugo_settextwindow
       hugo_makepath           hugo_settextpos
       hugo_getfilename        hugo_scrollwindowup
       hugo_overwrite          hugo_font
       hugo_closefiles         hugo_settextcolor
-               hugo_setbackcolor
+                              hugo_setbackcolor
       hugo_getkey             hugo_color
       hugo_getline
       hugo_waitforkey         hugo_print
-      hugo_iskeywaiting   hugo_charwidth
-      hugo_timewait      hugo_textwidth
-               hugo_strlen
+      hugo_iskeywaiting       hugo_charwidth
+      hugo_timewait           hugo_textwidth
+                              hugo_strlen
       hugo_addcommand
       hugo_restorecommand
 
@@ -59,16 +59,16 @@ int hugo_hasgraphics(void);
 /* Definitions and variables: */
 
 /* Defined Hugo colors: */
-#define HUGO_BLACK         0
-#define HUGO_BLUE          1
-#define HUGO_GREEN         2
-#define HUGO_CYAN          3
-#define HUGO_RED           4
-#define HUGO_MAGENTA       5
-#define HUGO_BROWN         6
-#define HUGO_WHITE         7
-#define HUGO_DARK_GRAY     8
-#define HUGO_LIGHT_BLUE    9
+#define HUGO_BLACK          0
+#define HUGO_BLUE           1
+#define HUGO_GREEN          2
+#define HUGO_CYAN           3
+#define HUGO_RED            4
+#define HUGO_MAGENTA        5
+#define HUGO_BROWN          6
+#define HUGO_WHITE          7
+#define HUGO_DARK_GRAY      8
+#define HUGO_LIGHT_BLUE     9
 #define HUGO_LIGHT_GREEN   10
 #define HUGO_LIGHT_CYAN    11
 #define HUGO_LIGHT_RED     12
@@ -77,7 +77,7 @@ int hugo_hasgraphics(void);
 #define HUGO_BRIGHT_WHITE  15
 
 /* Since we provide our own command history: */
-#define HISTORY_SIZE    16              /* for command-line editing */
+#define HISTORY_SIZE       16    /* for command-line editing */
 int hcount = 0;
 char *history[HISTORY_SIZE];
 
@@ -268,10 +268,10 @@ void hugo_closefiles()
    expected that hugo_getkey() will return the following modified
    keystrokes:
 
-   up-arrow        11 (CTRL-K)
-   down-arrow      10 (CTRL-J)
-   left-arrow       8 (CTRL-H)
-   right-arrow     21 (CTRL-U)
+      up-arrow        11 (CTRL-K)
+      down-arrow      10 (CTRL-J)
+      left-arrow       8 (CTRL-H)
+      right-arrow     21 (CTRL-U)
 */
 
 int hugo_getkey(void)
@@ -369,28 +369,28 @@ int hugo_timewait(int n)
    The currently defined window, in zero-based coordinates (either
    character coordinates or pixel coordinates, as appropriate):
 
-   physical_windowleft, physical_windowtop,
-   physical_windowright, physical_windowbottom,
-   physical_windowwidth, physical_windowheight
+      physical_windowleft, physical_windowtop,
+      physical_windowright, physical_windowbottom,
+      physical_windowwidth, physical_windowheight
 
    The currently selected font is described by the ..._FONT bitmasks in:
 
-   currentfont
+      currentfont
 
    The currently selected font's width and height:
 
-   charwidth, lineheight
+      charwidth, lineheight
 
    The non-proportional/fixed-width font's width and height (i.e., equal
    to charwidth and lineheight when the current font is the fixed-width
    font):
 
-   FIXEDCHARWIDTH, FIXEDLINEHEIGHT
+      FIXEDCHARWIDTH, FIXEDLINEHEIGHT
 
    Must be set by hugo_settextpos(), hugo_clearfullscreen(), and
    hugo_clearwindow():
 
-   currentpos, currentline
+      currentpos, currentline
 */
 
 void hugo_init_screen(void)
@@ -449,29 +449,29 @@ void hugo_settextmode(void)
    a standard text display */
 
 /*
-            Pixel-based      Character-based
-            -----------      ---------------
+                        Pixel-based          Character-based
+                        -----------          ---------------
 
-   FIXEDCHARWIDTH =   ...font width...       1
-   FIXEDLINEHEIGHT =   ...font height...       1
+   FIXEDCHARWIDTH =     ...font width...                1
+   FIXEDLINEHEIGHT =    ...font height...               1
 
-   SCREENWIDTH =       ...# x pixels...      80
-   SCREENHEIGHT =     ...# y pixels...      25
+   SCREENWIDTH =        ...# x pixels...               80
+   SCREENHEIGHT =       ...# y pixels...               25
 
    As an example of how character-based and pixel-based
    systems might provide the same parameters, the following
    two sets of parameters are identical:
 
-      FIXEDCHARWIDTH        8      1
+      FIXEDCHARWIDTH         8      1
       FIXEDLINEHEIGHT       16      1
 
-      SCREENWIDTH      640     80  (640 /  8 = 80)
-      SCREENHEIGHT      400     25  (400 / 16 = 25)
+      SCREENWIDTH          640     80  (640 /  8 = 80)
+      SCREENHEIGHT         400     25  (400 / 16 = 25)
 
    Then set:
 
-   charwidth = current font width, in pixels or 1
-   lineheight = current font height, in pixels or 1
+      charwidth = current font width, in pixels or 1
+      lineheight = current font height, in pixels or 1
 
    Both charwidth and lineheight must change dynamically if the
    metrics for the currently selected font change
@@ -524,15 +524,15 @@ void hugo_settextwindow(int left, int top, int right, int bottom)
    /* Note that, e.g., a full-screen window on an 80x25 text screen,
       would result in:
 
-      physical_windowleft = 0
-      physical_windowtop = 0
-      physical_windowright = 79
-      physical_windowbottom = 24
+         physical_windowleft = 0
+         physical_windowtop = 0
+         physical_windowright = 79
+         physical_windowbottom = 24
 
       On a 640x480 graphics screen,
 
-      physical_windowright = 639
-      physical_windowbottom = 479
+         physical_windowright = 639
+         physical_windowbottom = 479
    */
 }
 
@@ -661,22 +661,22 @@ int hugo_color(int c)
 
    switch (c)
    {
-      case HUGO_BLACK:    c = 0;  break;
-      case HUGO_BLUE:       c = 1;  break;
-      case HUGO_GREEN:    c = 2;  break;
-      case HUGO_CYAN:       c = 3;  break;
-      case HUGO_RED:       c = 4;  break;
-      case HUGO_MAGENTA:    c = 5;  break;
-      case HUGO_BROWN:    c = 6;  break;
-      case HUGO_WHITE:    c = 7;  break;
-      case HUGO_DARK_GRAY:    c = 8;  break;
+      case HUGO_BLACK:         c = 0;  break;
+      case HUGO_BLUE:          c = 1;  break;
+      case HUGO_GREEN:         c = 2;  break;
+      case HUGO_CYAN:          c = 3;  break;
+      case HUGO_RED:           c = 4;  break;
+      case HUGO_MAGENTA:       c = 5;  break;
+      case HUGO_BROWN:         c = 6;  break;
+      case HUGO_WHITE:         c = 7;  break;
+      case HUGO_DARK_GRAY:     c = 8;  break;
       case HUGO_LIGHT_BLUE:    c = 9;  break;
-      case HUGO_LIGHT_GREEN:    c = 10; break;
+      case HUGO_LIGHT_GREEN:   c = 10; break;
       case HUGO_LIGHT_CYAN:    c = 11; break;
-      case HUGO_LIGHT_RED:    c = 12; break;
+      case HUGO_LIGHT_RED:     c = 12; break;
       case HUGO_LIGHT_MAGENTA: c = 13; break;
-      case HUGO_YELLOW:    c = 14; break;
-      case HUGO_BRIGHT_WHITE:    c = 15; break;
+      case HUGO_YELLOW:        c = 14; break;
+      case HUGO_BRIGHT_WHITE:  c = 15; break;
 */
    return c;
 }
@@ -704,11 +704,11 @@ int hugo_charwidth(char a)
    */
 
    if (a==FORCED_SPACE)
-      return FIXEDCHARWIDTH;      /* same as ' ' */
+      return FIXEDCHARWIDTH;           /* same as ' ' */
 
    else if ((unsigned char)a >= ' ')   /* alphanumeric characters */
 
-      return FIXEDCHARWIDTH;      /* for non-proportional */
+      return FIXEDCHARWIDTH;           /* for non-proportional */
 
    return 0;
 }

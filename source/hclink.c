@@ -4,7 +4,7 @@
    contains:
 
       LinkerPass1
-         CheckLinkLimit
+      CheckLinkLimit
       LinkerPass2
       ReadCode
 
@@ -26,9 +26,9 @@ char linked = 0;                /* for linking .HLB precompiled header */
 /* LINKERPASS1
 
       Called in Pass1() when a '#link "<filename>"' is encountered.
-   All of the to-be-linked routines, properties, attributes, etc.
-   are read.  Any actual executable code will be linked in
-   LinkerPass2(), as will the resolve table.
+      All of the to-be-linked routines, properties, attributes, etc.
+      are read.  Any actual executable code will be linked in
+      LinkerPass2(), as will the resolve table.
 */
 
 void LinkerPass1(void)
@@ -287,8 +287,8 @@ void LinkerPass1(void)
 
 /* CHECKLINKLIMIT
 
-   Checks to makes sure that a linked .HLB file doesn't exceed
-   a lower limit set for this compilation.
+      Checks to makes sure that a linked .HLB file doesn't exceed
+      a lower limit set for this compilation.
 */
 
 void CheckLinkLimit(int a, int b, char *n)
@@ -303,11 +303,11 @@ void CheckLinkLimit(int a, int b, char *n)
 
 /* LINKERPASS2
 
-   This is Part II of the linker, where all calculations are
-   made to reconcile addresses in the linked code, and the actual
-   actual linked code is written to the object file.  The linked
-   resolve table is transcribed to the resolve table for the
-   current compilation.
+      This is Part II of the linker, where all calculations are
+      made to reconcile addresses in the linked code, and the actual
+      actual linked code is written to the object file.  The linked
+      resolve table is transcribed to the resolve table for the
+      current compilation.
 */
 
 void LinkerPass2(void)

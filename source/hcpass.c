@@ -21,9 +21,9 @@
 void PrintFrameLine(void);
 void WriteAdditionalData(void);
 
-unsigned int codestart = 0;     /* of executable code              */
-char endofgrammar = 0;          /* true after grammar is defined   */
-int passnumber = 0;             /* number of current pass          */
+unsigned int codestart = 0;         /* of executable code              */
+char endofgrammar = 0;              /* true after grammar is defined   */
+int passnumber = 0;                 /* number of current pass          */
 
 /* Initial counts of various data types */
 int objinitial = 0, routineinitial = 0, eventinitial = 0, labelinitial = 0,
@@ -32,27 +32,27 @@ int objinitial = 0, routineinitial = 0, eventinitial = 0, labelinitial = 0,
 /* Totals */
 int objects = 0, routines = 0, events = 0, labels = 0;
 
-unsigned int initaddr = 0;        /* address of "init" routine  */
-unsigned int mainaddr = 0;        /* address of "main" routine  */
-unsigned int parseaddr = 0;       /* address of "parse" routine */
-unsigned int parseerroraddr = 0;  /* address of "parseerror"    */
-unsigned int findobjectaddr = 0;  /* address of "findobject"    */
-unsigned int endgameaddr = 0;     /* address of "endgame"       */
-unsigned int speaktoaddr = 0;     /* address of "speakto"       */
-unsigned int performaddr = 0;     /* address of "perform"       */
+unsigned int initaddr = 0;          /* address of "init" routine  */
+unsigned int mainaddr = 0;          /* address of "main" routine  */
+unsigned int parseaddr = 0;         /* address of "parse" routine */
+unsigned int parseerroraddr = 0;    /* address of "parseerror"    */
+unsigned int findobjectaddr = 0;    /* address of "findobject"    */
+unsigned int endgameaddr = 0;       /* address of "endgame"       */
+unsigned int speaktoaddr = 0;       /* address of "speakto"       */
+unsigned int performaddr = 0;       /* address of "perform"       */
 
 unsigned int linkproptable = 0;
 
-unsigned int textcount = 0;   /* for linking text bank */
+unsigned int textcount = 0;         /* for linking text bank */
 
 
 /* PASS1
 
       Define all objects, routines, property names, attribute names, etc.
-   so that they are recognizable to the compiler during Pass2().
-   Here, everything contained in an object, routine, or event is
-   written into the temporary allfile, which is a contiguous master
-   file of parsed lines (i.e. broken down into tokens).
+      so that they are recognizable to the compiler during Pass2().
+      Here, everything contained in an object, routine, or event is
+      written into the temporary allfile, which is a contiguous master
+      file of parsed lines (i.e. broken down into tokens).
 */
 
 void Pass1(void)
@@ -200,16 +200,16 @@ DefineanObject:
             DefOther();
          }
 
-         else if (!strcmp(word[1], "attribute")) DefAttribute();
+         else if (!strcmp(word[1], "attribute"))   DefAttribute();
          else if (!strcmp(word[1], "property"))    DefProperty();
-         else if (!strcmp(word[1], "global"))    DefGlobal();
-         else if (!strcmp(word[1], "array"))    DefArray();
+         else if (!strcmp(word[1], "global"))      DefGlobal();
+         else if (!strcmp(word[1], "array"))       DefArray();
          else if (!strcmp(word[1], "constant"))    DefConstant();
          else if (!strcmp(word[1], "enumerate"))   DefEnum();
 
-         else if (!strcmp(word[1], "compound"))  PrinttoAll();
-         else if (!strcmp(word[1], "removal"))   PrinttoAll();
-         else if (!strcmp(word[1], "synonym"))   PrinttoAll();
+         else if (!strcmp(word[1], "compound"))    PrinttoAll();
+         else if (!strcmp(word[1], "removal"))     PrinttoAll();
+         else if (!strcmp(word[1], "synonym"))     PrinttoAll();
          else if (!strcmp(word[1], "punctuation")) PrinttoAll();
 
 
@@ -464,9 +464,9 @@ LeavePass2:
 /* PASS3
 
       Where all the data tables following the code are written and
-   address references are resolved.  Also, if an .HLB linkable file
-   is being produced, all the appropriate additional data are
-   written here (such as attribute and property names).
+      address references are resolved.  Also, if an .HLB linkable file
+      is being produced, all the appropriate additional data are
+      written here (such as attribute and property names).
 */
 
 unsigned int arraytableaddr;   /* global because ResolveAddr() needs it */
@@ -476,7 +476,7 @@ void Pass3(void)
    char e[256];                     /* dictionary entry */
    char date[9];
    int i, j, k, len;
-   int p, d;                       /* for reading properties */
+   int p, d;                        /* for reading properties */
    unsigned int pcount = 0;
    unsigned int a;
    unsigned int resolvetable = 0;
@@ -484,14 +484,14 @@ void Pass3(void)
    long endofcode;
    time_t now;
 
-   unsigned int objtableaddr;      /* header table addresses */
+   unsigned int objtableaddr;       /* header table addresses */
    unsigned int proptableaddr;
    unsigned int eventtableaddr;
    unsigned int synaddr;
    unsigned int dictaddr;
    unsigned int textbankaddr;
 
-   char *tbuf;         /* for linking text bank */
+   char *tbuf;                      /* for linking text bank */
    int tcount;
 
 
@@ -632,7 +632,7 @@ void Pass3(void)
 
    proptableaddr = (unsigned)(codeptr / 16);
 
-   WriteCode(propctr, 2);             /* # of properties */
+   WriteCode(propctr, 2);              /* # of properties */
 
    if (propctr)
    {
@@ -654,12 +654,12 @@ void Pass3(void)
          WriteCode(propdef[i], 2);
       }
 
-      for (i=0; i<propctr; i++)       /* additive flags */
+      for (i=0; i<propctr; i++)        /* additive flags */
          WriteCode(propadd[i], 1);
 
 
-      k = 0;                     /* object counter */
-      a = 0;                     /* property heap position */
+      k = 0;                           /* object counter */
+      a = 0;                           /* property heap position */
       while (a < propheap)
       {
          p = propdata[a/PROPBLOCKSIZE][a%PROPBLOCKSIZE];
@@ -706,7 +706,7 @@ void Pass3(void)
    if (!hlb) FillCode();
    eventtableaddr = (unsigned)(codeptr / 16);
 
-   WriteCode(events, 2);              /* # of events */
+   WriteCode(events, 2);               /* # of events */
 
    for (i=0; i<events; i++)
       {WriteCode(eventin[i], 2);
@@ -767,7 +767,7 @@ void Pass3(void)
     */
    if (!hlb) FillCode();
    synaddr = (unsigned)(codeptr / 16);
-   WriteCode(syncount, 2);            /* # of synonyms */
+   WriteCode(syncount, 2);             /* # of synonyms */
 
    if (syncount)
    {
@@ -786,7 +786,7 @@ void Pass3(void)
    if (!hlb) FillCode();
 
    dictaddr = (unsigned)(codeptr / 16);
-   WriteCode(dictcount, 2);           /* # of dictionary entries */
+   WriteCode(dictcount, 2);            /* # of dictionary entries */
 
    /* Write a null string "" */
    WriteCode(0, 1);
@@ -921,11 +921,11 @@ void Pass3(void)
 
       /* Go back and overwrite the date stamp: */
       codeptr = 3;
-      WriteCode(pcount, 2);             /* # properties */
-      WriteCode((unsigned)(endofcode%65536L), 2); /* code length  */
+      WriteCode(pcount, 2);                        /* # properties   */
+      WriteCode((unsigned)(endofcode%65536L), 2);  /* code length    */
       WriteCode((unsigned)(endofcode/65536L), 1);
-      WriteCode(addrctr, 2);             /* # resolves   */
-      WriteCode(resolvetable, 2);        /* table location */
+      WriteCode(addrctr, 2);                       /* # resolves     */
+      WriteCode(resolvetable, 2);                  /* table location */
    }
 
    codeptr = tempptr;
@@ -1018,10 +1018,10 @@ void PrintFrameLine(void)   /* called only by Pass3 */
 
 /* WRITEADDITIONALDATA
 
-   Writes additional data to an .HLB linkable file or .HDX
-   debuggable executable (names of objects, properties, routine
-   addresses, etc.).  Called at different points by Pass3
-   depending on what kind of file is being generated.
+      Writes additional data to an .HLB linkable file or .HDX
+      debuggable executable (names of objects, properties, routine
+      addresses, etc.).  Called at different points by Pass3
+      depending on what kind of file is being generated.
 */
 
 void WriteAdditionalData(void)

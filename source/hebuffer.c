@@ -49,7 +49,7 @@ int tb_first_unused;
 int tb_last_used;
 int tb_last_unused;
 
-int tb_used = 0;      /* counts */
+int tb_used = 0;        /* counts */
 int tb_unused;
 
 typedef struct
@@ -68,7 +68,7 @@ int tb_selected;
 
 /* TB_Init()
 
-   Initializes text-buffer management.
+      Initializes text-buffer management.
 */
 
 void TB_Init()
@@ -93,7 +93,7 @@ void TB_Init()
 
 /* TB_IsUsed(n)
 
-   Returns true if cell n is used.
+      Returns true if cell n is used.
 */
 
 char TB_IsUsed(int n)
@@ -104,7 +104,7 @@ char TB_IsUsed(int n)
 
 /* TB_FirstCell()
 
-   Returns the first used cell, or -1 if none.
+      Returns the first used cell, or -1 if none.
 */
 
 int TB_FirstCell()
@@ -116,8 +116,8 @@ int TB_FirstCell()
 
 /* TB_Remove(int n, list)
 
-   Removes the specified word cell (at index n) from either
-   the TB_USED or TB_UNUSED list.
+      Removes the specified word cell (at index n) from either
+      the TB_USED or TB_UNUSED list.
 */
 
 void TB_Remove(int n)
@@ -164,9 +164,9 @@ void TB_Remove(int n)
 
 /* TB_AddWord(char *word, left, top, right, bottom)
 
-   Adds the specified word cell with the given boundaries.
-   Called by TB_AddWord() once the word has been properly
-   trimmed.
+      Adds the specified word cell with the given boundaries.
+      Called by TB_AddWord() once the word has been properly
+      trimmed.
 */
 
 int TB_AddWord(char *w, int left, int top, int right, int bottom)
@@ -276,8 +276,8 @@ int TB_AddWord(char *w, int left, int top, int right, int bottom)
 
 /* TB_AddWin(left, top, right, bottom)
 
-   Adds a window area.  Generally only useful when
-   TEXTBUFFER_FORMATTING is #defined.
+      Adds a window area.  Generally only useful when
+      TEXTBUFFER_FORMATTING is #defined.
 */
 
 int TB_AddWin(int left, int top, int right, int bottom)
@@ -288,8 +288,8 @@ int TB_AddWin(int left, int top, int right, int bottom)
 
 /* TB_InBounds(n, left, top, right, bottom)
 
-   Returns true if tb_list[n] is even partially within
-   the given boundaries.
+      Returns true if tb_list[n] is even partially within
+      the given boundaries.
 */
 
 char TB_InBounds(int n, int left, int top, int right, int bottom)
@@ -307,7 +307,7 @@ char TB_InBounds(int n, int left, int top, int right, int bottom)
 
 /* TB_Clear(left, top, right, bottom)
 
-   Removes all cells within the given boundaries.
+      Removes all cells within the given boundaries.
 */
 
 void TB_Clear(int left, int top, int right, int bottom)
@@ -346,8 +346,8 @@ void TB_Clear(int left, int top, int right, int bottom)
 
 /* TB_Scroll(left, top, right, bottom, size)
 
-   Scrolls all cells within the given window up by <size>
-   units.
+      Scrolls all cells within the given window up by <size>
+      units.
 */
 
 void TB_Scroll()
@@ -397,8 +397,8 @@ void TB_Scroll()
 
 /* TB_FindWord(x, y)
 
-   Returns the (first) word found at (x, y).  Returns NULL if no
-   word is found.
+      Returns the (first) word found at (x, y).  Returns NULL if no
+      word is found.
 */
 
 char *TB_FindWord(int x, int y)

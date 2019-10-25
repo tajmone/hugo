@@ -22,9 +22,9 @@
 
 
 /* Object information:
-   parent, sibling, and child,
-   attribute set(s),
-   address in property table
+      parent, sibling, and child,
+      attribute set(s),
+      address in property table
 */
 int *parent, *sibling, *child;
 long *objattr[MAXATTRIBUTES/32];
@@ -52,29 +52,29 @@ char incompprop = 0;            /* true when in before/after/etc.  */
 
 void BuildCode(unsigned char from)
 {
-   char checkcompprop;      /* for checking illegal coding     */
-               /*   inside a complex property       */
-               /*   block             */
+   char checkcompprop;           /* for checking illegal coding      */
+                                 /*   inside a complex property      */
+                                 /*   block                          */
    int i, hash;
-   int enternest,         /* to know when this block is done */
-      sinceif = 0;      /* catch hanging "elseifs"/"elses" */
+   int enternest,                /* to know when this block is done  */
+      sinceif = 0;               /* catch hanging "elseifs"/"elses"  */
    int block_finished = 0;
 
-   long returnpos, skipaddr;   /* to relocate after coding an in- */
-               /*   line property routine assign. */
+   long returnpos, skipaddr;     /* to relocate after coding an in-  */
+                                 /*   line property routine assign.  */
 
    enternest = nest;
    do
    {
-      if (full_buffer==1)   /* if the buffer is new...  */
+      if (full_buffer==1)        /* if the buffer is new...  */
          full_buffer = 0;
-      else         /* ...or else get new words */
+      else                       /* ...or else get new words */
          GetWords();
 
       /* Now check to see if we've hit unreachable code; of course,
          anything after a label can potentially be jumped to
       */
-      if (word[1][0]=='~')   /* a label */
+      if (word[1][0]=='~')       /* a label */
          block_finished = 0;
       if ((block_finished==nest) && word[1][0]!='}')
       {
@@ -94,13 +94,13 @@ void BuildCode(unsigned char from)
       if (word[words][0]=='}') nest--;
 
 
-      checkcompprop = 0;      /* will be tested later */
+      checkcompprop = 0;         /* will be tested later */
 
 
       /* Check if the following code is an anonymous routine, to be
          assigned as a property later, i.e.:
 
-         object.property = {...}
+            object.property = {...}
 
          The engine will assign object.property the address of
          the block of code.
@@ -112,12 +112,12 @@ void BuildCode(unsigned char from)
       {
          /* If the last word is "=", change it into
 
-            object.property = <address>
+               object.property = <address>
          */
 
          CodeLine();
          returnpos = codeptr;
-         WriteCode(0,2);          /* write a blank address */
+         WriteCode(0,2);         /* write a blank address */
 
          BeginCodeBlock();
 
@@ -267,7 +267,7 @@ CodetheLine:
 void BuildEvent(void)
 {
    int i;
-   char evin[33];      /* event in object, or 0 for global event */
+   char evin[33];       /* event in object, or 0 for global event */
 
    /* Allow:
 
@@ -328,8 +328,8 @@ void BuildEvent(void)
 
       Called when the compiler encounters an object or class declaration,
       and where all the contained properties and attributes are assigned.
-   If the parameter is non-zero, properties and attributes are
-   inherited (first) from the given object.
+      If the parameter is non-zero, properties and attributes are
+      inherited (first) from the given object.
 */
 
 void PropertyAlreadyDefined(int i)
@@ -343,12 +343,12 @@ void BuildObject(int from)
    char objtype[8];
    int i, j;
    int objstack[16],
-      objstackcount = 0;   /* for multiple-object inheritance */
+      objstackcount = 0;         /* for multiple-object inheritance  */
 
    int inobj = 0, linesdone = 0,
-      isnot = 0,      /* isnot is true if attributes are */
-               /*   being enumerated as beginning */
-               /*   with "is not..."         */
+      isnot = 0,                 /* isnot is true if attributes are  */
+                                 /*   being enumerated as beginning  */
+                                 /*   with "is not..."               */
       flag = 0;
    long tempattr[MAXATTRIBUTES/32];
 
@@ -431,12 +431,12 @@ void BuildObject(int from)
 
       /* In an object definition, the following are valid:
 
-         1.  inherits <class>[, <class2>...]
-         2.  in <object> | nearby [<object>]
-         3.  is <attribute>[, <attribute2>...]
-         4.  <property> <value>
-         5.  <property>
-            {...property routine...}
+            1.  inherits <class>[, <class2>...]
+            2.  in <object> | nearby [<object>]
+            3.  is <attribute>[, <attribute2>...]
+            4.  <property> <value>
+            5.  <property>
+                  {...property routine...}
       */
 
       /* If a parent is specified */
@@ -723,9 +723,9 @@ void BuildProperty(int obj, int p)
             return;
          }
 
-         SavePropData(t);      /* length */
+         SavePropData(t);        /* length */
          for (i=0; i<t; i++)
-            SavePropData(0);   /* blank data */
+            SavePropData(0);     /* blank data */
          proptable = proptable + (t+1) * 2;
          return;
       }
@@ -892,11 +892,11 @@ void BuildRoutine(void)
    /* If any arguments are given, as in "Routine(a, b, c)", then
       a, b, and c must be defined as locals. */
    arguments = 0;
-   if (word[3][0]=='(')      /* count arguments */
+   if (word[3][0]=='(')          /* count arguments */
    {
       for (i=1; i<3; i++)
          KillWord(1);
-      KillWord(words);   /* ')' */
+      KillWord(words);           /* ')' */
       word[1] = "";
 
       DefLocals(1);
@@ -918,9 +918,9 @@ void BuildRoutine(void)
 
 /* BUILDVERB
 
-   To be honest, BuildVerb() really only codes the first line of a
-   verb definition.  All the following lines are handled by CodeLine(),
-   as called by BuildCode().
+      To be honest, BuildVerb() really only codes the first line of a
+      verb definition.  All the following lines are handled by CodeLine(),
+      as called by BuildCode().
 */
 
 void BuildVerb(void)
@@ -940,9 +940,9 @@ void BuildVerb(void)
    sprintf(object_id, "%s %s", verb, word[1]);
 
    n = words;
-   WriteCode((unsigned int)n, 1);           /* number of verb synonyms */
+   WriteCode((unsigned int)n, 1);            /* number of verb synonyms */
 
-   for (i=1; i<=words; i++)            /* write them */
+   for (i=1; i<=words; i++)                  /* write them */
    {
       /* If a dictionary word (in quotes)... */
       if (word[i][0]=='\"')
@@ -959,7 +959,7 @@ void BuildVerb(void)
       else
       {
          int t ;
-         WriteCode(0xffff, 2);   /* flag for non-word */
+         WriteCode(0xffff, 2);               /* flag for non-word */
          WriteCode((t = IDWord(i)), 1);
          WriteCode((unsigned int)token_val, 2);
 
@@ -990,9 +990,9 @@ void BuildVerb(void)
 /* INHERIT
 
       Inherits the properties and attributes of <obj> for the current
-   object, assuming that the property has not been assigned already,
-   or that the attribute has not been specifically excluded via
-   "is not <attribute>"
+      object, assuming that the property has not been assigned already,
+      or that the attribute has not been specifically excluded via
+      "is not <attribute>"
 */
 
 void Inherit(int obj)

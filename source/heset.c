@@ -20,8 +20,8 @@ int SetCompound(int t);
 #define MAX_GAME_TITLE 64
 char game_title[MAX_GAME_TITLE] = "";
 
-char arrexpr = 0;                       /* true when assigning array       */
-char multiprop = 0;                     /* true in multiple prop. assign.  */
+char arrexpr = 0;                         /* true when assigning array       */
+char multiprop = 0;                       /* true in multiple prop. assign.  */
 
 static int set_value = 0;
 
@@ -35,14 +35,14 @@ static int set_value = 0;
 
 void RunSet(int gotvalue)
 {
-   char inc = 0;                   /* increment/decrement */
+   char inc = 0;                          /* increment/decrement  */
    char temparrexpr, propval = 0;
    int a = 0, t = 0, obj = 0;
-   int newl = 0;                   /* new length */
-   int newp = 0;         /* new property val */
-   unsigned int element = 0;      /* of an array */
+   int newl = 0;                          /* new length           */
+   int newp = 0;                          /* new property val     */
+   unsigned int element = 0;              /* of an array          */
 
-   unsigned short n, m, v;      /* must be 16 bits */
+   unsigned short n, m, v;                /* must be 16 bits      */
 
    inobj = 0;
 
@@ -119,7 +119,7 @@ void RunSet(int gotvalue)
          break;
       }
 
-      case WORD_T:         /* "word" */
+      case WORD_T:               /* "word" */
       {
          codeptr += 2;           /* skip "[" */
          n = GetValue();
@@ -553,14 +553,14 @@ unsigned int GetAnonymousFunction(long addr)
 
 int SetCompound(int t)
 {
-   if (Peek(codeptr)==DECIMAL_T)      /* obj.property */
+   if (Peek(codeptr)==DECIMAL_T)                   /* obj.property */
    {
       codeptr++;
       inobj = 1;
-      set_value = GetValue();      /* the prop. # */
+      set_value = GetValue();                      /* the prop. # */
       inobj = 0;
 
-      if (Peek(codeptr)==POUND_T)   /* if obj.prop #... */
+      if (Peek(codeptr)==POUND_T)                  /* if obj.prop #... */
       {
          codeptr++;
          return 4;
@@ -568,19 +568,19 @@ int SetCompound(int t)
       return 1;
    }
 
-   if (Peek(codeptr)==IS_T)      /* obj is ... */
+   if (Peek(codeptr)==IS_T)                        /* obj is ... */
    {
       inobj = 1;
       if (Peek(codeptr+1)==NOT_T)
       {
          codeptr += 2;
-                        set_value = GetValue();   /* the attr. # */
+                        set_value = GetValue();    /* the attr. # */
          inobj = 0;
          return 3;
       }
 
       codeptr++;
-      set_value = GetValue();      /* the attr. # */
+      set_value = GetValue();                      /* the attr. # */
       inobj = 0;
       return 2;
    }
@@ -595,4 +595,3 @@ int SetCompound(int t)
 
    return 0;
 }
-

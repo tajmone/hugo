@@ -5,7 +5,7 @@
 
       AP                      ParseCommandLine
       CallRoutine             PassLocals
-      ContextCommand      Peek, PeekWord
+      ContextCommand          Peek, PeekWord
       Dict                    Poke, PokeWord
       FatalError              PrintHex
       FileIO                  Printout
@@ -14,9 +14,9 @@
       GetString               SaveUndo
       GetText                 SetStackFrame
       GetWord                 SetupDisplay
-      HandleTailRecursion   SpecialChar
+      HandleTailRecursion     SpecialChar
       InitGame                TrytoOpen
-      LoadGame      Undo
+      LoadGame                Undo
 
    for the Hugo Engine
 
@@ -61,27 +61,27 @@ char recordfile[MAXPATH];
 /* Header information */
 char id[3];
 char serial[9];
-unsigned int codestart;         /* start of executable code   */
-unsigned int objtable;                   /* object table         */
-unsigned int eventtable;                 /* event table         */
-unsigned int proptable;                  /* property table      */
-unsigned int arraytable;                 /* array data table      */
-unsigned int dicttable;                  /* dictionary         */
-unsigned int syntable;                   /* synonyms         */
-unsigned int initaddr;                   /* "Init" routine      */
-unsigned int mainaddr;                   /* "Main"         */
-unsigned int parseaddr;                  /* "Parse"         */
-unsigned int parseerroraddr;             /* "ParseError"         */
-unsigned int findobjectaddr;             /* "FindObject"         */
-unsigned int endgameaddr;                /* "Endgame"         */
-unsigned int speaktoaddr;                /* "SpeakTo"         */
-unsigned int performaddr;      /* "Perform"         */
+unsigned int codestart;             /* start of executable code   */
+unsigned int objtable;              /* object table               */
+unsigned int eventtable;            /* event table                */
+unsigned int proptable;             /* property table             */
+unsigned int arraytable;            /* array data table           */
+unsigned int dicttable;             /* dictionary                 */
+unsigned int syntable;              /* synonyms                   */
+unsigned int initaddr;              /* "Init" routine             */
+unsigned int mainaddr;              /* "Main"                     */
+unsigned int parseaddr;             /* "Parse"                    */
+unsigned int parseerroraddr;        /* "ParseError"               */
+unsigned int findobjectaddr;        /* "FindObject"               */
+unsigned int endgameaddr;           /* "Endgame"                  */
+unsigned int speaktoaddr;           /* "SpeakTo"                  */
+unsigned int performaddr;           /* "Perform"                  */
 
 /* Totals */
 int objects;
 int events;
-int dictcount;      /* dictionary entries */
-int syncount;      /* synonyms, etc.     */
+int dictcount;       /* dictionary entries */
+int syncount;        /* synonyms, etc.     */
 
 #if !defined (COMPILE_V25)
 char context_command[MAX_CONTEXT_COMMANDS][64];
@@ -89,29 +89,29 @@ int context_commands;
 #endif
 
 /* Loaded memory image */
-unsigned char *mem = NULL;      /* the memory buffer       */
-int loaded_in_memory = true;      /* i.e., the text bank     */
-unsigned int defseg;         /* holds segment indicator */
-unsigned int gameseg;         /* code segment            */
-long codeptr;                           /* code pointer            */
-long codeend;                           /* end of loaded code      */
+unsigned char *mem = NULL;          /* the memory buffer       */
+int loaded_in_memory = true;        /* i.e., the text bank     */
+unsigned int defseg;                /* holds segment indicator */
+unsigned int gameseg;               /* code segment            */
+long codeptr;                       /* code pointer            */
+long codeend;                       /* end of loaded code      */
 
 /* Text output */
-char pbuffer[MAXBUFFER*2+1];            /* print buffer for line-wrapping  */
-int currentpos = 0;                     /* column position (pixel or char) */
-int currentline = 0;                    /* row number (line)               */
-int full = 0;                           /* page counter for PromptMore     */
-signed char fcolor = 16,      /* default fore/background colors  */
-   bgcolor = 17,         /* (16 = default foreground,      */
-   icolor = -1;         /*  17 = default background)      */
+char pbuffer[MAXBUFFER*2+1];        /* print buffer for line-wrapping  */
+int currentpos = 0;                 /* column position (pixel or char) */
+int currentline = 0;                /* row number (line)               */
+int full = 0;                       /* page counter for PromptMore     */
+signed char fcolor = 16,            /* default fore/background colors  */
+   bgcolor = 17,                    /* (16 = default foreground,       */
+   icolor = -1;                     /*  17 = default background)       */
 signed char default_bgcolor = 17;   /* default for screen background   */
 int currentfont = NORMAL_FONT;      /* current font bitmasks           */
-char capital = 0;         /* if next letter is to be capital */
-unsigned int textto = 0;      /* for printing to an array        */
+char capital = 0;                   /* if next letter is to be capital */
+unsigned int textto = 0;            /* for printing to an array        */
 int SCREENWIDTH, SCREENHEIGHT;      /* screen dimensions               */
-               /*   (in pixels or characters)     */
-int physical_windowwidth,      /* "physical_..." measurements      */
-   physical_windowheight,      /*   are in pixels (or characters) */
+                                    /*   (in pixels or characters)     */
+int physical_windowwidth,           /* "physical_..." measurements     */
+   physical_windowheight,           /*   are in pixels (or characters) */
    physical_windowtop, physical_windowleft,
    physical_windowbottom, physical_windowright;
 int inwindow = 0;
@@ -126,11 +126,11 @@ char leftquote = true;
 char skipping_more = false;
 
 /* SaveUndo() and Undo() */
-int undostack[MAXUNDO][5];      /* for saving undo information     */
-int undoptr = 0;                        /* number of operations undoable   */
-int undoturn = 0;                       /* number of operations this turn  */
-char undoinvalid = 0;                   /* for start of game, and restarts */
-char undorecord = 0;                    /* true when recording             */
+int undostack[MAXUNDO][5];          /* for saving undo information     */
+int undoptr = 0;                    /* number of operations undoable   */
+int undoturn = 0;                   /* number of operations this turn  */
+char undoinvalid = 0;               /* for start of game, and restarts */
+char undorecord = 0;                /* true when recording             */
 
 #ifdef USE_TEXTBUFFER
 static int bufferbreak = 0, bufferbreaklen = 0;
@@ -138,21 +138,21 @@ static int bufferbreak = 0, bufferbreaklen = 0;
 
 /* AP
 
-   The all-purpose printing routine that takes care of word-wrapping.
+      The all-purpose printing routine that takes care of word-wrapping.
 */
 
 void AP (char *a)
 {
    char sticky = false, skipspchar = false, startofline = 0;
    int i, alen, plen, cwidth;
-   char c = 0;         /* current character */
+   char c = 0;                      /* current character */
 #ifdef USE_SMARTFORMATTING
-   char lastc = 0;         /* for smart formatting */
+   char lastc = 0;                  /* for smart formatting */
 #endif
 
    static int lastfcolor = 16, lastbgcolor = 17;
    static int lastfont = NORMAL_FONT;
-   static int thisline = 0;   /* width in pixels or characters */
+   static int thisline = 0;         /* width in pixels or characters */
    static int linebreaklen = 0, linebreak = 0;
    int tempfont;
    char printed_something = false;
@@ -569,8 +569,8 @@ AddFontCode:
 
 /* CALLROUTINE
 
-   Used whenever a routine is called, assumes the routine address
-   and begins with the arguments (if any).
+      Used whenever a routine is called, assumes the routine address
+      and begins with the arguments (if any).
 */
 
 int CallRoutine(unsigned int addr)
@@ -663,8 +663,8 @@ int CallRoutine(unsigned int addr)
 
 /* CONTEXTCOMMAND
 
-   Adds a command to the context command list.  A zero value
-   (i.e., an empty string) resets the list.
+      Adds a command to the context command list.  A zero value
+      (i.e., an empty string) resets the list.
 */
 
 void ContextCommand(void)
@@ -699,7 +699,7 @@ ContextCommandLoop:
 
 /* DICT
 
-   Dynamically creates a new dictionary entry.
+      Dynamically creates a new dictionary entry.
 */
 
 unsigned int Dict()
@@ -1088,8 +1088,8 @@ void GetCommand(void)
 
 /* GETSTRING
 
-   From any address <addr>; the segment must be defined prior to
-   calling the function.
+      From any address <addr>; the segment must be defined prior to
+      calling the function.
 */
 
 char *GetString(long addr)
@@ -1109,9 +1109,9 @@ char *GetString(long addr)
 
 /* GETTEXT
 
-   Get text block from position <textaddr> in the text bank.  If
-   the game was not fully loaded in memory, i.e., if loaded_in_memory
-   is not true, the block is read from disk.
+      Get text block from position <textaddr> in the text bank.  If
+      the game was not fully loaded in memory, i.e., if loaded_in_memory
+      is not true, the block is read from disk.
 */
 
 char *GetText(long textaddr)
@@ -1156,7 +1156,7 @@ char *GetText(long textaddr)
 
 /* GETWORD
 
-   From the dictionary table.
+      From the dictionary table.
 */
 
 char *GetWord(unsigned int w)
@@ -1596,10 +1596,10 @@ void ParseCommandLine(int argc, char *argv[])
 
 /* PASSLOCALS
 
-   Must be called before running every new routine, i.e. before
-   calling RunRoutine().  Unfortunately, the current locals must
-   be saved in a temp array prior to calling.  The argument n
-   gives the number of arguments passed.
+      Must be called before running every new routine, i.e. before
+      calling RunRoutine().  Unfortunately, the current locals must
+      be saved in a temp array prior to calling.  The argument n
+      gives the number of arguments passed.
 */
 
 void PassLocals(int n)
@@ -1654,7 +1654,7 @@ void PokeWord(unsigned int a, unsigned int v)
 
 /* PRINTHEX
 
-   Returns <a> as a hex-number string in XXXXXX format.
+      Returns <a> as a hex-number string in XXXXXX format.
 */
 
 char *PrintHex(long a)
@@ -1680,8 +1680,8 @@ char *PrintHex(long a)
 
 /* PRINTOUT
 
-   Print to client display taking into account cursor relocation,
-   font changes, color setting, and window scrolling.
+      Print to client display taking into account cursor relocation,
+      font changes, color setting, and window scrolling.
 */
 
 void Printout(char *a)
@@ -2102,16 +2102,16 @@ int RecordCommands(void)
 
 /* SAVEUNDO
 
-   Formats:
+      Formats:
 
-   end of turn:    (0, undoturn, 0, 0, 0)
-   move obj.:      (MOVE_T, obj., parent, 0, 0)
-   property:       (PROP_T, obj., prop., # or PROP_ROUTINE, val.)
-   attribute:      (ATTR_T, obj., attr., 0 or 1, 0)
-   variable:       (VAR_T, var., value, 0, 0)
-   array:          (ARRAYDATA_T, array addr., element, val., 0)
-   dict:           (DICT_T, entry length, 0, 0, 0)
-   word setting:   (WORD_T, word number, new word, 0, 0)
+         end of turn:    (0, undoturn, 0, 0, 0)
+         move obj.:      (MOVE_T, obj., parent, 0, 0)
+         property:       (PROP_T, obj., prop., # or PROP_ROUTINE, val.)
+         attribute:      (ATTR_T, obj., attr., 0 or 1, 0)
+         variable:       (VAR_T, var., value, 0, 0)
+         array:          (ARRAYDATA_T, array addr., element, val., 0)
+         dict:           (DICT_T, entry length, 0, 0, 0)
+         word setting:   (WORD_T, word number, new word, 0, 0)
 */
 
 void SaveUndo(int a, int b, int c, int d, int e)
@@ -2188,34 +2188,34 @@ void SetupDisplay(void)
 
 /* SPECIALCHAR
 
-   SpecialChar() is passed <a> as the string and <*i> as the
-   position in the string.  The character(s) at a[*i], a[*(i+1)],
-   etc. are converted into a single Latin-1 (i.e., greater than
-   127) character value.
+      SpecialChar() is passed <a> as the string and <*i> as the
+      position in the string.  The character(s) at a[*i], a[*(i+1)],
+      etc. are converted into a single Latin-1 (i.e., greater than
+      127) character value.
 
-   Assume that the AP() has already encountered a control
-   character ('\'), and that a[*i]... is one of:
+      Assume that the AP() has already encountered a control
+      character ('\'), and that a[*i]... is one of:
 
-      `a   accent grave on following character (e.g., 'a')
-      'a   accent acute on following character (e.g., 'a')
-      ~n   tilde on following (e.g., 'n' or 'N')
-      :a   umlaut on following (e.g., 'a')
-      ^a   circumflex on following (e.g., 'a')
-      ,c   cedilla on following (e.g., 'c' or 'C')
-      <   Spanish left quotation marks
-      >   Spanish right quotation marks
-      !   upside-down exclamation mark
-      ?   upside-down question mark
-      ae   ae ligature
-      AE   AE ligature
-      c   cents symbol
-      L   British pound
-      Y   Japanese Yen
-      -   em (long) dash
-      #nnn   character value given by nnn
+         `a     accent grave on following character (e.g., 'a')
+         'a     accent acute on following character (e.g., 'a')
+         ~n     tilde on following (e.g., 'n' or 'N')
+         :a     umlaut on following (e.g., 'a')
+         ^a     circumflex on following (e.g., 'a')
+         ,c     cedilla on following (e.g., 'c' or 'C')
+         <      Spanish left quotation marks
+         >      Spanish right quotation marks
+         !      upside-down exclamation mark
+         ?      upside-down question mark
+         ae     ae ligature
+         AE     AE ligature
+         c      cents symbol
+         L      British pound
+         Y      Japanese Yen
+         -      em (long) dash
+         #nnn   character value given by nnn
 
-   Note that the return value is a single character--which will
-   be either unchanged or a Latin-1 character value.
+      Note that the return value is a single character--which will
+      be either unchanged or a Latin-1 character value.
 */
 
 char SpecialChar(char *a, int *i)
@@ -2250,16 +2250,16 @@ char SpecialChar(char *a, int *i)
 #ifndef NO_LATIN1_CHARSET
          switch (s)
          {
-            case 'a':  s = (char)0xe0; break; /* � */
-            case 'e':  s = (char)0xe8; break; /* � */
-            case 'i':  s = (char)0xec; break; /* � */
-            case 'o':  s = (char)0xf2; break; /* � */
-            case 'u':  s = (char)0xf9; break; /* � */
-            case 'A':  s = (char)0xc0; break; /* � */
-            case 'E':  s = (char)0xc8; break; /* � */
-            case 'I':  s = (char)0xcc; break; /* � */
-            case 'O':  s = (char)0xd2; break; /* � */
-            case 'U':  s = (char)0xd9; break; /* � */
+            case 'a':  s = (char)0xe0; break;   /*   à   */
+            case 'e':  s = (char)0xe8; break;   /*   è   */
+            case 'i':  s = (char)0xec; break;   /*   ì   */
+            case 'o':  s = (char)0xf2; break;   /*   ò   */
+            case 'u':  s = (char)0xf9; break;   /*   ù   */
+            case 'A':  s = (char)0xc0; break;   /*   À   */
+            case 'E':  s = (char)0xc8; break;   /*   È   */
+            case 'I':  s = (char)0xcc; break;   /*   Ì   */
+            case 'O':  s = (char)0xd2; break;   /*   Ò   */
+            case 'U':  s = (char)0xd9; break;   /*   Ù   */
          }
 #endif
          break;
@@ -2270,18 +2270,18 @@ char SpecialChar(char *a, int *i)
 #ifndef NO_LATIN1_CHARSET
          switch (s)
          {
-            case 'a':  s = (char)0xe1; break; /* � */
-            case 'e':  s = (char)0xe9; break; /* � */
-            case 'i':  s = (char)0xed; break; /* � */
-            case 'o':  s = (char)0xf3; break; /* � */
-            case 'u':  s = (char)0xfa; break; /* � */
+            case 'a':  s = (char)0xe1; break;   /*   á   */
+            case 'e':  s = (char)0xe9; break;   /*   é   */
+            case 'i':  s = (char)0xed; break;   /*   í   */
+            case 'o':  s = (char)0xf3; break;   /*   ó   */
+            case 'u':  s = (char)0xfa; break;   /*   ú   */
             case 'y':  s = (char)0xfd; break;
-            case 'A':  s = (char)0xc1; break; /* � */
-            case 'E':  s = (char)0xc9; break; /* � */
-            case 'I':  s = (char)0xcd; break; /* � */
-            case 'O':  s = (char)0xd3; break; /* � */
-            case 'U':  s = (char)0xda; break; /* � */
-            case 'Y':  s = (char)0xdd; break; /* � */
+            case 'A':  s = (char)0xc1; break;   /*   Á   */
+            case 'E':  s = (char)0xc9; break;   /*   É   */
+            case 'I':  s = (char)0xcd; break;   /*   Í   */
+            case 'O':  s = (char)0xd3; break;   /*   Ó   */
+            case 'U':  s = (char)0xda; break;   /*   Ú   */
+            case 'Y':  s = (char)0xdd; break;   /*   Ý   */
          }
 #endif
          break;
@@ -2292,12 +2292,12 @@ char SpecialChar(char *a, int *i)
 #ifndef NO_LATIN1_CHARSET
          switch (s)
          {
-            case 'a':  s = (char)0xe3; break; /* � */
-            case 'n':  s = (char)0xf1; break; /* � */
-            case 'o':  s = (char)0xf5; break; /* � */
-            case 'A':  s = (char)0xc3; break; /* � */
-            case 'N':  s = (char)0xd1; break; /* � */
-            case 'O':  s = (char)0xd5; break; /* � */
+            case 'a':  s = (char)0xe3; break;   /*   ã   */
+            case 'n':  s = (char)0xf1; break;   /*   ñ   */
+            case 'o':  s = (char)0xf5; break;   /*   õ   */
+            case 'A':  s = (char)0xc3; break;   /*   Ã   */
+            case 'N':  s = (char)0xd1; break;   /*   Ñ   */
+            case 'O':  s = (char)0xd5; break;   /*   Õ   */
          }
 #endif
          break;
@@ -2308,16 +2308,16 @@ char SpecialChar(char *a, int *i)
 #ifndef NO_LATIN1_CHARSET
          switch (s)
          {
-            case 'a':  s = (char)0xe2; break; /* � */
-            case 'e':  s = (char)0xea; break; /* � */
-            case 'i':  s = (char)0xee; break; /* � */
-            case 'o':  s = (char)0xf4; break; /* � */
-            case 'u':  s = (char)0xfb; break; /* � */
-            case 'A':  s = (char)0xc2; break; /* � */
-            case 'E':  s = (char)0xca; break; /* � */
-            case 'I':  s = (char)0xce; break; /* � */
-            case 'O':  s = (char)0xd4; break; /* � */
-            case 'U':  s = (char)0xdb; break; /* � */
+            case 'a':  s = (char)0xe2; break;   /*   â   */
+            case 'e':  s = (char)0xea; break;   /*   ê   */
+            case 'i':  s = (char)0xee; break;   /*   î   */
+            case 'o':  s = (char)0xf4; break;   /*   ô   */
+            case 'u':  s = (char)0xfb; break;   /*   û   */
+            case 'A':  s = (char)0xc2; break;   /*   Â   */
+            case 'E':  s = (char)0xca; break;   /*   Ê   */
+            case 'I':  s = (char)0xce; break;   /*   Î   */
+            case 'O':  s = (char)0xd4; break;   /*   Ô   */
+            case 'U':  s = (char)0xdb; break;   /*   Û   */
          }
 #endif
          break;
@@ -2328,17 +2328,17 @@ char SpecialChar(char *a, int *i)
 #ifndef NO_LATIN1_CHARSET
          switch (s)
          {
-            case 'a':  s = (char)0xe4; break; /* � */
-            case 'e':  s = (char)0xeb; break; /* � */
-            case 'i':  s = (char)0xef; break; /* � */
-            case 'o':  s = (char)0xf6; break; /* � */
-            case 'u':  s = (char)0xfc; break; /* � */
-            /* case 'y':  s = (char)0xff; break; */ /* � */
-            case 'A':  s = (char)0xc4; break; /* � */
-            case 'E':  s = (char)0xcb; break; /* � */
-            case 'I':  s = (char)0xcf; break; /* � */
-            case 'O':  s = (char)0xd6; break; /* � */
-            case 'U':  s = (char)0xdc; break; /* � */
+            case 'a':  s = (char)0xe4; break;   /*   ä   */
+            case 'e':  s = (char)0xeb; break;   /*   ë   */
+            case 'i':  s = (char)0xef; break;   /*   ï   */
+            case 'o':  s = (char)0xf6; break;   /*   ö   */
+            case 'u':  s = (char)0xfc; break;   /*   ü   */
+         /* case 'y':  s = (char)0xff; break; *//*   ÿ   */
+            case 'A':  s = (char)0xc4; break;   /*   Ä   */
+            case 'E':  s = (char)0xcb; break;   /*   Ë   */
+            case 'I':  s = (char)0xcf; break;   /*   Ï   */
+            case 'O':  s = (char)0xd6; break;   /*   Ö   */
+            case 'U':  s = (char)0xdc; break;   /*   Ü   */
          }
 #endif
          break;
@@ -2349,67 +2349,67 @@ char SpecialChar(char *a, int *i)
 #ifndef NO_LATIN1_CHARSET
          switch (s)
          {
-            case 'C':  s = (char)0xc7; break; /* � */
-            case 'c':  s = (char)0xe7; break; /* � */
+            case 'C':  s = (char)0xc7; break;   /*   Ç   */
+            case 'c':  s = (char)0xe7; break;   /*   ç   */
          }
 #endif
          break;
       }
-      case '<':               /* Spanish left quotation marks */
+      case '<':                  /* Spanish left quotation marks */
 #ifndef NO_LATIN1_CHARSET
-         s = (char)0xab; /* � */
+         s = (char)0xab;         /*   «   */
 #endif
          break;
-      case '>':               /* Spanish right quotation marks */
+      case '>':                  /* Spanish right quotation marks */
 #ifndef NO_LATIN1_CHARSET
-         s = (char)0xbb; /* � */
+         s = (char)0xbb;         /*   »   */
          break;
 #endif
-      case '!':               /* upside-down exclamation mark */
+      case '!':                  /* upside-down exclamation mark */
 #ifndef NO_LATIN1_CHARSET
-         s = (char)0xa1; /* � */
+         s = (char)0xa1;         /*   ¡   */
 #endif
          break;
-      case '?':               /* upside-down question mark */
+      case '?':                  /* upside-down question mark */
 #ifndef NO_LATIN1_CHARSET
-         s = (char)0xbf; /* � */
+         s = (char)0xbf;         /*   ¿   */
 #endif
          break;
-      case 'a':               /* ae ligature */
+      case 'a':                  /* ae ligature */
 #ifndef NO_LATIN1_CHARSET
-         s = (char)0xe6; ++*i; /* � */
+         s = (char)0xe6; ++*i;   /*   æ   */
 #else
          s = 'e'; ++*i;
 #endif
          break;
-      case 'A':               /* AE ligature */
+      case 'A':                  /* AE ligature */
 #ifndef NO_LATIN1_CHARSET
-         s = (char)0xc6; ++*i; /* � */
+         s = (char)0xc6; ++*i;   /*   Æ   */
 #else
          s = 'E'; ++*i;
 #endif
          break;
-      case 'c':               /* cents symbol */
+      case 'c':                  /* cents symbol */
 #ifndef NO_LATIN1_CHARSET
-         s = (char)0xa2; /* � */
+         s = (char)0xa2;         /*   ¢   */
 #endif
          break;
-      case 'L':               /* British pound */
+      case 'L':                  /* British pound */
 #ifndef NO_LATIN1_CHARSET
-         s = (char)0xa3; /* � */
+         s = (char)0xa3;         /*   £   */
 #endif
          break;
-      case 'Y':               /* Japanese Yen */
+      case 'Y':                  /* Japanese Yen */
 #ifndef NO_LATIN1_CHARSET
-         s = (char)0xa5; /* � */
+         s = (char)0xa5;         /*   ¥   */
 #endif
          break;
-      case '-':               /* em dash */
+      case '-':                  /* em dash */
 #ifndef NO_LATIN1_CHARSET
-         /* s = (char)0x97; */ /* � */
+      /* s = (char)0x97; */      /*   —   */
 #endif
          break;
-      case '#':               /* 3-digit decimal code */
+      case '#':                  /* 3-digit decimal code */
       {
          s = (char)((a[++*i]-'0')*100);
          s += (a[++*i]-'0')*10;
@@ -2433,8 +2433,8 @@ char SpecialChar(char *a, int *i)
 
 /* TRYTOOPEN
 
-   Tries to open a particular filename (based on a given environment
-   variable), trying the current directory first.
+      Tries to open a particular filename (based on a given environment
+      variable), trying the current directory first.
 */
 
 #if !defined (GLK)   /* not used for Glk */

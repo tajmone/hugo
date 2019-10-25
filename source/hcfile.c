@@ -56,9 +56,9 @@ void CleanUpFiles(void)
 
 /* GETLINE
 
-   Gets an unprocessed line from sourcefile and separates the words.
-   <offset> is set during subsequent calls by SeparateWords if a line
-   ends inside a string constant.
+      Gets an unprocessed line from sourcefile and separates the words.
+      <offset> is set during subsequent calls by SeparateWords if a line
+      ends inside a string constant.
 */
 
 /* hugo_fgets() is for reading (in binary mode) text files with
@@ -109,7 +109,7 @@ void GetLine(int offset)
 {
    char *a, b[MAXBUFFER*2];
    int len = 0;
-   int cnest;                       /* count nested comments */
+   int cnest;                          /* count nested comments */
 
    buffer[offset] = '\0';
    a = b;
@@ -120,7 +120,7 @@ void GetLine(int offset)
       do
       {
 GetaNewLine:
-         tlines++;   /* total lines compiled */
+         tlines++;                     /* total lines compiled */
          totallines++;
 
          a = b;
@@ -203,7 +203,7 @@ GetaNewLine:
 
 /* GETWORDS
 
-   Gets the next line of already-separated words from allfile.
+      Gets the next line of already-separated words from allfile.
 */
 
 void GetWords(void)
@@ -271,8 +271,8 @@ GetNextWords:
 
 /* OPENFILES
 
-   Does all the file-opening and calls array-mallocing (in SetMem)
-   before beginning compilation.
+      Does all the file-opening and calls array-mallocing (in SetMem)
+      before beginning compilation.
 */
 
 void OpenFiles(void)
@@ -317,7 +317,7 @@ void OpenFiles(void)
 
 /* READWORD
 
-   Reads a nicely compact 16-bit word from the specified workfile.
+      Reads a nicely compact 16-bit word from the specified workfile.
 */
 
 unsigned int ReadWord(FILE *f)
@@ -333,8 +333,8 @@ unsigned int ReadWord(FILE *f)
 
 /* TRYTOOPEN
 
-   Tries to open a particular filename (based on a given environment
-   variable or command-line directory).
+      Tries to open a particular filename (based on a given environment
+      variable or command-line directory).
 */
 
 FILE *TrytoOpen(char *f, char *p, char *d)
@@ -392,7 +392,7 @@ FILE *TrytoOpen(char *f, char *p, char *d)
 
 /* WRITECODE
 
-   Actually writes the code to objectfile.
+      Actually writes the code to objectfile.
 */
 
 void WriteCode(unsigned int a, int b)
@@ -430,7 +430,7 @@ void WriteCode(unsigned int a, int b)
 
 /* WRITETEXT
 
-   Writes string <a> to textfile and returns its position.
+      Writes string <a> to textfile and returns its position.
 */
 
 long WriteText(char *a)
@@ -461,7 +461,7 @@ long WriteText(char *a)
 
 /* WRITEWORD
 
-   Writes a nicely compact 16-bit word to the specified workfile.
+      Writes a nicely compact 16-bit word to the specified workfile.
 */
 
 void WriteWord(unsigned int val, FILE *f)

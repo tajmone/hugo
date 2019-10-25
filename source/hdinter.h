@@ -19,32 +19,32 @@
 
 /* screen states */
 #define INACTIVE_SCREEN (-1)
-#define GAME        0
-#define DEBUGGER     1
-#define HELP       2
-#define AUXILIARY    3
+#define GAME                 0
+#define DEBUGGER             1
+#define HELP                 2
+#define AUXILIARY            3
 
-#define WINDOW_COUNT       11
+#define WINDOW_COUNT        11
 
 /* The non-sequential numbering of the window constants accounts for
    spacers on the View menu:
 */
-#define CODE_WINDOW       0
-#define VIEW_WATCH          1
-#define VIEW_CALLS          2
-#define VIEW_BREAKPOINTS    3
-#define VIEW_LOCALS         4
-#define VIEW_ALIASES        5
-#define VIEW_HELP      7
-#define VIEW_AUXILIARY      8
+#define CODE_WINDOW          0
+#define VIEW_WATCH           1
+#define VIEW_CALLS           2
+#define VIEW_BREAKPOINTS     3
+#define VIEW_LOCALS          4
+#define VIEW_ALIASES         5
+#define VIEW_HELP            7
+#define VIEW_AUXILIARY       8
 #define VIEW_OUTPUT         10
 
 #define MAX_CODE_HISTORY   256
-#define MAXCALLS      48
+#define MAXCALLS            48
 #define MAXBREAKPOINTS      32
-#define MAXWATCHES      32
+#define MAXWATCHES          32
 
-#define FORCE_REDRAW      100
+#define FORCE_REDRAW       100
 
 /* Event data: */
 
@@ -57,7 +57,7 @@ enum D_ACTION_TYPE
    OPEN_MENUBAR = 1, OPEN_MENU, CANCEL, MOVE, SELECT,
    KEYPRESS, SHORTCUT_KEY, SWITCH_WINDOW, TAB, DELETE,
    SINGLECLICK,   /* i.e., select */
-   DOUBLECLICK   /* i.e., select and close */
+   DOUBLECLICK    /* i.e., select and close */
 };
 
 /* ...and (some) object types */
@@ -85,37 +85,37 @@ struct event_structure
 
 struct window_structure
 {
-   unsigned int first;   /* first line appearing in the window    */
-   unsigned int selected;   /* selected line          */
-   unsigned int count;   /* total lines in (or out of) window   */
+   unsigned int first;     /* first line appearing in the window   */
+   unsigned int selected;  /* selected line                        */
+   unsigned int count;     /* total lines in (or out of) window    */
    unsigned int top;       /* where top line is on the screen      */
    unsigned int height;    /* maximum # of lines                   */
    int width;              /* maximum # of characters              */
    int horiz;              /* horizontal shift                     */
-   char changed;      /* true if window needs updating   */
+   char changed;           /* true if window needs updating        */
 };
 
 struct call_structure
 {
-   unsigned int addr;   /* address of call          */
-   char param;      /* true if arguments passed       */
+   unsigned int addr;      /* address of call               */
+   char param;             /* true if arguments passed      */
 };
 
 struct breakpoint_structure
 {
-   long addr;              /* address             */
-   char *in;               /* routine name          */
+   long addr;              /* address           */
+   char *in;               /* routine name      */
 };
 
 struct watch_structure
 {
-   int len;      /* number of bytes in watch expression  */
-   unsigned char *expr;   /* the watch expression itself      */
-   int lastval;      /* value when last evaluated      */
-   int watchas;      /* type of watch value         */
-   unsigned int strlen;    /* of the expression as a string        */
-   char isbreak;      /* true if it acts as a breakpoint   */
-   char illegal;      /* true if it evaluates to illegal val. */
+   int len;                /* number of bytes in watch expression   */
+   unsigned char *expr;    /* the watch expression itself           */
+   int lastval;            /* value when last evaluated             */
+   int watchas;            /* type of watch value                   */
+   unsigned int strlen;    /* of the expression as a string         */
+   char isbreak;           /* true if it acts as a breakpoint       */
+   char illegal;           /* true if it evaluates to illegal val.  */
 };
 
 

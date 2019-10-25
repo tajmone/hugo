@@ -43,12 +43,12 @@ int main(int argc, char *argv[])
 int hc_main(int argc, char *argv[])
 #endif
 {
-   time(&tick);         /* get time compilation begins */
+   time(&tick);                     /* get time compilation begins   */
 
    if (argc==1) Banner(stdout, "");
 
-   ParseCommand(argc, argv);       /* Parse command line, then open */
-   OpenFiles();         /*   files upon returning.    */
+   ParseCommand(argc, argv);        /* Parse command line, then open */
+   OpenFiles();                     /*   files upon returning.       */
 
    if (listing && !spellcheck) Banner(listfile, listfilename);
 

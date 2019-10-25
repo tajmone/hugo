@@ -22,14 +22,14 @@ extern void hugo_gettimeformatted(char *a);
 #endif
 
 
-int passlocal[MAXLOCALS];      /* locals passed to routine        */
-int arguments_passed;                   /* when calling routine            */
+int passlocal[MAXLOCALS];           /* locals passed to routine        */
+int arguments_passed;               /* when calling routine            */
 int ret = 0; char retflag = 0;      /* return value and returning flag */
 
 char during_player_input = false;
 char override_full = 0;
 
-char game_reset = false;      /* for restore, undo, etc. */
+char game_reset = false;            /* for restore, undo, etc. */
 
 struct CODE_BLOCK code_block[MAXSTACKDEPTH];
 int stack_depth;
@@ -38,8 +38,8 @@ long tail_recursion_addr = 0;
 
 /* Used by RunWindow() for setting current window dimensions: */
 int last_window_top, last_window_bottom, last_window_left, last_window_right;
-int lowest_windowbottom = 0,         /* in text lines */
-   physical_lowest_windowbottom;      /* in pixels or text lines */
+int lowest_windowbottom = 0,        /* in text lines */
+   physical_lowest_windowbottom;    /* in pixels or text lines */
 char just_left_window = false;
 
 /* from heparse.c, for RunEvents() */
@@ -151,7 +151,7 @@ void RunEvents(void)
 
 /* RUNGAME */
 
-extern char reparse_everything;      /* from ParseError() in heparse.c */
+extern char reparse_everything;     /* from ParseError() in heparse.c */
 
 #if defined (DEBUGGER)
 extern int original_dictcount;
@@ -159,7 +159,7 @@ extern int original_dictcount;
 
 void RunGame(void)
 {
-   char jw = 0;                    /* just wrote undo info */
+   char jw = 0;                     /* just wrote undo info */
    char wasxverb = 0, newinput;
    int i, flag, mc, lastspeaking = 0, startlocation;
 
@@ -1385,38 +1385,38 @@ RestoreError:
 
 /* RUNROUTINE
 
-   This is the main loop for running each line of code in sequence;
-   the main switch statement is based on the first token in each line.
+      This is the main loop for running each line of code in sequence;
+      the main switch statement is based on the first token in each line.
 
-   This routine is relatively complex, especially given the addition
-   of debugger control.  Basically it is structured like this:
+      This routine is relatively complex, especially given the addition
+      of debugger control.  Basically it is structured like this:
 
-      1. If this is the debugger build, see what debugger
-         information has to be set up upon calling this block
-         of code
+         1. If this is the debugger build, see what debugger
+            information has to be set up upon calling this block
+            of code
 
-      2. Get the next token, and as long as it isn't
-         CLOSE_BRACE_T ('}')...
+         2. Get the next token, and as long as it isn't
+            CLOSE_BRACE_T ('}')...
 
-      3. ...If this is the debugger build, see if there is a
-         standing debugger_interrupt to pass control back to
-         the debugger, and perform all operations for stepping
-         tracing, breakpoints, etc.
+         3. ...If this is the debugger build, see if there is a
+            standing debugger_interrupt to pass control back to
+            the debugger, and perform all operations for stepping
+            tracing, breakpoints, etc.
 
-      4. ...See what token we're dealing with and execute
-         accordingly
+         4. ...See what token we're dealing with and execute
+            accordingly
 
-      5. ...Loop back to (2)
+         5. ...Loop back to (2)
 
-      6. If this is the debugger build, do whatever is
-         necessary to tidy up after finishing this block of
-         code
+         6. If this is the debugger build, do whatever is
+            necessary to tidy up after finishing this block of
+            code
 
-   There's a bit of a trick involved since the original language
-   design uses "{...}" structures for both conditionals and blocks
-   that necessitate another (i.e., nested) call to RunRoutine().
-   The call_block structure array and stack_depth variable are
-   the navigation guides.
+      There's a bit of a trick involved since the original language
+      design uses "{...}" structures for both conditionals and blocks
+      that necessitate another (i.e., nested) call to RunRoutine().
+      The call_block structure array and stack_depth variable are
+      the navigation guides.
 */
 
 void RunRoutine(long addr)
@@ -2691,7 +2691,7 @@ int RunSystem(void)
 
 /* RUNWINDOW
 
-   As in 'window [n[, o, p, q]]'.
+      As in 'window [n[, o, p, q]]'.
 */
 
 struct SAVED_WINDOW_DATA

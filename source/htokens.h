@@ -126,4 +126,3 @@ char *token[] =
    extern int token_hash[];
 
 #endif   /* defined (INIT_PASS) */
-

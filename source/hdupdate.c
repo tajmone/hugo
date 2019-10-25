@@ -9,17 +9,17 @@
       Navigate
       PrintCodeLine
       PrintOtherLine
-         PrintAliasLine
-         PrintBlankLine
-         PrintBreakpoint
-         PrintCallLine
-         PrintLocalLine
-         PrintWatch
+      PrintAliasLine
+      PrintBlankLine
+      PrintBreakpoint
+      PrintCallLine
+      PrintLocalLine
+      PrintWatch
       SwitchtoView
       UpdateDebugScreen
-         UpdateCodeWindow
-            UpdateFullCodeWindow
-         UpdateOtherWindow
+      UpdateCodeWindow
+      UpdateFullCodeWindow
+      UpdateOtherWindow
 
    for the Debugger build of the Hugo Engine
 
@@ -54,16 +54,16 @@ char hard_copy = false;         /* true when sending to printer */
 FILE *printer;
 char watch_buffer[MAXBUFFER];
 
-int active_window;                      /* CODE_WINDOW or n   */
-int active_view;                        /* VIEW_CONSTANT   */
-int currently_updating = 0;      /* VIEW_CONSTANT   */
+int active_window;                     /* CODE_WINDOW or n     */
+int active_view;                       /* VIEW_CONSTANT        */
+int currently_updating = 0;            /* VIEW_CONSTANT        */
 int local_view_type;
-int active_screen = INACTIVE_SCREEN;   /* DEBUGGER, GAME, etc.   */
+int active_screen = INACTIVE_SCREEN;   /* DEBUGGER, GAME, etc. */
 
 
 /* CONVERTTOCHAR
 
-   Converts an int string to a char array.
+      Converts an int string to a char array.
 */
 
 void ConverttoChar(int *i, char *c)
@@ -78,14 +78,14 @@ void ConverttoChar(int *i, char *c)
 
 /* HARDCOPY
 
-   Sends the contents of the current window line-by-line
-   to the printer using debug_hardcopy(), which is responsible
-   for all system-specific interfacing.  Uses the regular line-
-   printing routines.
+      Sends the contents of the current window line-by-line
+      to the printer using debug_hardcopy(), which is responsible
+      for all system-specific interfacing.  Uses the regular line-
+      printing routines.
 */
 
 char printer_name[MAXPATH];   /* for printing hardcopy  */
-int device_error;      /* i.e., a printing error */
+int device_error;             /* i.e., a printing error */
 
 void HardCopy(void)
 {
@@ -166,8 +166,8 @@ DeviceError:
 
 /* HIGHLIGHTCURRENT
 
-   Depending on the value of a, either draws (1) or erases (0)
-   the highlight from the current line in the active window.
+      Depending on the value of a, either draws (1) or erases (0)
+      the highlight from the current line in the active window.
 */
 
 void HighlightCurrent(int a)
@@ -214,8 +214,8 @@ void HighlightCurrent(int a)
 
 /* NAVIGATE
 
-   The main window navigation routine called by the main event loop
-   in Debugger().
+      The main window navigation routine called by the main event loop
+      in Debugger().
 */
 
 void Navigate(void)
@@ -782,10 +782,10 @@ void SwitchtoView(int v)
 
 /* UPDATECODEWINDOW
 
-   Draws only the most recently buffered (i.e., unprinted) lines.
-   A redraw of the entire code window can be forced by setting
-   buffered_code_lines to a number greater than the window height,
-   e.g., FORCE_REDRAW.
+      Draws only the most recently buffered (i.e., unprinted) lines.
+      A redraw of the entire code window can be forced by setting
+      buffered_code_lines to a number greater than the window height,
+      e.g., FORCE_REDRAW.
 */
 
 void UpdateCodeWindow(void)

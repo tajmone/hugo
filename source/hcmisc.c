@@ -3,18 +3,18 @@
 
    contains miscellaneous compiler routines:
 
-   AddDictionary           ListLimits              RememberAddr
-   AddDirectory            MakeString              RemoveCommas
-   Boundary                ParseCommand            ResolveAddr
-   ClearLocals             PrintErrorLocation      SavePropData
-   DoBrace                 PrintHex                SeparateWords
-   DrawBranch              PrintLimit              SetAttribute
-   DrawTree                PrintLine               SetLimit
-   Error                   Printout                SetMem
-   Expect                  PrintStatistics         SetSwitches
-   FatalError              PrinttoAll              StripQuotes
-   FillCode                PrintWords
-   KillWord                PutinTree
+      AddDictionary           ListLimits              RememberAddr
+      AddDirectory            MakeString              RemoveCommas
+      Boundary                ParseCommand            ResolveAddr
+      ClearLocals             PrintErrorLocation      SavePropData
+      DoBrace                 PrintHex                SeparateWords
+      DrawBranch              PrintLimit              SetAttribute
+      DrawTree                PrintLine               SetLimit
+      Error                   Printout                SetMem
+      Expect                  PrintStatistics         SetSwitches
+      FatalError              PrinttoAll              StripQuotes
+      FillCode                PrintWords
+      KillWord                PutinTree
 
    for the Hugo Compiler
 
@@ -30,31 +30,31 @@ void DrawBranch(int obj);
 void PrintErrorLocation(void);
 void PrintLimit(char *a, unsigned int n, int nl);
 
-int argc;                       /* parameters passed from command line */
+int argc;                           /* parameters passed from command line */
 char **argv, **envp;
 
-char errfile[MAXPATH];          /* for locating errors in Pass2    */
+char errfile[MAXPATH];              /* for locating errors in Pass2    */
 unsigned int errline;
-int words;         /* number of words in input line   */
-char *word[MAXWORDS+1];         /* the words themselves            */
-char line[MAXBUFFER+1];            /* output line                     */
-char full_buffer;      /* true if word[] isn't empty      */
+int words;                          /* number of words in input line   */
+char *word[MAXWORDS+1];             /* the words themselves            */
+char line[MAXBUFFER+1];             /* output line                     */
+char full_buffer;                   /* true if word[] isn't empty      */
 
 /* Command line switch flags: */
-char    listing = 0,                    /* output to .LST file          */
-   objecttree = 0,                 /* print object tree when done  */
-   fullobj = 0,                    /* output full object summaries */
-   printer = 0,                    /* output to standard printer   */
-   statistics = 0,                 /* print compilation statistics */
-   printdebug = 0,                 /* print debuggine information  */
-   override = 0,                   /* override switches in source  */
-   aborterror = 0,                 /* abort on first error         */
-   memmap = 0,                     /* display map of memory usage  */
-   hlb = 0,                        /* generate .HLB linkable file  */
-   builddebug = 0,                 /* build .HDX debuggable file   */
-   expandederr = 0,      /* issue generic-format errors  */
-   spellcheck = 0,         /* print any text to .LST   */
-   writeanyway = 0;      /* write .HEX even with errors  */
+char    listing = 0,                /* output to .LST file           */
+   objecttree = 0,                  /* print object tree when done   */
+   fullobj = 0,                     /* output full object summaries  */
+   printer = 0,                     /* output to standard printer    */
+   statistics = 0,                  /* print compilation statistics  */
+   printdebug = 0,                  /* print debuggine information   */
+   override = 0,                    /* override switches in source   */
+   aborterror = 0,                  /* abort on first error          */
+   memmap = 0,                      /* display map of memory usage   */
+   hlb = 0,                         /* generate .HLB linkable file   */
+   builddebug = 0,                  /* build .HDX debuggable file    */
+   expandederr = 0,                 /* issue generic-format errors   */
+   spellcheck = 0,                  /* print any text to .LST        */
+   writeanyway = 0;                 /* write .HEX even with errors   */
 #if !defined (COMPILE_V25)
    char compile_v25 = 0;
 #else
@@ -100,14 +100,14 @@ struct synstruct *syndata = NULL;
 
 /* ADDDICTIONARY
 
-   A (hopefully) quick way of searching and sorting the existing
-   dictionary entries before adding the new one <a>.  There are
-   27 "chains" or before- and after-linked lists (26 letters, and
-   1 for non-alphabetical words).  AddDictionary() quickly searches
-   through each list to see if the entry exists.  If it does, the
-   function returns the established dictionary address.  If not, it
-   adds it and returns the new address (i.e., the next sequentially
-   added dictionary entry).
+      A (hopefully) quick way of searching and sorting the existing
+      dictionary entries before adding the new one <a>.  There are
+      27 "chains" or before- and after-linked lists (26 letters, and
+      1 for non-alphabetical words).  AddDictionary() quickly searches
+      through each list to see if the entry exists.  If it does, the
+      function returns the established dictionary address.  If not, it
+      adds it and returns the new address (i.e., the next sequentially
+      added dictionary entry).
 */
 
 unsigned int AddDictionary(char *a)
@@ -167,9 +167,9 @@ unsigned int AddDictionary(char *a)
 
 /* ADDDIRECTORY
 
-   Registers the directory <path> as a searchable location for
-   files of type HUGO_<directory type>.  Directories are passed
-   without the leading '@' in the command line or source.
+      Registers the directory <path> as a searchable location for
+      files of type HUGO_<directory type>.  Directories are passed
+      without the leading '@' in the command line or source.
 */
 
 void AddDirectory(char *d)
@@ -204,8 +204,8 @@ void AddDirectory(char *d)
 
 /* BOUNDARY
 
-   Fills null characters (i.e., 0) to the start of the next address
-   boundary--an address evenly divisible by address_scale.
+      Fills null characters (i.e., 0) to the start of the next address
+      boundary--an address evenly divisible by address_scale.
 */
 
 void Boundary(void)
@@ -217,9 +217,9 @@ void Boundary(void)
 
 /* CLEARLOCALS
 
-   Must be called before building each new routine in order to
-   clear local variable names (except for any arguments for the
-   new routine).
+      Must be called before building each new routine in order to
+      clear local variable names (except for any arguments for the
+      new routine).
 */
 
 void ClearLocals(void)
@@ -237,7 +237,7 @@ void ClearLocals(void)
 
 /* DOBRACE
 
-   Passes over the expected opening brace for a new code block.
+      Passes over the expected opening brace for a new code block.
 */
 
 void DoBrace(void)
@@ -253,7 +253,7 @@ void DoBrace(void)
 
 /* DRAWBRANCH
 
-   For printing the object tree.
+      For printing the object tree.
 */
 
 void DrawBranch(int obj)
@@ -297,8 +297,8 @@ void DrawTree(void)
 
 /* ERROR
 
-   For non-fatal errors.  Prints the offending line of (reconstructed)
-   code followed by the error message.  Warnings begin with a '?'.
+      For non-fatal errors.  Prints the offending line of (reconstructed)
+      code followed by the error message.  Warnings begin with a '?'.
 */
 
 void Error(char *a)
@@ -370,7 +370,7 @@ SkipPrintingWords:
 
 /* FATALERROR
 
-   For fatal errors.
+      For fatal errors.
 */
 
 void FatalError(int n, char *a)
@@ -457,7 +457,7 @@ void FatalError(int n, char *a)
 
 /* EXPECT
 
-   Prints an error if word[a] is not the expected token <d>.
+      Prints an error if word[a] is not the expected token <d>.
 */
 
 int Expect(int a, char *t, char *d)
@@ -480,8 +480,8 @@ int Expect(int a, char *t, char *d)
 
 /* FILLCODE
 
-   Fills null characters (i.e., 0) to the start of the next segment
-   boundary--an address evenly divisible by 16.
+      Fills null characters (i.e., 0) to the start of the next segment
+      boundary--an address evenly divisible by 16.
 */
 
 void FillCode(void)
@@ -493,7 +493,7 @@ void FillCode(void)
 
 /* KILLWORD
 
-   Could have been DeleteWord(), but that would've been less flashy.
+      Could have been DeleteWord(), but that would've been less flashy.
 */
 
 void KillWord(int i)
@@ -543,7 +543,7 @@ void ListLimits(void)
 
 /* MAKESTRING
 
-   Dynamically (and permanently) allocates space for a string.
+      Dynamically (and permanently) allocates space for a string.
 */
 
 char *MakeString(char *a)
@@ -705,7 +705,7 @@ void ParseCommand(int argc, char *argv[])
 
 /* PRINTERRORLOCATION
 
-   Called by Error() or FatalError().
+      Called by Error() or FatalError().
 */
 
 void PrintErrorLocation(void)
@@ -750,8 +750,8 @@ void PrintErrorLocation(void)
 
 /* PRINTHEX
 
-   Returns <a> as a hex-number string, in XX, XXXX, or XXXXXX format,
-   depending on whether <b> is 1, 2, or 3.
+      Returns <a> as a hex-number string, in XX, XXXX, or XXXXXX format,
+      depending on whether <b> is 1, 2, or 3.
 */
 
 char *PrintHex(long a, char b)
@@ -792,7 +792,7 @@ char *PrintHex(long a, char b)
 
 /* PRINTLIMIT
 
-   Called by ListLimits().
+      Called by ListLimits().
 */
 
 void PrintLimit(char *a, unsigned int n, int nl)
@@ -806,7 +806,7 @@ void PrintLimit(char *a, unsigned int n, int nl)
 
 /* PRINTLINE
 
-   Prints a line of <n> repetitions of character <a>.
+      Prints a line of <n> repetitions of character <a>.
 */
 
 void PrintLine(int n, char a)
@@ -823,8 +823,8 @@ void PrintLine(int n, char a)
 
 /* PRINTOUT
 
-   The replacement for simply printf(), since output may also need to
-   be piped to the printer and/or the list file.
+      The replacement for simply printf(), since output may also need to
+      be piped to the printer and/or the list file.
 */
 
 void Printout(char *p_original)
@@ -832,8 +832,8 @@ void Printout(char *p_original)
    char p[MAXBUFFER];
    int l, sticky = 0;
 
-   strcpy(p, p_original);   /* to prevent access violations when
-               modifying static strings */
+   strcpy(p, p_original);     /* to prevent access violations when
+                                 modifying static strings */
 
    if ((l = strlen(p)) >= 2)
    {
@@ -1046,7 +1046,7 @@ void PrintStatistics(void)
 
 /* PRINTTOALL
 
-   Prints the current word[] set to allfile.
+      Prints the current word[] set to allfile.
 */
 
 void PrinttoAll(void)
@@ -1077,14 +1077,14 @@ void PrinttoAll(void)
 
 /* PRINTWORDS
 
-   Contains a bunch of adjustments to properly space punctuation/
-   symbols/operators which are only one character.  I.e.,
+      Contains a bunch of adjustments to properly space punctuation/
+      symbols/operators which are only one character.  I.e.,
 
-      Routine(x, y)
+         Routine(x, y)
 
-   instead of
+      instead of
 
-      Routine ( x , y )
+         Routine ( x , y )
 */
 
 void PrintWords(int n)
@@ -1144,7 +1144,7 @@ void PrintWords(int n)
 
 /* PUTINTREE
 
-   Places object <obj> as next child of parent <p>.
+      Places object <obj> as next child of parent <p>.
 */
 
 void PutinTree(int obj, int p)
@@ -1170,7 +1170,7 @@ void PutinTree(int obj, int p)
 
 /* REMEMBERADDR
 
-   Until it can be properly resolved by Pass3().
+      Until it can be properly resolved by Pass3().
 */
 
 void RememberAddr(long a, int b, unsigned int c)
@@ -1202,7 +1202,7 @@ void RememberAddr(long a, int b, unsigned int c)
 
 /* REMOVECOMMAS
 
-   Removes every "," word from word[] array.
+      Removes every "," word from word[] array.
 */
 
 void RemoveCommas(void)
@@ -1219,17 +1219,17 @@ void RemoveCommas(void)
 
 /* RESOLVEADDR
 
-   Resolves addresses remembered during compilation by RememberAddr().
-   (If an .HLB file is being generated, addresses are not resolved;
-   they are written as a table.)
+      Resolves addresses remembered during compilation by RememberAddr().
+      (If an .HLB file is being generated, addresses are not resolved;
+      they are written as a table.)
 
-   Routines and labels are resolved as their addresses.  Other
-   addresses that will need to be refigured by the linker (i.e., in an
-   .HLB file) are recorded as values.
+      Routines and labels are resolved as their addresses.  Other
+      addresses that will need to be refigured by the linker (i.e., in an
+      .HLB file) are recorded as values.
 
-   ResolveAddr() also resolves array values defined at compile time,
-   but first it has to convert the stored array table offset into an
-   absolute memory value.
+      ResolveAddr() also resolves array values defined at compile time,
+      but first it has to convert the stored array table offset into an
+      absolute memory value.
 */
 
 extern unsigned int arraytableaddr;
@@ -1299,8 +1299,8 @@ void ResolveAddr(void)
 
 /* SAVEPROPDATA
 
-   Writes the provided unsigned 16-bit integer to the property
-   data heap.
+      Writes the provided unsigned 16-bit integer to the property
+      data heap.
 */
 
 void SavePropData(unsigned int v)
@@ -1322,7 +1322,7 @@ void SavePropData(unsigned int v)
 
 /* SEPARATEWORDS
 
-   Tokenizes <buffer> into word[] array.
+      Tokenizes <buffer> into word[] array.
 */
 
 void SeparateWords(void)
@@ -1330,10 +1330,10 @@ void SeparateWords(void)
    char a[MAXBUFFER];
    char b;
    char compiler_directive = 0;
-   int bloc = 0;         /* location in buffer buffer */
+   int bloc = 0;         /* location in buffer buffer    */
    int i, slen;
    int quote = 0;        /* quote = 1 when inside quotes */
-   int squote = 0;       /* 1 when inside single quotes */
+   int squote = 0;       /* 1 when inside single quotes  */
    int flag;
 
 
@@ -1609,7 +1609,7 @@ void SetLimit(char *a)
 
 /* SETMEM
 
-   Allocates memory for all dynamic program elements.
+      Allocates memory for all dynamic program elements.
 */
 
 char token_hash_table_built = false;
@@ -1883,4 +1883,3 @@ void StripQuotes(char *a)
       {sprintf(line, "Missing quotes:  %s", a);
       Error(line);}
 }
-

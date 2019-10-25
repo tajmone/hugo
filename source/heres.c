@@ -313,18 +313,18 @@ Identified:
 
 /* FINDRESOURCE
 
-   Assumes that filename/resname contain a resourcefile name and
-   a resource name.  If resname is "", filename contains the path
-   of the resource on disk.  Returns the length of the resource if
-   if the named resource is found.
+      Assumes that filename/resname contain a resourcefile name and
+      a resource name.  If resname is "", filename contains the path
+      of the resource on disk.  Returns the length of the resource if
+      if the named resource is found.
 
-   If FindResource() returns non-zero, the file is hot, i.e., it is
-   open and positioned to the start of the resource.
+      If FindResource() returns non-zero, the file is hot, i.e., it is
+      open and positioned to the start of the resource.
 
-   Note that resourcefiles are expected to be in (if not the current
-   directory) "object" or "games", and on-disk resources in (if not the
-   given directory) "source" or "resource" (where these are the
-   environment variables "HUGO_...", not actual on-disk directories).
+      Note that resourcefiles are expected to be in (if not the current
+      directory) "object" or "games", and on-disk resources in (if not the
+      given directory) "source" or "resource" (where these are the
+      environment variables "HUGO_...", not actual on-disk directories).
 */
 
 long FindResource(char *filename, char *resname)
@@ -507,9 +507,9 @@ NotinResourceFile:
 
 /* GETRESOURCEPARAMETERS
 
-   Processes resourcefile/filename (and resource, if applicable).
-   Returns 0 if a valid 0 parameter is passed as in "music 0" or
-   "sound 0".
+      Processes resourcefile/filename (and resource, if applicable).
+      Returns 0 if a valid 0 parameter is passed as in "music 0" or
+      "sound 0".
 */
 
 int GetResourceParameters(char *filename, char *resname, int restype)

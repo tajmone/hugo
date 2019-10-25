@@ -429,8 +429,8 @@ void DefConstant(void)
 
 /* DEFENUM
 
-   enumerate [constants:globals] [, step [+:-:*:/] s] [, start = n]
-      {a, b, c,...}
+      enumerate [constants:globals] [, step [+:-:*:/] s] [, start = n]
+         {a, b, c,...}
 */
 
 void DefEnum(void)
@@ -640,8 +640,8 @@ void DefGlobal(void)
 
 /* DEFLOCALS
 
-   If <asargs> is true, then we're defining local variables as
-   routine arguments.
+      If <asargs> is true, then we're defining local variables as
+      routine arguments.
 */
 
 void DefLocals(int asargs)
@@ -718,11 +718,11 @@ LocalAssignmentError:
 
 /* DEFOTHER
 
-   Use the same basic frame to define routines, events, and objects
-   (since they essentially look the same):
+      Use the same basic frame to define routines, events, and objects
+      (since they essentially look the same):
 
-      definition
-      {...}
+         definition
+         {...}
 */
 
 void DefOther(void)
@@ -985,11 +985,11 @@ void DefSynonym(void)
 
 /* FINDHASH
 
-   This is actually a bit of a misnomer, since it isn't really a
-   hash table per se that is being used.  What is done is to come
-   up with an _almost_ unique key for each token.  Only if the
-   hash key matches against another token does a (more expensive)
-   strcmp() need to be performed to verify the match.
+      This is actually a bit of a misnomer, since it isn't really a
+      hash table per se that is being used.  What is done is to come
+      up with an _almost_ unique key for each token.  Only if the
+      hash key matches against another token does a (more expensive)
+      strcmp() need to be performed to verify the match.
 */
 
 int FindHash(char *a)

@@ -27,10 +27,10 @@ int IDWord(char *a);
 int ParseExpression(char *expr);
 
 struct watch_structure watch[MAXWATCHES];
-char debug_eval = 0;         /* true if assignment/watch   */
-               /*   expression evaluation   */
-char debug_eval_error;         /* true if something is invalid   */
-unsigned int debug_workspace;      /* for watch expressions   */
+char debug_eval = 0;                   /* true if assignment/watch      */
+                                       /*   expression evaluation       */
+char debug_eval_error;                 /* true if something is invalid  */
+unsigned int debug_workspace;          /* for watch expressions         */
 unsigned int token_val = 0;
 
 #define ReturnSymbol(sym)   return (last_symbol = sym)
@@ -131,8 +131,8 @@ void EnterWatch(void)
 
 /* EVALWATCH
 
-   Requires that an expression be first loaded into the array-
-   table workspace by calling SetupWatchEval().
+      Requires that an expression be first loaded into the array-
+      table workspace by calling SetupWatchEval().
 */
 
 int EvalWatch(void)
@@ -163,10 +163,10 @@ int EvalWatch(void)
 
 /* IDWORD
 
-   Heisted (largely) from the compiler's HCBUILD.C.  If the token
-   is invalid, returns -1 and stores an appropriate error message
-   in the line array.  Otherwise, it returns the token code, and
-   stores the real value in z (if applicable).
+      Heisted (largely) from the compiler's HCBUILD.C.  If the token
+      is invalid, returns -1 and stores an appropriate error message
+      in the line array.  Otherwise, it returns the token code, and
+      stores the real value in z (if applicable).
 */
 
 int IDWord(char *a)
@@ -318,7 +318,7 @@ int IDWord(char *a)
 
 /* MODIFYVALUE
 
-   Changes a variable data type to a new value.
+      Changes a variable data type to a new value.
 */
 
 void ModifyValue(void)
@@ -368,10 +368,10 @@ void ModifyValue(void)
 
 /* PARSEEXPRESSION
 
-   Parses the expression in the given string, encoding it in the
-   Debugger's array-table workspace.  Returns false if the expression
-   is invalid, otherwise returns the length (in bytes) of the
-   encoded expression.
+      Parses the expression in the given string, encoding it in the
+      Debugger's array-table workspace.  Returns false if the expression
+      is invalid, otherwise returns the length (in bytes) of the
+      encoded expression.
 */
 
 int ParseExpression(char *expr)
@@ -525,9 +525,9 @@ PrintExpressionError:
 
 /* RETURNWATCHVALUE
 
-   Assumes that the watch_buffer array holds the watch expression
-   itself; this simply adds the result.  ln is the array to which the
-   value is added/written (i.e., typically watch_buffer)
+      Assumes that the watch_buffer array holds the watch expression
+      itself; this simply adds the result.  ln is the array to which the
+      value is added/written (i.e., typically watch_buffer)
 */
 
 void ReturnWatchValue(char *ln, int val, int type)
@@ -597,8 +597,8 @@ void ReturnWatchValue(char *ln, int val, int type)
 
 /* SETUPWATCHEVAL
 
-   Moves watch n into the array-table workspace for subsequent
-   evaluation by EvalWatch().
+      Moves watch n into the array-table workspace for subsequent
+      evaluation by EvalWatch().
 */
 
 void SetupWatchEval(int n)

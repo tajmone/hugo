@@ -55,11 +55,11 @@ unsigned int RoutineAddress(char *r);
 int SearchLineFor(int l, char *a);
 
 
-char invocation_path[MAXPATH];      /* of debugger         */
+char invocation_path[MAXPATH];      /* of debugger             */
 
 /* These need to be set by the port: */
-int D_SCREENWIDTH;         /* debug screen width      */
-int D_SCREENHEIGHT;         /* debug screen height     */
+int D_SCREENWIDTH;                  /* debug screen width      */
+int D_SCREENHEIGHT;                 /* debug screen height     */
 
 struct breakpoint_structure breakpoint[MAXBREAKPOINTS];
 char complex_prop_breakpoint = false;
@@ -140,9 +140,9 @@ void About(void)
 
 /* ALLOCMEMORY
 
-   Used in place of malloc() when it may be necessary to cannibalize
-   the memory allocated for code-line history if needed, e.g., for
-   saving a rectangle of screen text or adding a watch value.
+      Used in place of malloc() when it may be necessary to cannibalize
+      the memory allocated for code-line history if needed, e.g., for
+      saving a rectangle of screen text or adding a watch value.
 */
 
 void *AllocMemory(size_t size)
@@ -157,7 +157,7 @@ void *AllocMemory(size_t size)
 
 /* ARRAYNAME
 
-   Returns the array name of a given address in the array table.
+      Returns the array name of a given address in the array table.
 */
 
 char *ArrayName(unsigned int addr)
@@ -175,8 +175,8 @@ char *ArrayName(unsigned int addr)
 
 /* CHECKINRANGE
 
-   Checks to make sure a given type of value is within the allowable
-   range.  Returns true if in range.
+      Checks to make sure a given type of value is within the allowable
+      range.  Returns true if in range.
 */
 
 int CheckinRange(unsigned int val, unsigned int max, char *what)
@@ -196,8 +196,8 @@ int CheckinRange(unsigned int val, unsigned int max, char *what)
 
 /* CURRENTROUTINENAME
 
-   Similar to RoutineName, except that it might also return the
-   name of an event, object property, etc.
+      Similar to RoutineName, except that it might also return the
+      name of an event, object property, etc.
 */
 
 char *CurrentRoutineName(unsigned int addr)
@@ -292,9 +292,9 @@ void DebuggerFatal(int n)
 
 /* DEBUGRUNROUTINE
 
-   Used as a wrapper for RunRoutine() in herun.c to save/restore
-   local variable routines using the C stack, thereby saving
-   manual labor.
+      Used as a wrapper for RunRoutine() in herun.c to save/restore
+      local variable routines using the C stack, thereby saving
+      manual labor.
 */
 
 int debug_call_stack = 0;
@@ -529,8 +529,8 @@ LeaveSearch:
 
 /* HEXTODEC
 
-   Returns the unsigned decimal equivalent of the supplied string,
-   or 0 if invalid.
+      Returns the unsigned decimal equivalent of the supplied string,
+      or 0 if invalid.
 */
 
 long HextoDec(char *hex)
@@ -558,8 +558,8 @@ long HextoDec(char *hex)
 
 /* ISBREAKPOINT
 
-   Returns false if the given address is not in the breakpoint list,
-   or n+1 where the address is breakpoint[n].
+      Returns false if the given address is not in the breakpoint list,
+      or n+1 where the address is breakpoint[n].
 */
 
 int IsBreakpoint(long addr)
@@ -709,8 +709,8 @@ void LoadDebuggableFile(void)
 
 /* OBJECTNUMBER
 
-   Returns the object number of the supplied object name, or
-   -1 if the name doesn't refer to an object.
+      Returns the object number of the supplied object name, or
+      -1 if the name doesn't refer to an object.
 */
 
 int ObjectNumber(char *obj)
@@ -726,9 +726,9 @@ int ObjectNumber(char *obj)
 
 /* OBJPROPADDR
 
-   Returns the address of the property routine given as a string
-   "object.property", or 0 if the object/property combination
-   doesn't exist or isn't a routine.
+      Returns the address of the property routine given as a string
+      "object.property", or 0 if the object/property combination
+      doesn't exist or isn't a routine.
 */
 
 long ObjPropAddr(char *o)
@@ -758,8 +758,8 @@ long ObjPropAddr(char *o)
 
 /* PROPERTYNUMBER
 
-   Returns the property number of the supplied property name, or
-   -1 if the name doesn't refer to a property.
+      Returns the property number of the supplied property name, or
+      -1 if the name doesn't refer to a property.
 */
 
 int PropertyNumber(char *prop)
@@ -810,8 +810,8 @@ unsigned int ReadFileValue(void)
 
 /* RECOVERLASTGOOD
 
-   Called in instances such as an engine error or while stepping
-   backward in order to find the last good code statement.
+      Called in instances such as an engine error or while stepping
+      backward in order to find the last good code statement.
 */
 
 void RecoverLastGood(void)
@@ -857,8 +857,8 @@ char **ReserveNameArray(int n)
 
 /* ROUTINEADDRESS
 
-   Returns the (packed) address of the supplied routine name, or 0
-   if the name doesn't refer to a routine.
+      Returns the (packed) address of the supplied routine name, or 0
+      if the name doesn't refer to a routine.
 */
 
 unsigned int RoutineAddress(char *r)
@@ -879,7 +879,7 @@ unsigned int RoutineAddress(char *r)
 
 /* ROUTINENAME
 
-   Returns the routine name of a given code address.
+      Returns the routine name of a given code address.
 */
 
 char *RoutineName(unsigned int addr)
@@ -1235,9 +1235,9 @@ void SetBreakpoint(long addr)
 
 /* STEALADDRESS
 
-   Attempts in a backwards manner to get the address at the start of
-   the given line in the Code window.  Returns false if it doesn't
-   start with an address.
+      Attempts in a backwards manner to get the address at the start of
+      the given line in the Code window.  Returns false if it doesn't
+      start with an address.
 */
 
 long StealAddress(int l)

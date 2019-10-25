@@ -39,12 +39,12 @@ char *strupr(char *s);
 
 /* GETTEMPSTRING
 
-   Prevents having to make sure each string-returning function has its
-   own static char array to copy into.  In other words, for five
-   functions, we don't need 5 * 1K each of static char array.
+      Prevents having to make sure each string-returning function has its
+      own static char array to copy into.  In other words, for five
+      functions, we don't need 5 * 1K each of static char array.
 
-   NOTE:  Assumes that no more than NUM_TEMPSTRINGS nested
-   string-manipulations will be done at once.
+      NOTE:  Assumes that no more than NUM_TEMPSTRINGS nested
+      string-manipulations will be done at once.
 */
 
 #ifndef ALLOW_NESTING

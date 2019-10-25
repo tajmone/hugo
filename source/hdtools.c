@@ -5,13 +5,13 @@
 
       DebugMoveObj
       DrawTree
-         DrawBranch
+      DrawBranch
       LoadSetupFile
       SaveSetupFile
       SetupMenu
-         SetupColors
-            PrintSampleText
-         SetupFilename
+      SetupColors
+      PrintSampleText
+      SetupFilename
 
    for the Debugger build of the Hugo Engine
 
@@ -91,7 +91,7 @@ NoSuchObject:
 
 /* DRAWBRANCH
 
-   Called by DrawTree(), below.
+      Called by DrawTree(), below.
 */
 
 /* ContinueBranch determines the appropriate type of branch line for an
@@ -189,9 +189,9 @@ void DrawBranch(int obj)
 
 /* DRAWTREE
 
-   The root of the object-tree-drawing algorithm.  Here, the starting
-   (parent) object is entered, and subsequent calls to DrawBranch()
-   draw the tree.
+      The root of the object-tree-drawing algorithm.  Here, the starting
+      (parent) object is entered, and subsequent calls to DrawBranch()
+      draw the tree.
 */
 
 void DrawTree(void)
@@ -316,30 +316,30 @@ UseDefaults:
 
    strcpy(printer_name, DEFAULT_PRINTER);
 
-   color[NORMAL_TEXT]    =    DEFAULT_NORMAL_TEXT;
-   color[NORMAL_BACK]    =    DEFAULT_NORMAL_BACK;
-   color[SELECT_TEXT]    =    DEFAULT_SELECT_TEXT;
-   color[SELECT_BACK]    =    DEFAULT_SELECT_BACK;
-   color[MENU_TEXT]    =    DEFAULT_MENU_TEXT;
-   color[MENU_BACK]    =   DEFAULT_MENU_BACK;
-   color[MENU_SELECT]    =   DEFAULT_MENU_SELECT;
-   color[MENU_SELECTBACK]   =    DEFAULT_MENU_SELECTBACK;
-   color[BREAKPOINT_BACK]    =   DEFAULT_BREAKPOINT_BACK;
-   color[CURRENT_BACK]    =   DEFAULT_CURRENT_BACK;
-   color[OBJECT_TEXT]    =   DEFAULT_OBJECT_TEXT;
-   color[PROPERTY_TEXT]    =   DEFAULT_PROPERTY_TEXT;
-   color[ROUTINE_TEXT]    =   DEFAULT_ROUTINE_TEXT;
-   color[STRING_TEXT]    =   DEFAULT_STRING_TEXT;
-   color[TOKEN_TEXT]    =   DEFAULT_TOKEN_TEXT;
-   color[VALUE_TEXT]    =   DEFAULT_VALUE_TEXT;
-   color[VARIABLE_TEXT]    =   DEFAULT_VARIABLE_TEXT;
+   color[NORMAL_TEXT]      =     DEFAULT_NORMAL_TEXT;
+   color[NORMAL_BACK]      =     DEFAULT_NORMAL_BACK;
+   color[SELECT_TEXT]      =     DEFAULT_SELECT_TEXT;
+   color[SELECT_BACK]      =     DEFAULT_SELECT_BACK;
+   color[MENU_TEXT]        =     DEFAULT_MENU_TEXT;
+   color[MENU_BACK]        =     DEFAULT_MENU_BACK;
+   color[MENU_SELECT]      =     DEFAULT_MENU_SELECT;
+   color[MENU_SELECTBACK]  =     DEFAULT_MENU_SELECTBACK;
+   color[BREAKPOINT_BACK]  =     DEFAULT_BREAKPOINT_BACK;
+   color[CURRENT_BACK]     =     DEFAULT_CURRENT_BACK;
+   color[OBJECT_TEXT]      =     DEFAULT_OBJECT_TEXT;
+   color[PROPERTY_TEXT]    =     DEFAULT_PROPERTY_TEXT;
+   color[ROUTINE_TEXT]     =     DEFAULT_ROUTINE_TEXT;
+   color[STRING_TEXT]      =     DEFAULT_STRING_TEXT;
+   color[TOKEN_TEXT]       =     DEFAULT_TOKEN_TEXT;
+   color[VALUE_TEXT]       =     DEFAULT_VALUE_TEXT;
+   color[VARIABLE_TEXT]    =     DEFAULT_VARIABLE_TEXT;
 }
 
 
 /* PRINTSAMPLETEXT
 
-   Called by SelectBox() in hdwindow.c in order to print an
-   example of the current text/back color combination.
+      Called by SelectBox() in hdwindow.c in order to print an
+      example of the current text/back color combination.
 */
 
 void PrintSampleText(int c, int y)
@@ -491,7 +491,7 @@ SaveColorSet:
 
 /* SETUPFILENAME
 
-   Set up an external path/device name.
+      Set up an external path/device name.
 */
 
 void SetupFilename(char *n, int f)
@@ -554,4 +554,3 @@ SetupMenuLoop:
 
 #endif  /* defined (AMIGA) */
 }
-

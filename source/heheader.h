@@ -32,19 +32,19 @@ extern char *token[];
 
 /* Define the compiler being used (or library) as one of:
 
-   ACORN
-   AMIGA
-   BEOS
-   DJGPP
-   GCC_OS2
-   GCC_UNIX
-   GCC_BEOS
-   GLK       (Glk portable interface)
-   PALMOS    (Palm OS built with CodeWarrior)
-   QUICKC
-   RISCOS
-   WIN32     (Microsoft Visual C++)
-   WXWINDOWS (wxWindows for Mac or Gtk)
+      ACORN
+      AMIGA
+      BEOS
+      DJGPP
+      GCC_OS2
+      GCC_UNIX
+      GCC_BEOS
+      GLK       (Glk portable interface)
+      PALMOS    (Palm OS built with CodeWarrior)
+      QUICKC
+      RISCOS
+      WIN32     (Microsoft Visual C++)
+      WXWINDOWS (wxWindows for Mac or Gtk)
 
    (although this is typically done in the makefile)
 */
@@ -64,20 +64,20 @@ extern char *token[];
 #define HUGO_FOPEN      arc_fopen
 
 #define MAXPATH         256
-#define MAXFILENAME     64      /* We _could_ be using LongFilenames */
-#define MAXDRIVE        32      /* arcfs#SCSIFS::harddisc4 ? */
+#define MAXFILENAME      64      /* We _could_ be using LongFilenames */
+#define MAXDRIVE         32      /* arcfs#SCSIFS::harddisc4 ? */
 #define MAXDIR          256
-#define MAXEXT          32
+#define MAXEXT           32
 
 #define isascii(c)      ((unsigned int)(c)<0x80)
 #define toascii(c)      ((c)&0x7f)
 
 #define DEF_PRN         ""
 
-#define DEF_FCOLOR      7
-#define DEF_BGCOLOR     0
-#define DEF_SLFCOLOR   15
-#define DEF_SLBGCOLOR   1
+#define DEF_FCOLOR        7
+#define DEF_BGCOLOR       0
+#define DEF_SLFCOLOR     15
+#define DEF_SLBGCOLOR     1
 
 #define MAXBUFFER 255
 
@@ -108,10 +108,10 @@ void arc_colour(unsigned char n, unsigned int c);
 /* MAXPATH, MAXDRIVE, MAXDIR, MAXEXT defined in <dir.h> */
 #define MAXFILENAME     MAXFILE
 
-#define DEF_FCOLOR      7
-#define DEF_BGCOLOR     0
-#define DEF_SLFCOLOR   15
-#define DEF_SLBGCOLOR   1
+#define DEF_FCOLOR        7
+#define DEF_BGCOLOR       0
+#define DEF_SLFCOLOR     15
+#define DEF_SLBGCOLOR     1
 
 #define MAXBUFFER 255
 
@@ -153,10 +153,10 @@ void arc_colour(unsigned char n, unsigned int c);
 
 #define DEF_PRN         "PRT:"
 
-#define DEF_FCOLOR      7
-#define DEF_BGCOLOR     0
-#define DEF_SLFCOLOR   15
-#define DEF_SLBGCOLOR   1
+#define DEF_FCOLOR        7
+#define DEF_BGCOLOR       0
+#define DEF_SLFCOLOR     15
+#define DEF_SLBGCOLOR     1
 
 #define MAXBUFFER 255
 
@@ -193,13 +193,13 @@ void arc_colour(unsigned char n, unsigned int c);
 #define MAXDIR          256
 #define MAXEXT          256
 
-#define DEF_PRN         "/dev/lp"       /* Bill suggests this is perhaps
-                  a less-than-ideal choice for
-                  the default printer */
-#define DEF_FCOLOR      7
-#define DEF_BGCOLOR     0
-#define DEF_SLFCOLOR   15
-#define DEF_SLBGCOLOR   1
+#define DEF_PRN         "/dev/lp"      /* Bill suggests this is perhaps
+                                          a less-than-ideal choice for
+                                          the default printer */
+#define DEF_FCOLOR        7
+#define DEF_BGCOLOR       0
+#define DEF_SLFCOLOR     15
+#define DEF_SLBGCOLOR     1
 
 #define MAXBUFFER 255
 
@@ -228,10 +228,10 @@ void arc_colour(unsigned char n, unsigned int c);
 #define MAXEXT          256
 
 #define DEF_PRN         "LPT1"
-#define DEF_FCOLOR      7
-#define DEF_BGCOLOR     0
-#define DEF_SLFCOLOR   15
-#define DEF_SLBGCOLOR   1
+#define DEF_FCOLOR        7
+#define DEF_BGCOLOR       0
+#define DEF_SLFCOLOR     15
+#define DEF_SLBGCOLOR     1
 
 #define MAXBUFFER 255
 
@@ -292,10 +292,10 @@ void arc_colour(unsigned char n, unsigned int c);
 #define MAXEXT          256
 
 #define DEF_PRN         ""
-#define DEF_FCOLOR      0
-#define DEF_BGCOLOR     15
-#define DEF_SLFCOLOR   15
-#define DEF_SLBGCOLOR   1
+#define DEF_FCOLOR        0
+#define DEF_BGCOLOR      15
+#define DEF_SLFCOLOR     15
+#define DEF_SLBGCOLOR     1
 
 #define MAXBUFFER 1280   /* larger than normal since Glk doesn't
             break up paragraphs (1024+256)*/
@@ -386,15 +386,15 @@ void heglk_printfatalerror(char *err);
 
 #define MAXFILENAME     MAXPATH
 /* No such thing as drive, directory, or extension in Palm OS */
-#define MAXDRIVE        1
-#define MAXDIR          1
-#define MAXEXT          1
+#define MAXDRIVE         1
+#define MAXDIR           1
+#define MAXEXT           1
 
 #define DEF_PRN         ""
 
 #define DEF_FCOLOR      16
 #define DEF_BGCOLOR     17
-#define DEF_SLFCOLOR   18
+#define DEF_SLFCOLOR    18
 #define DEF_SLBGCOLOR   19
 
 #define MAXBUFFER   256      /* max. input/output line length */
@@ -437,20 +437,20 @@ void SetMemValue(long addr, unsigned char n);
 #define PORT_NAME   "RISC OS"
 #define PORTER_NAME   "Julian Arnold"
 
-#define MAXPATH      256
+#define MAXPATH       256
 #define MAXFILENAME   256
-#define MAXDRIVE   256
-#define MAXDIR      256
-#define MAXEXT      256
+#define MAXDRIVE      256
+#define MAXDIR        256
+#define MAXEXT        256
 
 #define DEF_PRN      ""
 
-#define DEF_FCOLOR   7
-#define DEF_BGCOLOR   0
-#define DEF_SLFCOLOR   0
+#define DEF_FCOLOR      7
+#define DEF_BGCOLOR     0
+#define DEF_SLFCOLOR    0
 #define DEF_SLBGCOLOR   7
 
-#define MAXBUFFER   255
+#define MAXBUFFER     255
 
 #define isascii(c)   ((unsigned int)(c)<0x80)
 extern FILE *hugo_fopen (char *filename, char *mode);
@@ -484,7 +484,7 @@ extern FILE *hugo_fopen (char *filename, char *mode);
 
 #define DEF_FCOLOR      7               /* default colors, fore and back */
 #define DEF_BGCOLOR     0
-#define DEF_SLFCOLOR   15      /* statusline */
+#define DEF_SLFCOLOR   15               /* statusline */
 #define DEF_SLBGCOLOR   1
 
 #define OMIT_EXTRA_STRING_FUNCTIONS
@@ -513,11 +513,11 @@ extern FILE *hugo_fopen (char *filename, char *mode);
 #define DEF_PRN ""
 
 #ifdef UNDER_CE
-#define MAXPATH      260
-#define MAXFILENAME   256
-#define MAXDRIVE   3
-#define MAXDIR      256
-#define MAXEXT      256
+#define MAXPATH         260
+#define MAXFILENAME     256
+#define MAXDRIVE          3
+#define MAXDIR          256
+#define MAXEXT          256
 #define getenv(a) ""
 #else
 #define MAXPATH         _MAX_PATH
@@ -528,19 +528,19 @@ extern FILE *hugo_fopen (char *filename, char *mode);
 #endif
 
 #ifdef UNDER_CE
-#define DEF_FCOLOR      0
-#define DEF_BGCOLOR     15
-#define DEF_SLFCOLOR   15
-#define DEF_SLBGCOLOR   1
+#define DEF_FCOLOR        0
+#define DEF_BGCOLOR      15
+#define DEF_SLFCOLOR     15
+#define DEF_SLBGCOLOR     1
 #else
-#define DEF_FCOLOR      7
-#define DEF_BGCOLOR     1
-#define DEF_SLFCOLOR   15
-#define DEF_SLBGCOLOR   0
+#define DEF_FCOLOR        7
+#define DEF_BGCOLOR       1
+#define DEF_SLFCOLOR     15
+#define DEF_SLBGCOLOR     0
 #endif
 
-#define MAXBUFFER 255
-#define MAXUNDO 1024
+#define MAXBUFFER       255
+#define MAXUNDO        1024
 
 #define HUGO_INLINE __inline
 
@@ -611,13 +611,13 @@ void exit_he_thread(int n);
 #define MAXFILENAME     256
 #define MAXEXT          256
 
-#define DEF_FCOLOR      0
-#define DEF_BGCOLOR     15
-#define DEF_SLFCOLOR   15
-#define DEF_SLBGCOLOR   1
+#define DEF_FCOLOR        0
+#define DEF_BGCOLOR      15
+#define DEF_SLFCOLOR     15
+#define DEF_SLBGCOLOR     1
 
-#define MAXBUFFER 255
-#define MAXUNDO 1024
+#define MAXBUFFER       255
+#define MAXUNDO        1024
 
 #define HUGO_INLINE static __inline
 
@@ -704,7 +704,7 @@ int LoadGameData(char reload);
 #define MAXLOCALS         16
 #define MAXPOBJECTS      256    /* contenders for disambiguation */
 #define MAXWORDS          32    /* in an input line              */
-#define MAXSTACKDEPTH    256   /* for nesting {...}       */
+#define MAXSTACKDEPTH    256    /* for nesting {...}             */
 
 #if !defined (MAXUNDO)
 #define MAXUNDO          256   /* number of undoable operations */
@@ -714,7 +714,7 @@ int LoadGameData(char reload);
 #define MAX_CONTEXT_COMMANDS   32
 #endif
 
-enum ERROR_TYPE                 /* fatal errors */
+enum ERROR_TYPE            /* fatal errors */
 {
    MEMORY_E = 1,           /* out of memory                */
    OPEN_E,                 /* error opening file           */
@@ -724,114 +724,114 @@ enum ERROR_TYPE                 /* fatal errors */
    UNKNOWN_OP_E,           /* unknown operation            */
    ILLEGAL_OP_E,           /* illegal operation            */
    OVERFLOW_E,             /* overflow                     */
-   DIVIDE_E      /* divide by zero      */
+   DIVIDE_E                /* divide by zero               */
 };
 
 /* The positions of various data in the header: */
-#define H_GAMEVERSION   0x00
-#define H_ID      0x01
-#define H_SERIAL   0x03
-#define H_CODESTART   0x0B
+#define H_GAMEVERSION      0x00
+#define H_ID               0x01
+#define H_SERIAL           0x03
+#define H_CODESTART        0x0B
 
-#define H_OBJTABLE   0x0D           /* data tables */
-#define H_PROPTABLE   0x0F
-#define H_EVENTTABLE   0x11
-#define H_ARRAYTABLE   0x13
-#define H_DICTTABLE   0x15
-#define H_SYNTABLE   0x17
+#define H_OBJTABLE         0x0D     /* data tables */
+#define H_PROPTABLE        0x0F
+#define H_EVENTTABLE       0x11
+#define H_ARRAYTABLE       0x13
+#define H_DICTTABLE        0x15
+#define H_SYNTABLE         0x17
 
-#define H_INIT      0x19           /* junction routines */
-#define H_MAIN      0x1B
-#define H_PARSE      0x1D
-#define H_PARSEERROR   0x1F
-#define H_FINDOBJECT   0x21
-#define H_ENDGAME   0x23
-#define H_SPEAKTO   0x25
-#define H_PERFORM   0x27
+#define H_INIT             0x19     /* junction routines */
+#define H_MAIN             0x1B
+#define H_PARSE            0x1D
+#define H_PARSEERROR       0x1F
+#define H_FINDOBJECT       0x21
+#define H_ENDGAME          0x23
+#define H_SPEAKTO          0x25
+#define H_PERFORM          0x27
 
-#define H_TEXTBANK   0x29
+#define H_TEXTBANK         0x29
 
 /* additional debugger header information */
-#define H_DEBUGGABLE     0x3A
-#define H_DEBUGDATA      0x3B
-#define H_DEBUGWORKSPACE 0x3E
+#define H_DEBUGGABLE       0x3A
+#define H_DEBUGDATA        0x3B
+#define H_DEBUGWORKSPACE   0x3E
 
 /* Printing control codes--embedded in strings printed by AP(). */
-#define FONT_CHANGE       1
-#define COLOR_CHANGE      2
-#define NO_CONTROLCHAR    3
-#define NO_NEWLINE        30
-#define FORCED_SPACE      31   /* Can't be <= # colors/font codes + 1
-               (See AP() for the reason) */
+#define FONT_CHANGE         1
+#define COLOR_CHANGE        2
+#define NO_CONTROLCHAR      3
+#define NO_NEWLINE         30
+#define FORCED_SPACE       31    /* Can't be <= # colors/font codes + 1
+                                    (See AP() for the reason) */
 
 /* Font control codes--these bitmasks follow FONT_CHANGE codes. */
-#define NORMAL_FONT     0
-#define BOLD_FONT         1
-#define ITALIC_FONT       2
-#define UNDERLINE_FONT    4
-#define PROP_FONT         8
+#define NORMAL_FONT        0
+#define BOLD_FONT          1
+#define ITALIC_FONT        2
+#define UNDERLINE_FONT     4
+#define PROP_FONT          8
 
 /* CHAR_TRANSLATION is simply a value that is added to an ASCII character
    in order to encode the text, i.e., make it unreadable to casual
    browsing.
 */
-#define CHAR_TRANSLATION  0x14
+#define CHAR_TRANSLATION   0x14
 
 /* Passed to GetWord() */
-#define PARSE_STRING_VAL  0xFFF0
-#define SERIAL_STRING_VAL 0xFFF1
+#define PARSE_STRING_VAL   0xFFF0
+#define SERIAL_STRING_VAL  0xFFF1
 
 /* Returned by FindWord() */
-#define UNKNOWN_WORD      0xFFFF
+#define UNKNOWN_WORD       0xFFFF
 
 /* Bitmasks for certain qualities of properties */
-#define ADDITIVE_FLAG   1
-#define COMPLEX_FLAG    2
+#define ADDITIVE_FLAG      1
+#define COMPLEX_FLAG       2
 
 /* Property-table indicators */
-#define PROP_END          255
-#define PROP_ROUTINE      255
+#define PROP_END         255
+#define PROP_ROUTINE     255
 
 enum RESOURCE_TYPE
 {
-   JPEG_R,         /* JPEG image */
-   WAVE_R,         /* RIFF WAVE audio sample */
-   MOD_R,         /* MOD music module */
-   S3M_R,         /* S3M music module */
-   XM_R,         /* XM music module */
-   MIDI_R,         /* MIDI music */
-   MP3_R,         /* MP3 audio layer */
-   AVI_R,         /* Video for Windows */
-   MPEG_R,         /* MPEG video */
+   JPEG_R,        /* JPEG image             */
+   WAVE_R,        /* RIFF WAVE audio sample */
+   MOD_R,         /* MOD music module       */
+   S3M_R,         /* S3M music module       */
+   XM_R,          /* XM music module        */
+   MIDI_R,        /* MIDI music             */
+   MP3_R,         /* MP3 audio layer        */
+   AVI_R,         /* Video for Windows      */
+   MPEG_R,        /* MPEG video             */
    UNKNOWN_R
 };
 
 /* A structure used for disambiguation in MatchObject(): */
 struct pobject_structure
 {
-   int obj;      /* the actual object number */
-   char type;              /* referred to by noun or adjective */
+   int obj;       /* the actual object number         */
+   char type;     /* referred to by noun or adjective */
 };
 
 /* Structure used for navigating {...} blocks: */
 struct CODE_BLOCK
 {
-   int type;      /* see #defines, below */
-   long brk;      /* break address, or 0 to indicate NOP */
-   long returnaddr;   /* used only for do-while loops */
+   int type;            /* see #defines, below                  */
+   long brk;            /* break address, or 0 to indicate NOP  */
+   long returnaddr;     /* used only for do-while loops         */
 #if defined (DEBUGGER)
-   int dbnest;      /* for recovering from 'break' */
+   int dbnest;          /* for recovering from 'break'          */
 #endif
 };
 
 #define RESET_STACK_DEPTH (-1)
 
-#define RUNROUTINE_BLOCK  1
-#define CONDITIONAL_BLOCK 2
-#define DOWHILE_BLOCK     3
+#define RUNROUTINE_BLOCK   1
+#define CONDITIONAL_BLOCK  2
+#define DOWHILE_BLOCK      3
 
-#define TAIL_RECURSION_ROUTINE          (-1)
-#define TAIL_RECURSION_PROPERTY         (-2)
+#define TAIL_RECURSION_ROUTINE   (-1)
+#define TAIL_RECURSION_PROPERTY  (-2)
 
 
 /*-------------------------------------------------------------------------*/
@@ -1046,8 +1046,8 @@ extern char capital;
 extern unsigned int textto;
 extern int SCREENWIDTH, SCREENHEIGHT;
 extern int physical_windowwidth, physical_windowheight,
-   physical_windowtop, physical_windowleft,
-   physical_windowbottom, physical_windowright;
+            physical_windowtop, physical_windowleft,
+            physical_windowbottom, physical_windowright;
 extern int inwindow;
 extern int charwidth, lineheight, FIXEDCHARWIDTH, FIXEDLINEHEIGHT;
 extern int current_text_x, current_text_y;
@@ -1170,7 +1170,7 @@ extern int stack_depth;
 extern int tail_recursion;
 extern long tail_recursion_addr;
 extern int last_window_top, last_window_bottom,
-   last_window_left, last_window_right;
+            last_window_left, last_window_right;
 extern char just_left_window;
 
 
@@ -1229,4 +1229,3 @@ HUGO_INLINE void PokeWord(unsigned int a, unsigned int v)
 #if defined (DEBUGGER)
 #include "hdinter.h"
 #endif
-
